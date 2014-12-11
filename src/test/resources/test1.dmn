@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:Definitions id="dm1" namespace="http://knowprocess.com/test1"
+  xmlns:dmn="http://www.omg.org/spec/DMN/20130901" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.omg.org/spec/DMN/20130901 schema/DMN.xsd "
+  expressionLanguage="http://foo.com/application/javascript">
+  
+    <dmn:Decision id="d0" name="Determine eligibility as preferred supplier">
+    <dmn:description>Determines whether a given supplier meets the preferred supplier criteria</dmn:description>
+    <dmn:question>Does the supplier publish a sustainabilty report?</dmn:question>
+    <dmn:allowedAnswers>Yes, No, Unknown</dmn:allowedAnswers>
+    <!--
+    <dmn:informationRequirement>
+      <dmn:InformationItem id="sustainabilityReport" name="Sustainability Report">
+        <dmn:description>dmn:description</dmn:description>
+        <dmn:itemDefinition>QName</dmn:itemDefinition>
+      </dmn:InformationItem>
+      <dmn:requiredInput>report</dmn:requiredInput>
+    </dmn:informationRequirement>
+
+    <dmn:knowledgeRequirement>
+      <dmn:requiredKnowledge>QName</dmn:requiredKnowledge>
+    </dmn:knowledgeRequirement>
+    <dmn:authorityRequirement>
+      <dmn:requiredDecision>QName</dmn:requiredDecision>
+    </dmn:authorityRequirement>
+    <dmn:supportedObjective>QName</dmn:supportedObjective>
+    <dmn:impactedPerformanceIndicator>QName</dmn:impactedPerformanceIndicator>
+    <dmn:decisionMaker>QName</dmn:decisionMaker>
+    <dmn:decisionOwner>QName</dmn:decisionOwner>
+    <dmn:usingProcess>QName</dmn:usingProcess>
+    <dmn:usingTask>QName</dmn:usingTask>
+    -->
+    
+    <!-- should be ref not embed? -->
+    <dmn:DecisionTable 
+        aggregation="COLLECT" 
+        hitPolicy="UNIQUE" 
+        id="dt0" 
+        isComplete="true" 
+        isConsistent="true" 
+        name="" 
+        preferedOrientation="Rule-as-Row">
+      <dmn:description>Calculate sustainability ranking</dmn:description>
+      <!--
+      <dmn:inputVariable>report.published</dmn:inputVariable>
+       
+      <dmn:itemDefinition>QName</dmn:itemDefinition>
+      <dmn:clause isOrdered="false" name=""/>
+      -->
+      <dmn:clause>
+        <dmn:inputEntry id="in1">
+          <dmn:description>input expr 1 == 'foo'</dmn:description>
+        </dmn:inputEntry>
+      </dmn:clause>
+      <dmn:clause>
+        <dmn:outputEntry id="out1">
+          <dmn:description>output = 'bar'</dmn:description>
+        </dmn:outputEntry>
+      </dmn:clause>
+    </dmn:DecisionTable>
+  
+  </dmn:Decision>
+
+  <!-- <dmn:Decision id="d2">
+  
+    <dmn:LiteralExpression id="hasPublishedReport">
+      <dmn:description>Whether a sustainability report is published</dmn:description>
+      <dmn:inputVariable>report</dmn:inputVariable>
+      <dmn:text>report.published==true</dmn:text>
+    </dmn:LiteralExpression>
+  
+  </dmn:Decision>
+   -->
+  
+</dmn:Definitions>
