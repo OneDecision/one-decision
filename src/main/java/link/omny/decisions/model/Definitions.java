@@ -66,7 +66,7 @@ public class Definitions extends DmnElement {
     @XmlElement(name = "ItemDefinition")
     protected List<ItemDefinition> itemDefinition;
     @XmlElementRef(name = "DRGElement", namespace = DMN_1_0, type = JAXBElement.class, required = false)
-    protected List<DrgElement> drgElement;
+    protected List<JAXBElement<? extends DrgElement>> drgElement;
     @XmlElement(name = "ElementCollection")
     protected List<ElementCollection> elementCollection;
     @XmlElementRef(name = "BusinessContextElement", namespace = DMN_1_0, type = JAXBElement.class, required = false)
@@ -166,11 +166,35 @@ public class Definitions extends DmnElement {
      * 
      * 
      */
-    public List<DrgElement> getDrgElement() {
+    public List<JAXBElement<? extends DrgElement>> getDrgElement() {
         if (drgElement == null) {
-            drgElement = new ArrayList<DrgElement>();
+            drgElement = new ArrayList<JAXBElement<? extends DrgElement>>();
         }
         return this.drgElement;
+    }
+
+    /**
+     * Filter getDrgElements to just those containing decisions.
+     * 
+     * @return <code>List</code> of <code>Decision</code>.
+     */
+    public List<Decision> getDecisions() {
+        List<Decision> decisions = new ArrayList<Decision>();
+        for (JAXBElement<? extends DrgElement> el : getDrgElement()) {
+            if (el.getValue() instanceof Decision) {
+                decisions.add((Decision) el.getValue());
+            }
+        }
+        return decisions;
+    }
+
+    public Decision getDecisionById(String id) {
+        for (Decision d : getDecisions()) {
+            if (d.getId().equals(id)) {
+                return d;
+            }
+        }
+        return null;
     }
 
     /**

@@ -14,11 +14,16 @@ import java.util.List;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
+
+import link.omny.decisions.model.adapters.ExpressionAdapter;
 
 
 /**
@@ -46,18 +51,29 @@ import javax.xml.namespace.QName;
 @XmlRootElement(name = "Decision")
 @XmlType(name = "tExpression", propOrder = {
     "inputVariable",
-    "itemDefinition"
+ "itemDefinition"
+// ,
+// "text", "_import"
 })
 @XmlSeeAlso({
     LiteralExpression.class,
     Invocation.class,
     DecisionTable.class
 })
+@XmlJavaTypeAdapter(ExpressionAdapter.class)
 public class Expression extends DmnElement {
 
     @XmlElementRef(name = "inputVariable", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
-    protected List<Object> inputVariable;
+    protected List<JAXBElement<Object>> inputVariable;
     protected QName itemDefinition;
+
+    // @XmlElement(name = "text")
+    // protected Text text;
+    // @XmlElement(name = "Import")
+    // protected DecisionModelImport _import;
+    @XmlAttribute(name = "expressionLanguage")
+    @XmlSchemaType(name = "anyURI")
+    protected String expressionLanguage;
 
     /**
      * Gets the value of the inputVariable property.
@@ -81,12 +97,21 @@ public class Expression extends DmnElement {
      * 
      * 
      */
-    public List<Object> getInputVariable() {
+    public List<JAXBElement<Object>> getInputVariable() {
         if (inputVariable == null) {
-            inputVariable = new ArrayList<Object>();
+            inputVariable = new ArrayList<JAXBElement<Object>>();
         }
         return this.inputVariable;
     }
+
+    // public List<Object> getInputVariables() {
+    // List<JAXBElement<Object>> vars = getInputVariable();
+    // new ArrayList<Object>();
+    // if (inputVariable == null) {
+    // inputVariable = new ArrayList<JAXBElement<Object>>();
+    // }
+    // return this.inputVariable;
+    // }
 
     /**
      * Gets the value of the itemDefinition property.
@@ -111,6 +136,16 @@ public class Expression extends DmnElement {
     public Expression setItemDefinition(QName value) {
         this.itemDefinition = value;
         return this;
+    }
+
+    public InformationItem getOnlyInputVariable() {
+        if (getInputVariable().size() != 1) {
+            throw new IllegalStateException(
+                    "Expected 1 input variable but found "
+                            + getInputVariable().size());
+        }
+        return (InformationItem) ((JAXBElement<Object>) getInputVariable().get(
+                0)).getValue();
     }
 
 }

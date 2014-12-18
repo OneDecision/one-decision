@@ -11,11 +11,15 @@ package link.omny.decisions.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
+
+import link.omny.decisions.model.adapters.ExpressionAdapter;
 
 
 /**
@@ -58,6 +62,7 @@ import javax.xml.namespace.QName;
 public class Clause {
 
     protected Expression inputExpression;
+    @XmlJavaTypeAdapter(ExpressionAdapter.class)
     protected List<Expression> inputEntry;
     protected QName outputDefinition;
     protected List<Expression> outputEntry;
@@ -117,6 +122,19 @@ public class Clause {
             inputEntry = new ArrayList<Expression>();
         }
         return this.inputEntry;
+    }
+
+    public List<InformationItem> getInputVariables() {
+        ArrayList<InformationItem> list = new ArrayList<InformationItem>();
+        for (Expression el : getInputEntry()) {
+            // System.out.println("EL: " + el);
+            for (JAXBElement<Object> o : el.getInputVariable()) {
+                list.add((InformationItem) o.getValue());
+            }
+
+        }
+        System.out.println("list: " + list);
+        return list;
     }
 
     /**

@@ -1,76 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dmn:Definitions id="dm1" namespace="http://knowprocess.com/test1"
-  xmlns:dmn="http://www.omg.org/spec/DMN/20130901" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<Definitions id="dm1" namespace="http://knowprocess.com/test1"
+  xmlns="http://www.omg.org/spec/DMN/20130901" 
+  xmlns:ol="http://omny.link/decisions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.omg.org/spec/DMN/20130901 schema/DMN.xsd "
-  expressionLanguage="http://foo.com/application/javascript">
+  expressionLanguage="http://foo.com/application/javascript"
+  name="Application Risk Decisions">
   
-    <dmn:Decision id="d0" name="Determine eligibility as preferred supplier">
-    <dmn:description>Determines applicant's risk rating</dmn:description>
-    <dmn:question>What is the risk rating for the specified health insurance applicant?</dmn:question>
-    <dmn:allowedAnswers>"High", "Medium", "Low"</dmn:allowedAnswers>
-    <!--
-    <dmn:informationRequirement>
-      <dmn:InformationItem id="sustainabilityReport" name="Sustainability Report">
-        <dmn:description>dmn:description</dmn:description>
-        <dmn:itemDefinition>QName</dmn:itemDefinition>
-      </dmn:InformationItem>
-      <dmn:requiredInput>report</dmn:requiredInput>
-    </dmn:informationRequirement>
-
-    <dmn:knowledgeRequirement>
-      <dmn:requiredKnowledge>QName</dmn:requiredKnowledge>
-    </dmn:knowledgeRequirement>
-    <dmn:authorityRequirement>
-      <dmn:requiredDecision>QName</dmn:requiredDecision>
-    </dmn:authorityRequirement>
-    <dmn:supportedObjective>QName</dmn:supportedObjective>
-    <dmn:impactedPerformanceIndicator>QName</dmn:impactedPerformanceIndicator>
-    <dmn:decisionMaker>QName</dmn:decisionMaker>
-    <dmn:decisionOwner>QName</dmn:decisionOwner>
-    <dmn:usingProcess>QName</dmn:usingProcess>
-    <dmn:usingTask>QName</dmn:usingTask>
-    -->
-    
-    <!-- should be ref not embed? -->
-    <dmn:DecisionTable 
+    <ItemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
+	  <description>Domain model definition for a single applicant.</description>
+	</ItemDefinition>
+	<ItemDefinition id="policyDef" isCollection="false" name="Policy" typeLanguage="http://tempuri.org">
+	  <description>Domain model definition for a single policy.</description>
+	</ItemDefinition>
+	
+	<BusinessKnowledgeModel id="bkm0" name="Applicant Model">
+	  <description>Business Knowledge Model describing the Applicants for the Health Insurance domain</description>
+	  <InformationItem id="applicant" name="applicant">
+	    <description>An applicant for health insurance</description>
+	    <itemDefinition>applicantDef</itemDefinition>
+	  </InformationItem>
+	  <LiteralExpression expressionLanguage="http://tempuri.org" id="idvalue2" name="policy">
+	    <description>The policy being created for the applicant</description>
+	    <itemDefinition>policyDef</itemDefinition>
+	    <text/>
+	  </LiteralExpression>
+	  <!-- <knowledgeRequirement>
+	    <requiredKnowledge>QName</requiredKnowledge>
+	  </knowledgeRequirement>
+	  <authorityRequirement>
+	    <requiredDecision>QName</requiredDecision>
+	  </authorityRequirement> -->
+	</BusinessKnowledgeModel>
+	    
+  
+    <Decision id="DetermineApplicantRiskRating" name="Determine applicant's risk rating">
+    <description>Determines health insurance applicant's risk rating</description>
+    <question>What is the risk rating for the specified health insurance applicant?</question>
+    <allowedAnswers>"High", "Medium", "Low"</allowedAnswers>
+   
+    <DecisionTable 
         aggregation="COLLECT" 
         hitPolicy="UNIQUE" 
         id="dt0" 
         isComplete="true" 
         isConsistent="true" 
-        name="" 
+        name="Applicant Risk Rating" 
         preferedOrientation="Rule-as-Row">
-      <dmn:description>Calculate applicant risk rating</dmn:description>
-      <!--
-      <dmn:inputVariable>report.published</dmn:inputVariable>
-       
-      <dmn:itemDefinition>QName</dmn:itemDefinition>
-      <dmn:clause isOrdered="false" name=""/>
-      -->
-      <dmn:clause>
-        <dmn:inputEntry id="in1">
-          <dmn:inputVariable>applicant.age</dmn:inputVariable>
-          <![CDATA[<60]]>
-        </dmn:inputEntry>
-      </dmn:clause>
-      <dmn:clause>
-        <dmn:outputEntry id="out1">
-          <dmn:description>output = 'bar'</dmn:description>
-        </dmn:outputEntry>
-      </dmn:clause>
-    </dmn:DecisionTable>
+      <description>Calculate applicant risk rating based on age and health</description>
+      <clause>
+        <inputExpression id="dt0_c0_ie">
+          <description>The applicant's age</description>
+          <inputVariable>applicant</inputVariable>
+        </inputExpression>
+        <inputEntry id="over60" ol:type="LiteralExpression">
+		    <description>Is the applicant over 60?</description>
+		    <inputVariable>applicant</inputVariable>
+            <text>applicant.age > 60</text>
+        </inputEntry>
+        <inputEntry id="between25And60">
+	        <description>Is the applicant between 25 and 60?</description>
+		    <inputVariable>applicant</inputVariable>
+		    <text>applicant.age >=25 &amp;&amp; applicant.age &lt;= 60</text>
+		    </inputEntry>
+        <inputEntry id="under25">
+	        <description>Is the applicant under 25?</description>
+	        <inputVariable>applicant</inputVariable>
+	        <text>applicant.age &lt; 25</text>
+		</inputEntry>
+      </clause>
+      <clause>
+        <inputExpression id="dt0_c1_ie">
+          <description>The applicant's health</description>
+          <inputVariable>applicant</inputVariable>
+        </inputExpression>
+        <inputEntry id="inGoodHealth">
+	        <description>Is the applicant in good health?</description>
+		    <inputVariable>applicant</inputVariable>
+		    <text>applicant.health == 'Good'</text>
+	      </inputEntry>
+	      <inputEntry id="inBadHealth">
+	        <description>Is the applicant in bad health?</description>
+	        <inputVariable>applicant</inputVariable>
+	        <text>applicant.health == 'Bad'</text>
+	      </inputEntry>
+      </clause>
+      <clause>
+        <outputDefinition id="dt0_c2_od">policy</outputDefinition>
+        <outputEntry id="highRisk">
+	        <description>Applicant is high risk</description>
+	        <inputVariable>policy</inputVariable>
+	        <text>policy.riskRating = 'High'</text>
+		</outputEntry>
+        <outputEntry id="mediumRisk">
+	        <description>Applicant is medium risk</description>
+	        <inputVariable>policy</inputVariable>
+	        <text>policy.riskRating = 'Medium'</text>
+	    </outputEntry>
+        <outputEntry id="lowRisk">
+	        <description>Applicant is low risk</description>
+	        <inputVariable>policy</inputVariable>
+	        <text>policy.riskRating = 'Low'</text>
+        </outputEntry>
+      </clause>
+      <rule>
+        <condition>over60</condition>
+        <condition>inGoodHealth</condition>
+        <conclusion>mediumRisk</conclusion>
+      </rule>
+      <rule>
+        <condition>over60</condition>
+        <condition>inBadHealth</condition>
+        <conclusion>highRisk</conclusion>
+      </rule>
+      <rule>
+        <condition>between25And60</condition>
+        <condition></condition>
+        <conclusion>mediumRisk</conclusion>
+      </rule>
+      <rule>
+        <condition>under25</condition>
+        <condition>inGoodHealth</condition>
+        <conclusion>lowRisk</conclusion>
+      </rule>
+      <rule>
+        <condition>under25</condition>
+        <condition>inBadHealth</condition>
+        <conclusion>mediumRisk</conclusion>
+      </rule>
+    </DecisionTable>
   
-  </dmn:Decision>
+  </Decision>
 
-  <!-- <dmn:Decision id="d2">
-  
-    <dmn:LiteralExpression id="hasPublishedReport">
-      <dmn:description>Whether a sustainability report is published</dmn:description>
-      <dmn:inputVariable>report</dmn:inputVariable>
-      <dmn:text>report.published==true</dmn:text>
-    </dmn:LiteralExpression>
-  
-  </dmn:Decision>
-   -->
-  
-</dmn:Definitions>
+</Definitions>

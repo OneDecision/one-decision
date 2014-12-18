@@ -9,6 +9,7 @@
 package link.omny.decisions.model;
 
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -130,9 +131,9 @@ public class ObjectFactory {
      * Create an instance of {@link Expression }
      * 
      */
-    public Expression createTExpression() {
-        return new Expression();
-    }
+    // public Expression createTExpression() {
+    // return new Expression();
+    // }
 
     /**
      * Create an instance of {@link InformationItem }
@@ -274,8 +275,8 @@ public class ObjectFactory {
      * Create an instance of {@link LiteralExpression.Text }
      * 
      */
-    public LiteralExpression.Text createTLiteralExpressionText() {
-        return new LiteralExpression.Text();
+    public Text createTLiteralExpressionText() {
+        return new Text();
     }
 
     /**

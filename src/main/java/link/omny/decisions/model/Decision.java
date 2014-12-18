@@ -81,7 +81,7 @@ public class Decision extends DrgElement {
     protected List<QName> usingProcess;
     protected List<QName> usingTask;
     @XmlElementRef(name = "Expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
-    protected Expression expression;
+    protected JAXBElement<Expression> expression;
 
     /**
      * Gets the value of the question property.
@@ -395,16 +395,29 @@ public class Decision extends DrgElement {
     /**
      * Gets the value of the expression property.
      * 
-     * @return
-     *     possible object is
-     *     {@link JAXBElement }{@code <}{@link Invocation }{@code >}
-     *     {@link JAXBElement }{@code <}{@link DecisionTable }{@code >}
-     *     {@link JAXBElement }{@code <}{@link LiteralExpression }{@code >}
-     *     {@link JAXBElement }{@code <}{@link Expression }{@code >}
-     *     
+     * @return possible object is {@link JAXBElement }{@code <}{@link Invocation }
+     *         {@code >} {@link c }{@code <}{@link DecisionTable }{@code >}
+     *         {@link JAXBElement }{@code <}{@link LiteralExpression }{@code >}
+     *         {@link JAXBElement }{@code <}{@link Expression }{@code >}
+     * 
      */
-    public Expression getExpression() {
+    public JAXBElement<Expression> getExpression() {
         return expression;
+    }
+
+    /**
+     * 
+     * @return This decision's <code>Expression</code> cast to a
+     *         <code>DecisionTable</code> of null if expression is not a
+     *         decision table.
+     */
+    public DecisionTable getDecisionTable() {
+        if (getExpression() == null
+                || !(getExpression().getValue() instanceof DecisionTable)) {
+            return null;
+        } else {
+            return (DecisionTable) getExpression().getValue();
+        }
     }
 
     /**
@@ -418,7 +431,7 @@ public class Decision extends DrgElement {
      *     {@link JAXBElement }{@code <}{@link Expression }{@code >}
      *     
      */
-    public void setExpression(Expression value) {
+    public void setExpression(JAXBElement<Expression> value) {
         this.expression = value;
     }
 

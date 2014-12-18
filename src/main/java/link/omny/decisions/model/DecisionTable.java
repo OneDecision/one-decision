@@ -299,4 +299,14 @@ public class DecisionTable extends Expression {
         return this;
     }
 
+    // public List<Object> getInputVariables() {
+    // ArrayList<Object> list = new ArrayList<Object>();
+    // for (JAXBElement<Object> el : getInputVariable()) {
+    // System.out.println("EL: " + el);
+    // list.add(el.getValue());
+    // }
+    // System.out.println("list: " + list);
+    // return list;
+    // }
+
 }

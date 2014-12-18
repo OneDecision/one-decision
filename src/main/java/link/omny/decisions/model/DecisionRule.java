@@ -10,6 +10,7 @@ package link.omny.decisions.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -78,25 +79,48 @@ public class DecisionRule {
         return this.condition;
     }
 
+    public List<Expression> getConditions() {
+        List<Expression> conditions = new ArrayList<Expression>();
+        for (JAXBElement<List<Object>> o : getCondition()) {
+            if (o.getValue() instanceof JAXBElement) {
+                conditions.add((Expression) ((JAXBElement) o.getValue())
+                        .getValue());
+            } else {
+                conditions.addAll(adapt((List<Object>) o.getValue()));
+            }
+        }
+        return conditions;
+    }
+
+    private List<Expression> adapt(List<Object> value) {
+        List<Expression> list = new ArrayList<Expression>();
+        for (Object object : value) {
+            list.add((Expression) object);
+        }
+        return list;
+    }
+
     /**
      * Gets the value of the conclusion property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the conclusion property.
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the conclusion property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getConclusion().add(newItem);
+     * getConclusion().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link JAXBElement }{@code <}{@link List }{@code <}{@link Object }{@code >}{@code >}
+     * {@link JAXBElement }{@code <}{@link List }{@code <}{@link Object }{@code >}
+     * {@code >}
      * 
      * 
      */
@@ -105,6 +129,19 @@ public class DecisionRule {
             conclusion = new ArrayList<JAXBElement<List<Object>>>();
         }
         return this.conclusion;
+    }
+
+    public List<Expression> getConclusions() {
+        List<Expression> conclusions = new ArrayList<Expression>();
+        for (JAXBElement<List<Object>> o : getConclusion()) {
+            if (o.getValue() instanceof JAXBElement) {
+                conclusions.add((Expression) ((JAXBElement) o.getValue())
+                        .getValue());
+            }else {
+                conclusions.addAll(adapt(o.getValue()));
+            }
+        }
+        return conclusions;
     }
 
 }
