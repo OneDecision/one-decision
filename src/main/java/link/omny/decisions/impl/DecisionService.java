@@ -12,6 +12,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import link.omny.decisions.api.DecisionException;
 import link.omny.decisions.model.Clause;
 import link.omny.decisions.model.Decision;
 import link.omny.decisions.model.DecisionRule;
@@ -21,6 +22,9 @@ import link.omny.decisions.model.LiteralExpression;
 import link.omny.decisions.model.adapters.ExpressionAdapter;
 import link.omny.decisions.model.adapters.ExpressionAdapter.AdaptedExpression;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DecisionService {
 
     private Map<String, String> cache = new HashMap<String, String>();
@@ -41,11 +45,11 @@ public class DecisionService {
         jsEng = sem.getEngineByName("JavaScript");
     }
 
-    public Map<String, Object> execute(Decision d, Map<String, Object> vars)
-            throws Exception {
+    public Map<String, String> execute(Decision d, Map<String, String> params)
+            throws DecisionException {
         String script = getScript(d.getDecisionTable());
 
-        for (Entry<String, Object> o : vars.entrySet()) {
+        for (Entry<String, String> o : params.entrySet()) {
             System.out.println("JSON input in Java: " + o);
             jsEng.put(o.getKey(), o.getValue());
             try {
@@ -57,24 +61,15 @@ public class DecisionService {
             for (Entry<String, Object> o2 : jsEng.getBindings(
                     ScriptContext.ENGINE_SCOPE).entrySet()) {
                 if (!EXCLUDED_OBJECTS.contains(o2.getKey())) {
-                    vars.put(o2.getKey(), o2.getValue());
+                    params.put(o2.getKey(), (String) o2.getValue());
                 }
             }
         }
-        System.out.println("vars returned: " + vars);
-        return vars;
+        System.out.println("vars returned: " + params);
+        return params;
     }
 
-    // public String execute(Decision d, String json) throws Exception {
-    //
-    // JsonReader reader = Json.createReader(new StringReader(json));
-    // JsonArray applicants = reader.readArray();
-    // reader.close();
-    //
-    // return response.toString();
-    // }
-
-    public String getScript(DecisionTable dt) throws Exception {
+    public String getScript(DecisionTable dt) throws DecisionException {
         if (cache.containsKey(dt.getId())) {
             return cache.get(dt.getId());
         }

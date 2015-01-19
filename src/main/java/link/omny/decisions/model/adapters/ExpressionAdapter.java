@@ -42,7 +42,7 @@ public class ExpressionAdapter extends
     }
 
     @Override
-    public Expression unmarshal(AdaptedExpression v) throws Exception {
+    public Expression unmarshal(AdaptedExpression v) {
         if (null == v) {
             return null;
         }

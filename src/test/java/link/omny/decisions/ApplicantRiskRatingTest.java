@@ -32,7 +32,7 @@ public class ApplicantRiskRatingTest {
     private String applicant;
     private String policy;
     private Decision decision;
-    private Map<String, Object> vars = new HashMap<String, Object>();
+    private Map<String, String> vars = new HashMap<String, String>();
 
     @Parameters
     public static Collection<String[]> data() {
@@ -63,7 +63,7 @@ public class ApplicantRiskRatingTest {
             vars.clear();
             vars.put("applicant", applicant);
             vars = svc.execute(getDecision(), vars);
-            assertEquals(policy, vars.get("policy"));
+            assertEquals(policy, vars.get("conclusion"));
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getClass() + ":" + e.getMessage());

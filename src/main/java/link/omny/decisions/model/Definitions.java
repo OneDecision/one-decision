@@ -58,6 +58,7 @@ import javax.xml.bind.annotation.XmlType;
     "elementCollection",
     "businessContextElement"
 })
+// @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Definitions extends DmnElement {
 
     public static final String DMN_1_0 = "http://www.omg.org/spec/DMN/20130901";
@@ -337,4 +338,18 @@ public class Definitions extends DmnElement {
         this.namespace = value;
     }
 
+    @Override
+    public Definitions setId(String value) {
+        return (Definitions) super.setId(value);
+    }
+
+    @Override
+    public Definitions setDescription(String value) {
+        return (Definitions) super.setDescription(value);
+    }
+
+    @Override
+    public Definitions setName(String value) {
+        return (Definitions) super.setName(value);
+    }
 }

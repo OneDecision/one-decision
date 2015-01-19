@@ -81,7 +81,7 @@ public class Decision extends DrgElement {
     protected List<QName> usingProcess;
     protected List<QName> usingTask;
     @XmlElementRef(name = "Expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
-    protected JAXBElement<Expression> expression;
+    protected JAXBElement<? extends Expression> expression;
 
     /**
      * Gets the value of the question property.
@@ -401,7 +401,7 @@ public class Decision extends DrgElement {
      *         {@link JAXBElement }{@code <}{@link Expression }{@code >}
      * 
      */
-    public JAXBElement<Expression> getExpression() {
+    public JAXBElement<? extends Expression> getExpression() {
         return expression;
     }
 
@@ -431,7 +431,7 @@ public class Decision extends DrgElement {
      *     {@link JAXBElement }{@code <}{@link Expression }{@code >}
      *     
      */
-    public void setExpression(JAXBElement<Expression> value) {
+    public void setExpression(JAXBElement<? extends Expression> value) {
         this.expression = value;
     }
 

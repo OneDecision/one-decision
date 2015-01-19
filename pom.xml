@@ -4,10 +4,30 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Decisions</name>
   <description>Cloudy and RESTful decision microservices!!</description>
+  
   <properties>
+    <aspectj.version>1.7.4</aspectj.version>
+    <jackson.version>1.7.4</jackson.version>
     <java.version>1.7</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <roo.version>1.2.5.RELEASE</roo.version>
+    <slf4j.version>1.7.5</slf4j.version>
+    <spring.boot.version>1.1.10.RELEASE</spring.boot.version>
+    <start-class>link.omny.decisions.Application</start-class>
+    <spring.version>3.2.7.RELEASE</spring.version>
+    <spring-security.version>3.1.0.RELEASE</spring-security.version>
   </properties>
+  
+  <repositories>
+    <!--
+    <repository>
+        <id>spring-roo-repository</id>
+        <name>Spring Roo Repository</name>
+        <url>http://spring-roo-repository.springsource.org/release</url>
+    </repository>
+    -->
+  </repositories>
+  
   <dependencies>
     <dependency>
        <groupId>javax.el</groupId>
@@ -15,9 +35,30 @@
        <version>2.2.4</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+    </dependency>
+    <!-- <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+    </dependency>-->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
     </dependency>
     <!-- includes dependency on javax.validation:validation-api -->
     <dependency>
@@ -31,13 +72,215 @@
        <version>2.2.4</version>
     </dependency>
     <dependency>
-		<groupId>org.glassfish</groupId>
-		<artifactId>javax.json</artifactId>
-		<version>1.0.4</version>
-	</dependency>
+  		<groupId>org.glassfish</groupId>
+  		<artifactId>javax.json</artifactId>
+  		<version>1.0.4</version>
+  	</dependency>
+    <!-- Tests fail when using...
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.moxy</artifactId>
+      <version>2.5.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.2.11</version>
+    </dependency>-->
+     <dependency>
+         <groupId>org.codehaus.jackson</groupId>
+         <artifactId>jackson-core-asl</artifactId>
+         <version>${jackson.version}</version>
+     </dependency>
+     <dependency>
+         <groupId>org.codehaus.jackson</groupId>
+         <artifactId>jackson-mapper-lgpl</artifactId>
+         <version>${jackson.version}</version>
+     </dependency>
+     <dependency>
+         <groupId>org.codehaus.jackson</groupId>
+         <artifactId>jackson-xc</artifactId>
+         <version>${jackson.version}</version>
+     </dependency>
+     <!-- ROO dependencies -->
+      <dependency>
+          <groupId>org.springframework.roo</groupId>
+          <artifactId>org.springframework.roo.annotations</artifactId>
+          <version>${roo.version}</version>
+          <scope>provided</scope>
+      </dependency>
+      <!-- Spring (Roo) dependencies 
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+          <version>${spring.version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-test</artifactId>
+          <version>${spring.version}</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aspects</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>5.1.24</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>1.3.172</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.eclipse.persistence</groupId>
+          <artifactId>eclipselink</artifactId>
+          <version>2.5.0</version>
+      </dependency>
+      <dependency>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+          <version>1.1</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-jdbc</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-orm</artifactId>
+          <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>commons-pool</groupId>
+          <artifactId>commons-pool</artifactId>
+          <version>1.5.6</version>
+      </dependency>
+      <dependency>
+          <groupId>commons-dbcp</groupId>
+          <artifactId>commons-dbcp</artifactId>
+          <version>1.4</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+              </exclusion>
+              <exclusion>
+                  <groupId>xml-apis</groupId>
+                  <artifactId>xml-apis</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-webmvc</artifactId>
+          <version>${spring.version}</version>
+      </dependency>-->
+      <!-- Higher version added myself for decisions validation 
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-validator</artifactId>
+          <version>4.3.1.Final</version>
+      </dependency>
+      <dependency>
+          <groupId>javax.validation</groupId>
+          <artifactId>validation-api</artifactId>
+          <version>1.0.0.GA</version>
+      </dependency>
+      -->
+    <!-- Spring security - conflict with spring boot?? - ->
+    <dependency>
+          <groupId>org.springframework.security</groupId>
+          <artifactId>spring-security-core</artifactId>
+          <version>${spring-security.version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.security</groupId>
+          <artifactId>spring-security-config</artifactId>
+          <version>${spring-security.version}</version>
+          <exclusions>
+              <exclusion>
+                  <groupId>commons-logging</groupId>
+                  <artifactId>commons-logging</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.security</groupId>
+          <artifactId>spring-security-web</artifactId>
+          <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.security</groupId>
+          <artifactId>spring-security-taglibs</artifactId>
+          <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-openid</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openid4java</groupId>
+        <artifactId>openid4java-consumer</artifactId>
+        <type>pom</type>
+        <version>0.9.5</version>
+      </dependency> -->
+    <!-- Spring Boot --> 
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-web</artifactId>
+          <version>${spring.boot.version}</version>
+          <exclusions>
+            <exclusion>
+              <artifactId>logback-classic</artifactId>
+              <groupId>ch.qos.logback</groupId>
+            </exclusion>
+          </exclusions>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-actuator</artifactId>
+          <version>${spring.boot.version}</version>
+      </dependency>
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+          <directory>src/main/resources</directory>
+          <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -49,6 +292,11 @@
             <encoding>${project.build.sourceEncoding}</encoding>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
+      </plugin>  
     </plugins>
   </build>
   

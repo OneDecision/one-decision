@@ -7,41 +7,40 @@
   expressionLanguage="http://foo.com/application/javascript"
   name="Application Risk Decisions">
   
-    <ItemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
-	  <description>Domain model definition for a single applicant.</description>
-	</ItemDefinition>
-	<ItemDefinition id="policyDef" isCollection="false" name="Policy" typeLanguage="http://tempuri.org">
-	  <description>Domain model definition for a single policy.</description>
-	</ItemDefinition>
-	
-	<BusinessKnowledgeModel id="bkm0" name="Applicant Model">
-	  <description>Business Knowledge Model describing the Applicants for the Health Insurance domain</description>
-	  <InformationItem id="applicant" name="applicant">
-	    <description>An applicant for health insurance</description>
-	    <itemDefinition>applicantDef</itemDefinition>
-	  </InformationItem>
-	  <LiteralExpression expressionLanguage="http://tempuri.org" id="idvalue2" name="policy">
-	    <description>The policy being created for the applicant</description>
-	    <itemDefinition>policyDef</itemDefinition>
-	    <text/>
-	  </LiteralExpression>
-	  <!-- <knowledgeRequirement>
-	    <requiredKnowledge>QName</requiredKnowledge>
-	  </knowledgeRequirement>
-	  <authorityRequirement>
-	    <requiredDecision>QName</requiredDecision>
-	  </authorityRequirement> -->
-	</BusinessKnowledgeModel>
-	    
-  
-    <Decision id="DetermineApplicantRiskRating" name="Determine applicant's risk rating">
+   <ItemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
+     <description>Domain model definition for a single applicant.</description>
+   </ItemDefinition>
+   <ItemDefinition id="conclusionDef" isCollection="false" name="conclusion" typeLanguage="http://tempuri.org">
+     <description>Domain model definition for a single conclusion.</description>
+   </ItemDefinition>
+   
+   <BusinessKnowledgeModel id="bkm0" name="Applicant Model">
+     <description>Business Knowledge Model describing the Applicants for the Health Insurance domain</description>
+     <InformationItem id="applicant" name="applicant">
+       <description>An applicant for health insurance</description>
+       <itemDefinition>applicantDef</itemDefinition>
+     </InformationItem>
+     <LiteralExpression expressionLanguage="http://tempuri.org" id="idvalue2" name="conclusion">
+       <description>The conclusion being created for the applicant</description>
+       <itemDefinition>conclusionDef</itemDefinition>
+       <text/>
+     </LiteralExpression>
+     <!-- <knowledgeRequirement>
+       <requiredKnowledge>QName</requiredKnowledge>
+     </knowledgeRequirement>
+     <authorityRequirement>
+       <requiredDecision>QName</requiredDecision>
+     </authorityRequirement> -->
+  </BusinessKnowledgeModel>
+       
+  <Decision id="DetermineApplicantRiskRating" name="Determine applicant's risk rating">
     <description>Determines health insurance applicant's risk rating</description>
     <question>What is the risk rating for the specified health insurance applicant?</question>
     <allowedAnswers>"High", "Medium", "Low"</allowedAnswers>
    
     <DecisionTable 
         aggregation="COLLECT" 
-        hitPolicy="UNIQUE" 
+        hitconclusion="UNIQUE" 
         id="dt0" 
         isComplete="true" 
         isConsistent="true" 
@@ -54,20 +53,20 @@
           <inputVariable>applicant</inputVariable>
         </inputExpression>
         <inputEntry id="over60" ol:type="LiteralExpression">
-		    <description>Is the applicant over 60?</description>
-		    <inputVariable>applicant</inputVariable>
+          <description>Is the applicant over 60?</description>
+          <inputVariable>applicant</inputVariable>
             <text>applicant.age > 60</text>
         </inputEntry>
         <inputEntry id="between25And60">
-	        <description>Is the applicant between 25 and 60?</description>
-		    <inputVariable>applicant</inputVariable>
-		    <text>applicant.age >=25 &amp;&amp; applicant.age &lt;= 60</text>
-		    </inputEntry>
+           <description>Is the applicant between 25 and 60?</description>
+          <inputVariable>applicant</inputVariable>
+          <text>applicant.age >=25 &amp;&amp; applicant.age &lt;= 60</text>
+          </inputEntry>
         <inputEntry id="under25">
-	        <description>Is the applicant under 25?</description>
-	        <inputVariable>applicant</inputVariable>
-	        <text>applicant.age &lt; 25</text>
-		</inputEntry>
+           <description>Is the applicant under 25?</description>
+           <inputVariable>applicant</inputVariable>
+           <text>applicant.age &lt; 25</text>
+      </inputEntry>
       </clause>
       <clause>
         <inputExpression id="dt0_c1_ie">
@@ -75,32 +74,32 @@
           <inputVariable>applicant</inputVariable>
         </inputExpression>
         <inputEntry id="inGoodHealth">
-	        <description>Is the applicant in good health?</description>
-		    <inputVariable>applicant</inputVariable>
-		    <text>applicant.health == 'Good'</text>
-	      </inputEntry>
-	      <inputEntry id="inBadHealth">
-	        <description>Is the applicant in bad health?</description>
-	        <inputVariable>applicant</inputVariable>
-	        <text>applicant.health == 'Bad'</text>
-	      </inputEntry>
+           <description>Is the applicant in good health?</description>
+          <inputVariable>applicant</inputVariable>
+          <text>applicant.health == 'Good'</text>
+         </inputEntry>
+         <inputEntry id="inBadHealth">
+           <description>Is the applicant in bad health?</description>
+           <inputVariable>applicant</inputVariable>
+           <text>applicant.health == 'Bad'</text>
+         </inputEntry>
       </clause>
       <clause>
-        <outputDefinition id="dt0_c2_od">policy</outputDefinition>
+        <outputDefinition id="dt0_c2_od">conclusion</outputDefinition>
         <outputEntry id="highRisk">
-	        <description>Applicant is high risk</description>
-	        <inputVariable>policy</inputVariable>
-	        <text>policy.riskRating = 'High'</text>
-		</outputEntry>
+           <description>Applicant is high risk</description>
+           <inputVariable>conclusion</inputVariable>
+           <text>conclusion.riskRating = 'High'</text>
+      </outputEntry>
         <outputEntry id="mediumRisk">
-	        <description>Applicant is medium risk</description>
-	        <inputVariable>policy</inputVariable>
-	        <text>policy.riskRating = 'Medium'</text>
-	    </outputEntry>
+           <description>Applicant is medium risk</description>
+           <inputVariable>conclusion</inputVariable>
+           <text>conclusion.riskRating = 'Medium'</text>
+       </outputEntry>
         <outputEntry id="lowRisk">
-	        <description>Applicant is low risk</description>
-	        <inputVariable>policy</inputVariable>
-	        <text>policy.riskRating = 'Low'</text>
+           <description>Applicant is low risk</description>
+           <inputVariable>conclusion</inputVariable>
+           <text>conclusion.riskRating = 'Low'</text>
         </outputEntry>
       </clause>
       <rule>
