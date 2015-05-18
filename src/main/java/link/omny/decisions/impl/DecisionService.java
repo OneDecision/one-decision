@@ -95,7 +95,7 @@ public class DecisionService {
         }
         for (String var : varsToInit) {
             sb.append("if (" + var + " == undefined) " + var + " = {};\n");
-            sb.append("println(" + var + ");\n");
+            // sb.append("println(" + var + ");\n");
             sb.append("if (typeof " + var + " == 'string') var " + var
                     + " = JSON.parse(" + var + ");\n");
         }

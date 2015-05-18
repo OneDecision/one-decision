@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import lombok.NoArgsConstructor;
+
 
 /**
  * <p>Java class for tInformationItem complex type.
@@ -38,9 +40,7 @@ import javax.xml.namespace.QName;
 @XmlType(name = "tInformationItem", propOrder = {
     "itemDefinition"
 })
-public class InformationItem
-    extends NamedDmnElement
-{
+public class InformationItem extends NamedDmnElement {
 
     protected QName itemDefinition;
 

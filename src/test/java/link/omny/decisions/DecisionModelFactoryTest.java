@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -26,18 +28,34 @@ import link.omny.decisions.model.Expression;
 import link.omny.decisions.model.ObjectFactory;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DecisionModelFactoryTest {
 
+    private static final String DMN_RESOURCE = "/ApplicationRiskRating.dmn";
+    // private static final String DECISION_ID = "DetermineApplicantRiskRating";
+
     private DecisionModelFactory fact;
+    private Definitions dm;
     private Validator validator;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         fact = new DecisionModelFactory();
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
+
+        dm = fact.load(DMN_RESOURCE);
+    }
+
+    @Test
+    @Ignore
+    // Not working possibly due to using Jackson 1 and anyway horribly verbose
+    public void testXmlToJson() throws IOException {
+        File dmnFile = new File("target", "ApplicationRiskRating.json");
+        fact.write("application/json", dm, new FileWriter(dmnFile));
+        assertTrue(dmnFile.exists());
     }
 
     @Test

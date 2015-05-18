@@ -8,10 +8,14 @@
 
 package link.omny.decisions.model;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -20,6 +24,10 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
+
+import link.omny.decisions.api.DecisionException;
+import lombok.NoArgsConstructor;
 
 
 /**
@@ -58,6 +66,7 @@ import javax.xml.bind.annotation.XmlType;
     "elementCollection",
     "businessContextElement"
 })
+@NoArgsConstructor
 // @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Definitions extends DmnElement {
 
@@ -81,6 +90,11 @@ public class Definitions extends DmnElement {
     @XmlAttribute(name = "namespace", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String namespace;
+
+    public Definitions(String id, String name) {
+        setId(id);
+        setName(name);
+    }
 
     /**
      * Gets the value of the import property.
@@ -175,6 +189,24 @@ public class Definitions extends DmnElement {
     }
 
     /**
+     * Find the contained Business Knowledge Model if one exists.
+     * 
+     * @return <code>BusinessKnowledgeModel</code> or <code>null</code>.
+     */
+    public BusinessKnowledgeModel getBusinessKnowledgeModel() {
+        for (JAXBElement<? extends DrgElement> el : getDrgElement()) {
+            if (el.getValue() instanceof BusinessKnowledgeModel) {
+                return (BusinessKnowledgeModel) el.getValue();
+            }
+        }
+        return null;
+    }
+
+    public void setBusinessKnowledgeModel(JAXBElement<? extends DrgElement> bkm) {
+        getDrgElement().add(bkm);
+    }
+
+    /**
      * Filter getDrgElements to just those containing decisions.
      * 
      * @return <code>List</code> of <code>Decision</code>.
@@ -196,6 +228,13 @@ public class Definitions extends DmnElement {
             }
         }
         return null;
+    }
+
+    public void addDecision(Decision decision) {
+        getDrgElement().add(
+                new JAXBElement<Decision>(new QName("Decision"),
+                        Decision.class, decision));
+
     }
 
     /**
@@ -351,5 +390,21 @@ public class Definitions extends DmnElement {
     @Override
     public Definitions setName(String value) {
         return (Definitions) super.setName(value);
+    }
+
+    public void write(Writer out) throws DecisionException {
+        JAXBContext jaxbContext;
+        try {
+            jaxbContext = JAXBContext.newInstance(Definitions.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+            // output pretty printed
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            jaxbMarshaller.marshal(this, out);
+        } catch (JAXBException e) {
+            throw new DecisionException(String.format(
+                    "Unable to serialise %1$s", getId()), e);
+        }
     }
 }

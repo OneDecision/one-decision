@@ -74,6 +74,15 @@ public class ExpressionAdapter extends
         AdaptedExpression AdaptedExpression = new AdaptedExpression();
         if (v instanceof LiteralExpression) {
             LiteralExpression literal = (LiteralExpression) v;
+            AdaptedExpression.setId(literal.getId());
+            AdaptedExpression.setName(literal.getName());
+            AdaptedExpression.setDescription(literal.getDescription());
+            // try {
+            // AdaptedExpression.getInputVariable().addAll(
+            // literal.getInputVariable());
+            // } catch (Exception e) {
+            // e.getMessage();
+            // }
             AdaptedExpression.text = literal.getText();
             AdaptedExpression._import = literal.getImport();
             AdaptedExpression.expressionLanguage = literal

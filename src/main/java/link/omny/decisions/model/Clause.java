@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
@@ -52,6 +53,7 @@ import link.omny.decisions.model.adapters.ExpressionAdapter;
  * 
  * 
  */
+@XmlRootElement(name = "Clause")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tClause", propOrder = {
     "inputExpression",
@@ -61,6 +63,8 @@ import link.omny.decisions.model.adapters.ExpressionAdapter;
 })
 public class Clause {
 
+    // These XmlJavaTypeAdapters are not generated
+    @XmlJavaTypeAdapter(ExpressionAdapter.class)
     protected Expression inputExpression;
     @XmlJavaTypeAdapter(ExpressionAdapter.class)
     protected List<Expression> inputEntry;

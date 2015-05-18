@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-
 /**
  * <p>Java class for tDecision complex type.
  * 
@@ -408,7 +407,7 @@ public class Decision extends DrgElement {
     /**
      * 
      * @return This decision's <code>Expression</code> cast to a
-     *         <code>DecisionTable</code> of null if expression is not a
+     *         <code>DecisionTable</code> or null if expression is not a
      *         decision table.
      */
     public DecisionTable getDecisionTable() {
@@ -418,6 +417,11 @@ public class Decision extends DrgElement {
         } else {
             return (DecisionTable) getExpression().getValue();
         }
+    }
+
+    public void setDecisionTable(DecisionTable dt) {
+        setExpression(new JAXBElement<DecisionTable>(
+                new QName("DecisionTable"), DecisionTable.class, dt));
     }
 
     /**

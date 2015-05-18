@@ -16,4 +16,6 @@ Shortcomings
 
 1. p76: No hit policy for 'All'
 
+1. Ref: 8.3.2 Decision Table Clause metamodel
 
+Why no input and output specialisations of Clause. 

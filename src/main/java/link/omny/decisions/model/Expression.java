@@ -148,4 +148,8 @@ public class Expression extends DmnElement {
                 0)).getValue();
     }
 
+    // public InformationItem addInputVariable(String name) {
+    // return (InformationItem) ((JAXBElement<Object>)
+    // getInputVariable().add(new InformationItem(name));
+    // }
 }

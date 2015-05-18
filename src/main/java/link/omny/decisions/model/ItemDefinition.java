@@ -10,6 +10,7 @@ package link.omny.decisions.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
@@ -18,6 +19,9 @@ import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import lombok.NoArgsConstructor;
+
 import org.w3c.dom.Element;
 
 
@@ -67,9 +71,8 @@ import org.w3c.dom.Element;
     "allowedValue",
     "itemComponentRef"
 })
-public class ItemDefinition
-    extends DmnElement
-{
+@NoArgsConstructor
+public class ItemDefinition extends DmnElement {
 
     protected ItemDefinition.TypeDefinition typeDefinition;
     protected QName typeRef;
@@ -80,6 +83,12 @@ public class ItemDefinition
     protected String typeLanguage;
     @XmlAttribute(name = "isCollection")
     protected Boolean isCollection;
+
+    public ItemDefinition(String name, String description) {
+        setId(name + "Def");
+        setName(name);
+        setDescription(description);
+    }
 
     /**
      * Gets the value of the typeDefinition property.

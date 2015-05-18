@@ -10,10 +10,12 @@ package link.omny.decisions.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.NoArgsConstructor;
 
 /**
  * <p>Java class for tInvocation complex type.
@@ -39,9 +41,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "tInvocation", propOrder = {
     "binding"
 })
-public class Invocation
-    extends Expression
-{
+@NoArgsConstructor
+public class Invocation extends Expression {
 
     protected List<Binding> binding;
 

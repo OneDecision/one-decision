@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import lombok.NoArgsConstructor;
 
 /**
  * <p>Java class for tDecisionTable complex type.
@@ -52,6 +53,7 @@ import javax.xml.namespace.QName;
     "clause",
     "rule"
 })
+@NoArgsConstructor
 public class DecisionTable extends Expression {
 
     protected List<Clause> clause;
@@ -72,6 +74,11 @@ public class DecisionTable extends Expression {
 
     @XmlAttribute(name = "isConsistent")
     protected Boolean isConsistent;
+
+    public DecisionTable(String id, String name) {
+        setId(id);
+        setName(name);
+    }
 
     @Override
     public DecisionTable setItemDefinition(QName value) {

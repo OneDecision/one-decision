@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
-
 /**
  * <p>Java class for tDecisionRule complex type.
  * 
@@ -137,7 +136,7 @@ public class DecisionRule {
             if (o.getValue() instanceof JAXBElement) {
                 conclusions.add((Expression) ((JAXBElement) o.getValue())
                         .getValue());
-            }else {
+            } else {
                 conclusions.addAll(adapt(o.getValue()));
             }
         }
