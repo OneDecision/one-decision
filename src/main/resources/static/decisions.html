@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Decision Management</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/omny-0.7.0.css" rel="stylesheet">
+  <link href="css/decisions-0.7.0.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/icon/omny-icon-16x16.png" />
+</head>
+<body>
+  <div class="clearfix" id="messages"></div>
+  <div class="container" id="container"></div>
+  <script id='template' type='text/ractive'>
+    <div class="profile pull-right">
+      <form name="logoutForm" action="/logout" method="POST">
+          <span id="tenantId" class="replaceable super_admin" contenteditable="true" onblur="ractive.switchToTenant($('#tenantId').text())" name="tenantId" value="{{tenant == null ? 'Click to set' : tenant.id}}"></span>
+        <span class="profile-img">Logged in as: {{username}}</span>
+        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()"></span>
+        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}" />
+      </form>
+    </div>
+    <h1>
+      <a class="nav navbar-brand" href="http://omny.link">
+      </a>
+      <span>Decisions model</span>
+    </h1>
+    <div class="clearfix" id="messages">
+       <!--<p class=" bg-danger text-danger">Beta! Please ensure you have backups!</p>-->
+    </div>
+
+    <section id="entitySect" class=" entity" style="">
+      <h2>
+        <span>Domain links</span>
+        {{#each entities:i}}
+          <a href="domain.html?entityIdx=1">{{name.toUpperCase()}}; </a>
+        {{/each}}
+      </h2>
+    </section>
+
+    <section id="dtSect" class="entity-fields">
+      <h2>
+        <span>Decision Table</span>
+      </h2>
+      <table id="decisionTable" class="decision-table table table-striped">
+        <thead>
+          <tr>
+            <th class="decision-name" colspan="2">
+              <input title="{{decision.name}}" value="{{decision.name}}"/>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each decision.conditions:i}}
+            <tr class="condition" data-condition="{{name}}">
+              <th class="">
+                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+              </th>
+              <th class="expr-name">
+                <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
+              </th>
+              {{#each expressions:j}}
+                <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
+              {{/each}}
+            {{#if (i==0)}}
+              <td class="expr" rowspan="{{decision.conditions[0].expressions.length+decision.conclusions[0].expressions.length+2}}">
+                <div class="input-group">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn" data-toggle="dropdown" aria-expanded="false" on-click="addConditionExpr()"><span class="glyphicon-plus"></span> Add</button>
+                  </div><!-- /btn-group -->
+                </div><!-- /input-group -->
+              </td>
+            {{/if}}
+            </tr>
+          {{/each}}
+          <tr class="newCondition">
+            <th colspan="2">
+              <div class="input-group">
+                <div class="input-group-btn">
+                  <button type="button" class="btn" data-toggle="dropdown" aria-expanded="false" on-click="addCondition()"><span class="glyphicon-plus"></span> Add</button>
+                </div><!-- /btn-group -->
+              </div><!-- /input-group -->
+            </th>
+            {{#each decision.conditions[0].expressions}}
+              <td>&nbsp;</td>
+            {{/each}}
+          </tr>
+          {{#each decision.conclusions:i}}
+            <tr class="conclusion" data-conclusion="{{name}}">
+              <th class="">
+                <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+              </th>
+              <th class="expr-name">
+                <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
+              </th>
+              {{#each expressions:j}}
+                <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
+              {{/each}}
+            </tr>
+          {{/each}}
+          <tr class="newConclusion">
+            <th colspan="2">
+              <div class="input-group">
+                <div class="input-group-btn">
+                  <button type="button" class="btn" data-toggle="dropdown" aria-expanded="false" on-click="addConclusion()"><span class="glyphicon-plus"></span> Add</button>
+                </div><!-- /btn-group -->
+              </div><!-- /input-group -->
+            </th>
+            {{#each decision.conclusions[0].expressions}}
+              <td contenteditable>&nbsp;</td>
+            {{/each}}
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pull-right">
+        <!--<button class="btn" type="button">Validate</button>-->
+        <button class="btn btn-primary" on-click="save(decision)" type="button">Save</button>
+      </div>
+    </section>
+
+  </script>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap3-typeahead.js"></script>
+  <!--
+       3. You can always get the most recent stable version from the URL below.
+       If you want the newest features, use the 'edge' version instead:
+
+           http://cdn.ractivejs.org/edge/ractive.min.js
+
+       If you need IE8 support, change 'ractive' to 'ractive-legacy'.
+  -->
+  <script src="js/ractive.min.js"></script>
+  <!-- <script src='http://cdn.ractivejs.org/latest/ractive.min.js'></script>-->
+  <script src="js/md5.min.js"></script>
+  <script src="js/login-0.7.0.js"></script>
+  <script src="js/decisions-0.7.0.js"></script>
+  <script src="js/omny-0.7.0.js"></script>
+  <script>
+    $(document).ready(function() {
+      var params = getSearchParameters();
+      console.log('Params: '+JSON.stringify(params));
+      ractive.set('decisionName',
+          params['decision'] == undefined ? 'new' : params['decision']);
+      if (ractive.tenantCallbacks==undefined) ractive.tenantCallbacks = $.Callbacks();
+      ractive.tenantCallbacks.add(function() {
+        ractive.fetchDomain();        
+      });
+    });
+  </script>
+
+</body>
+</html>

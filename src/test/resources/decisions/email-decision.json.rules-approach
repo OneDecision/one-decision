@@ -1,0 +1,20 @@
+{ 
+  "id":"1",
+  "name":"Email Follow-Up",
+  "hitPolicy":1,
+  "domainModelUri": "http://omny.link/cust-mgmt",
+  "inputs": [ 
+    "contact.sinceLastLogin",
+    "contact.haveSentMail" 
+  ],
+  "outputs": [ "template", "subject" ],
+  "rules":[
+    { "expressions": [ "< P7D","becoming-expert","-","-" ] },
+    { "expressions": [ "< P7D","-","becoming-expert","Expert user tips" ] },
+    { "expressions": [ ">= P7D","missed-you", "what-can-we-do", "What can we do to get you back?"] },
+    { "expressions": [ ">= P7D","missed-you", "-", "-"] }
+  ],
+  "created":null,
+  "lastUpdated":null,
+  "tenantId":null
+}

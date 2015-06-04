@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Omny Link - Decisions</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/omny-0.7.0.css" rel="stylesheet">
+  <link href="css/domain-0.7.0.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/icon/omny-icon-16x16.png" />
+</head>
+<body>
+  <div class="clearfix" id="messages"></div>
+  <div class="container" id="container"></div>
+  <script id='template' type='text/ractive'>
+    <div class="profile pull-right">
+      <form name="logoutForm" action="/logout" method="POST">
+          <span id="tenantId" class="replaceable super_admin" contenteditable="true" onblur="ractive.switchToTenant($('#tenantId').text())" name="tenantId" value="{{tenant == null ? 'Click to set' : tenant.id}}"></span>
+        <span class="profile-img">Logged in as: {{username}}</span>
+        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()"></span>
+        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}" />
+      </form>
+    </div>
+    <h1>
+      <a class="nav navbar-brand" href="http://omny.link">
+        <img src="images/omny-logo.png" alt="logo"/>
+      </a>
+      <span>Decisions Architecture</span>
+    </h1>
+    <div class="clearfix" id="messages">
+      <p class=""></p>
+    </div>
+
+    <section>
+      <h2>Overview</h2>
+      <p>Decisions is a collection of RESTful APIs to define, manage and invoke decision services. </p>
+
+      <figure>
+        <img src="/arch.png" alt="Decisions Architecture">
+        <figcaption>Overview of Decisions Architetcure</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Models</h2>
+      <p>Decisions uses two models: the DMN 1.0 model is used natively at execution time and a UI-model designed to support decision table definition. For details of DMN see: <a href="#">here</a>. The UI model is shown below.</p>
+
+      <figure>
+        <img src="/arch.png" alt="Decisions UI Model">
+        <figcaption>Decisions UI Model</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      
+      <p>Jump to the <a href="/swagger-ui.html">API documentation</a> to see the operations available and try them out.</p> 
+
+    </section>
+
+
+  </script>
+
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap3-typeahead.js"></script>
+  <!--
+       If you need IE8 support, change 'ractive' to 'ractive-legacy'.
+  -->
+  <script src="js/ractive.min.js"></script>
+  <script src="js/md5.min.js"></script>
+  <script src="js/login-0.7.0.js"></script>
+  <script src="js/omny-0.7.0.js"></script>
+  <script>
+    $(document).ready(function() {
+      var params = getSearchParameters();
+    });
+  </script>
+</body>
+</html>

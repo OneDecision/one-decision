@@ -12,15 +12,15 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import link.omny.decisions.api.DecisionException;
-import link.omny.decisions.model.Clause;
-import link.omny.decisions.model.Decision;
-import link.omny.decisions.model.DecisionRule;
-import link.omny.decisions.model.DecisionTable;
-import link.omny.decisions.model.Expression;
-import link.omny.decisions.model.LiteralExpression;
-import link.omny.decisions.model.adapters.ExpressionAdapter;
-import link.omny.decisions.model.adapters.ExpressionAdapter.AdaptedExpression;
+import link.omny.decisions.api.DecisionsException;
+import link.omny.decisions.model.dmn.Clause;
+import link.omny.decisions.model.dmn.Decision;
+import link.omny.decisions.model.dmn.DecisionRule;
+import link.omny.decisions.model.dmn.DecisionTable;
+import link.omny.decisions.model.dmn.Expression;
+import link.omny.decisions.model.dmn.LiteralExpression;
+import link.omny.decisions.model.dmn.adapters.ExpressionAdapter;
+import link.omny.decisions.model.dmn.adapters.ExpressionAdapter.AdaptedExpression;
 
 import org.springframework.stereotype.Component;
 
@@ -46,7 +46,7 @@ public class DecisionService {
     }
 
     public Map<String, String> execute(Decision d, Map<String, String> params)
-            throws DecisionException {
+            throws DecisionsException {
         String script = getScript(d.getDecisionTable());
 
         for (Entry<String, String> o : params.entrySet()) {
@@ -69,7 +69,7 @@ public class DecisionService {
         return params;
     }
 
-    public String getScript(DecisionTable dt) throws DecisionException {
+    public String getScript(DecisionTable dt) throws DecisionsException {
         if (cache.containsKey(dt.getId())) {
             return cache.get(dt.getId());
         }

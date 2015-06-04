@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Definitions expressionLanguage="http://omny.link/ecma-262/5.1" typeLanguage="http://omny.link/java/6" namespace="http://omny.link/firmgains" id="1Model" name="Email Follow-Up Model" xmlns:ns2="http://www.omg.org/spec/DMN/20130901">
+    <ns2:ItemDefinition id="ContactDef" name="Contact Definition">
+        <ns2:description>A Contact is associated with up to one Account, zero to many Notes and zero to many Documents. An Account typically has one contact though may have more.</ns2:description>
+    </ns2:ItemDefinition>
+    <ns2:ItemDefinition id="EmailDef" name="Email Definition">
+        <ns2:description>An email is an action (conclusion) available to the decision table authors.</ns2:description>
+    </ns2:ItemDefinition>
+    <ns2:BusinessKnowledgeModel>
+        <ns2:InformationItem id="contact">
+            <ns2:itemDefinition>ContactDef</ns2:itemDefinition>
+        </ns2:InformationItem>
+        <ns2:InformationItem id="email">
+            <ns2:itemDefinition>EmailDef</ns2:itemDefinition>
+        </ns2:InformationItem>
+    </ns2:BusinessKnowledgeModel>
+    <ns2:Decision id="1Decision" name="Email Follow-Up Decision">
+        <ns2:DecisionTable hitPolicy="UNIQUE" preferedOrientation="Rule-as-Column" id="1" name="Email Follow-Up">
+            <ns2:clause>
+              <ns2:inputExpression id="dt1_c0_ie">
+                <ns2:description>Time since last login</ns2:description>
+                <ns2:inputVariable>contact</ns2:inputVariable>
+              </ns2:inputExpression>
+              <ns2:inputEntry id="less7Days">
+                <ns2:description>Less than 7 days?</ns2:description>
+                <ns2:inputVariable>contact</ns2:inputVariable>
+                <ns2:text>contact.timeSinceLogin &lt; P7D</ns2:text>
+              </ns2:inputEntry>
+              <ns2:inputEntry id="greaterEqual7Days">
+                <ns2:description>Greater than or equal to 7 days?</ns2:description>
+                <ns2:inputVariable>contact</ns2:inputVariable>
+                <ns2:text>contact.timeSinceLogin &gt;= P7D</ns2:text>
+              </ns2:inputEntry>
+            </ns2:clause>
+            <ns2:clause>
+              <ns2:inputExpression id="dt1_c1_ie">
+                <ns2:description>Whether we have sent a particular email already</ns2:description>
+                <ns2:inputVariable>contact</ns2:inputVariable>
+              </ns2:inputExpression>
+              <ns2:inputEntry id="haveSentProTips">
+                <ns2:description>Pro-Tips</ns2:description>
+                <ns2:inputVariable>contact</ns2:inputVariable>
+                <ns2:text>contact.haveSentMail('pro-tips')</ns2:text>
+              </ns2:inputEntry>
+              <ns2:inputEntry id="missedYou">
+                <ns2:description>Missed You</ns2:description>
+                <ns2:inputVariable>contact</ns2:inputVariable>
+                <ns2:text>contact.haveSentMail('pro-tips')</ns2:text>
+              </ns2:inputEntry>
+            </ns2:clause>
+            <ns2:clause>
+                <ns2:outputDefinition>template</ns2:outputDefinition>
+                <ns2:outputEntry>
+                    <text>pro-tips</text>
+                </ns2:outputEntry>
+                <ns2:outputEntry>
+                    <text>missed-you</text>
+                </ns2:outputEntry>
+            </ns2:clause>
+            <ns2:clause>
+                <ns2:outputDefinition>subject</ns2:outputDefinition>
+                <ns2:outputEntry>
+                    <text>5 tips to make you a pro-user</text>
+                </ns2:outputEntry>
+                <ns2:outputEntry>
+                    <text>We’ve missed you lately</text>
+                </ns2:outputEntry>
+            </ns2:clause>
+        </ns2:DecisionTable>
+    </ns2:Decision>
+</ns2:Definitions>

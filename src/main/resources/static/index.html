@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Omny Link - Decisions</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/omny-0.7.0.css" rel="stylesheet">
+  <link href="css/domain-0.7.0.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/icon/omny-icon-16x16.png" />
+</head>
+<body>
+  <div class="clearfix" id="messages"></div>
+  <div class="container" id="container"></div>
+  <script id='template' type='text/ractive'>
+    <div class="profile pull-right">
+      <form name="logoutForm" action="/logout" method="POST">
+          <span id="tenantId" class="replaceable super_admin" contenteditable="true" onblur="ractive.switchToTenant($('#tenantId').text())" name="tenantId" value="{{tenant == null ? 'Click to set' : tenant.id}}"></span>
+        <span class="profile-img">Logged in as: {{username}}</span>
+        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()"></span>
+        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}" />
+      </form>
+    </div>
+    <h1>
+      <a class="nav navbar-brand" href="http://omny.link">
+        <img src="images/omny-logo.png" alt="logo"/>
+      </a>
+      <span>Decisions Home</span>
+    </h1>
+    <div class="clearfix" id="messages">
+      <p class=""></p>
+    </div>
+
+    <section>
+      <p>Welcome to Omny Link Decisions! Here are some links to get you started: </p>
+      <ul>
+        <li><a href="domain.html">Domain Model</a> Each decision needs a business language with which to define conditions and conclusions. This example describes a customer.</li> 
+        <li><a href="decisions.html?decision=riskRating">Decision Table</a> View or modify a simple example of choosing an email follow up for a customer.</li>
+        <li><a href="swagger-ui.html">API</a> A full description of the REST API to define and invoke decisions.</li>
+        <li><a href="arch.html">Architecture</a> An overview of how Omny Link Decisions is put together.</li>
+      </ul>
+    </section>
+
+  </script>
+
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap3-typeahead.js"></script>
+  <!--
+       If you need IE8 support, change 'ractive' to 'ractive-legacy'.
+  -->
+  <script src="js/ractive.min.js"></script>
+  <script src="js/md5.min.js"></script>
+  <script src="js/login-0.7.0.js"></script>
+  <script src="js/decisions-0.7.0.js"></script>
+  <script src="js/omny-0.7.0.js"></script>
+  <script>
+    $(document).ready(function() {
+      var params = getSearchParameters();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "id": "",
+  "entities": [
+    {
+      "id":null,"name":"Contact","description":"A Contact is associated with up to one Account, zero to many Notes and zero to many Documents. An Account typically has one contact though may have more.","imageUrl":"images/domain/contact-context.png","firstCreated":null,"lastUpdated":null,"tenantId":null,
+      "fields":[
+        {"id":null,"name":"firstName","label":"First Name","hint":"Your first or given name","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"lastName","label":"Last Name","hint":"Your last or family name","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"title","label":"Title","hint":"Your title / salutation","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"email","label":"Email Address","hint":"Your business email address","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"phone1","label":"Preferred Phone Number","hint":"Your preferred telephone number","required":false,"type":"tel","validation":"\\+?[0-9, ]{0,13}","builtIn":true},
+        {"id":null,"name":"phone2","label":"Other Phone Number","hint":"A backup telephone number","required":false,"type":"tel","validation":"\\+?[0-9, ]{0,13}","builtIn":true},
+        {"id":null,"name":"address1","label":"Address","hint":"House or apartment name or number","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"address2","label":"","hint":"Stree","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"countyOrCity","label":"City or County","hint":"","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"postCode","label":"Post Code","hint":"Postal code, example N1 9DH","required":false,"type":"text","validation":"","builtIn":true},
+        {"id":null,"name":"stage","label":"Stage","hint":"The point in the sales funnel of this lead","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"enquiryType","label":"Enquiry Type","hint":"The nature of the enquiry, typically specific to the tenant's business","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"accountType","label":"Account Type","hint":"Customer, Partner etc.","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"owner","label":"Owner","hint":"The sales person for this account","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"doNotCall","label":"Do Not Call","hint":"Is it ok to call this lead?","required":false,"type":"boolean","validation":null,"builtIn":true},
+        {"id":null,"name":"doNotEmail","label":"Do Not Email","hint":"Is it ok to email this lead?","required":false,"type":"boolean","validation":null,"builtIn":true},
+        {"id":null,"name":"source","label":"Source","hint":"Where this lead came from, typically auto-populated by pay-per-click system","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"medium","label":"Medium","hint":"Medium this lead came via, typically auto-populated by pay-per-click system","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"campaign","label":"Campaign","hint":"Additional information from the pay-per-click system","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"keyword","label":"Keyword","hint":"Additional information from the pay-per-click system","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"timeSinceEmail","label":"Time since email","hint":"Time since our last email to contact (milliseconds)","required":false,"type":"number","validation":null,"builtIn":true},
+        {"id":null,"name":"timeSinceLogin","label":"Time since login","hint":"Time since last login (milliseconds)","required":false,"type":"number","validation":null,"builtIn":true},
+        {"id":null,"name":"timeSinceRegistered","label":"Time since registered","hint":"Time since last registered (milliseconds)","required":false,"type":"number","validation":null,"builtIn":true},
+        {"id":null,"name":"tenantId","label":"Tenant","hint":"Name of the the Omny account","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"firstContact","label":"First Contact","hint":"Date of first contact with this business","required":true,"type":"date","validation":null,"builtIn":true},
+        {"id":null,"name":"lastUpdated","label":"Last Updated","hint":"Date of last update to this account","required":true,"type":"date","validation":null,"builtIn":true},
+        {"id":null,"name":"shareOfBusiness","label":"Share of Business (%)","hint":"Your share in the business.","required":false,"type":"number","validation":null,"builtIn":false}
+      ]
+    },
+    {
+      "id":null,
+      "name":"Email",
+      "description":"An email is an action (conclusion) available to the decision table authors.","imageUrl":"images/domain/email-context.png","firstCreated":null,"lastUpdated":null,"tenantId":null,
+      "fields":[
+        {"id":null,"name":"subject","label":"Subject Line","hint":"Subject line for the email","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"template","label":"Template Name","hint":"Name of email template to use","required":true,"type":"text","validation":null,"builtIn":true}
+      ]
+    }
+  ]
+}

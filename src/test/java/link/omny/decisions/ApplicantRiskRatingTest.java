@@ -12,8 +12,8 @@ import java.util.Map;
 
 import link.omny.decisions.impl.DecisionModelFactory;
 import link.omny.decisions.impl.DecisionService;
-import link.omny.decisions.model.Decision;
-import link.omny.decisions.model.Definitions;
+import link.omny.decisions.model.dmn.Decision;
+import link.omny.decisions.model.dmn.Definitions;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

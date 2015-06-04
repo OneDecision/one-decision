@@ -1,0 +1,22 @@
+{
+  "id": "",
+  "entities": [
+    {
+      "id":null,"name":"Contact","description":"A Contact is associated with up to one Account, zero to many Notes and zero to many Documents. An Account typically has one contact though may have more.","imageUrl":"images/domain/contact-context.png","firstCreated":null,"lastUpdated":null,"tenantId":null,
+      "fields":[
+        {"id":null,"name":"firstName","label":"First Name","hint":"Your first or given name","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"lastName","label":"Last Name","hint":"Your last or family name","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"title","label":"Title","hint":"Your title / salutation","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"email","label":"Email Address","hint":"Your business email address","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"phone1","label":"Preferred Phone Number","hint":"Your preferred telephone number","required":false,"type":"tel","validation":"\\+?[0-9, ]{0,13}","builtIn":true},
+        {"id":null,"name":"phone2","label":"Other Phone Number","hint":"A backup telephone number","required":false,"type":"tel","validation":"\\+?[0-9, ]{0,13}","builtIn":true},
+        {"id":null,"name":"address1","label":"Address","hint":"House or apartment name or number","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"address2","label":"","hint":"Stree","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"countyOrCity","label":"City or County","hint":"","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"postCode","label":"Post Code","hint":"Postal code, example N1 9DH","required":false,"type":"text","validation":"","builtIn":true},
+        {"id":null,"name":"age","label":"Age","hint":"","required":false,"type":"number","validation":null,"builtIn":false},
+        {"id":null,"name":"health","label":"Current Health","hint":"Good or Bad","required":true,"type":"text","validation":"","builtIn":false}
+      ]
+    }
+  ]
+}

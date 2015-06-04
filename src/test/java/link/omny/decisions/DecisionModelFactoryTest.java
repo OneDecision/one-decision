@@ -17,15 +17,15 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import link.omny.decisions.impl.DecisionModelFactory;
-import link.omny.decisions.model.Clause;
-import link.omny.decisions.model.Decision;
-import link.omny.decisions.model.DecisionRule;
-import link.omny.decisions.model.DecisionTable;
-import link.omny.decisions.model.DecisionTableOrientation;
-import link.omny.decisions.model.Definitions;
-import link.omny.decisions.model.DrgElement;
-import link.omny.decisions.model.Expression;
-import link.omny.decisions.model.ObjectFactory;
+import link.omny.decisions.model.dmn.Clause;
+import link.omny.decisions.model.dmn.Decision;
+import link.omny.decisions.model.dmn.DecisionRule;
+import link.omny.decisions.model.dmn.DecisionTable;
+import link.omny.decisions.model.dmn.DecisionTableOrientation;
+import link.omny.decisions.model.dmn.Definitions;
+import link.omny.decisions.model.dmn.DrgElement;
+import link.omny.decisions.model.dmn.Expression;
+import link.omny.decisions.model.dmn.ObjectFactory;
 
 import org.junit.Before;
 import org.junit.Ignore;

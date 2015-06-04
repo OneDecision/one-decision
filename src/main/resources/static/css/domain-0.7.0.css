@@ -1,0 +1,12 @@
+div.domain-model {
+  width:100%;
+}
+img.domain-model {
+  margin-left: 16%;
+  margin-right: 16%;
+  width:60%;
+}
+.custom {
+  font-style: italic;
+  font-weight: bold;
+}

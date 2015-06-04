@@ -13,15 +13,16 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import link.omny.decisions.model.Decision;
-import link.omny.decisions.model.Definitions;
+import link.omny.decisions.model.dmn.Decision;
+import link.omny.decisions.model.dmn.Definitions;
 
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 @Component
 public class DecisionModelFactory {
@@ -29,7 +30,7 @@ public class DecisionModelFactory {
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionModelFactory.class);
 
-    private ObjectMapper mapper;
+    private com.fasterxml.jackson.databind.ObjectMapper mapper;
 
     public DecisionModelFactory() {
     }
@@ -77,10 +78,11 @@ public class DecisionModelFactory {
             mapper = new ObjectMapper();
             AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
             // make deserializer use JAXB annotations (only)
-            mapper.getDeserializationConfig().setAnnotationIntrospector(
+            mapper.getDeserializationConfig()
+                    .withAppendedAnnotationIntrospector(
                     introspector);
             // make serializer use JAXB annotations (only)
-            mapper.getSerializationConfig().setAnnotationIntrospector(
+            mapper.getSerializationConfig().withAppendedAnnotationIntrospector(
                     introspector);
             // TODO omit null values, but not like this
             // StdSerializerProvider provider = new StdSerializerProvider();

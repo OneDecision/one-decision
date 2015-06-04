@@ -1,0 +1,46 @@
+[contenteditable]:hover {
+  cursor: pointer;
+}
+.decision-name input,
+.expr-name input {
+  border: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+	width: 150px;
+}
+.expr input {
+  border: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  width: 75px;
+}
+input:focus {
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+th.conclusion,
+th.condition {
+  border-left: 1px solid #ccc;
+}
+
+.condition {
+  /*color: #0e9acd;*/
+}
+.conclusion {
+  /*color: #0e9acd;*/
+}
+.decision-name {
+  border: 1px solid #cccccc;
+  border-top: 1px solid #cccccc !important;
+}
+.expr-name {
+  border-right: 1px solid #ccc;
+}
+.table-striped>tbody>tr:nth-child(odd)>td>input, 
+.table-striped>tbody>tr:nth-child(odd)>th>input {
+  background-color: #f9f9f9;	
+}
+.table-striped>tbody>tr:nth-child(odd)>td>input:focus, 
+.table-striped>tbody>tr:nth-child(odd)>th>input:focus {
+  background-color: #fff;	
+}

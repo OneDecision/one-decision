@@ -1,0 +1,22 @@
+{ 
+  "id":"1",
+  "name":"Firm Gains Email Follow-Up",
+  "hitPolicy":"UNIQUE",
+  "domainModelUri": "http://omny.link/cust-mgmt",
+  "conditions":[
+    {"id":102,"name":"contact.sinceLastEmail","label":"Since last email","expressions":["< P7D",">= 7d","","","","","","","","","","","",""]},
+    {"id":103,"name":"Since valuation","expressions":["1 hour < x < 1 week",">= 1 week",">= 4 weeks",">= 4 weeks",">= 4 weeks","","","","","","","","",""]},
+    {"id":104,"name":"Mid-range quote","expressions":["","","< 100K","100K <= valuation < 600K",">= 600K","","","","","","","","",""]},
+    {"id":105,"name":"Since business plan download","expressions":["","","","","",">= 1 week",">= 5 weeks","","","","","","",""]},
+    {"id":106,"name":"Since registration","expressions":["","","","","","","",">= 2w",">= 6w",">= 10 weeks",">= 52 weeks","","",""]},
+    {"id":null,"name":"Since login","expressions":["","","","","","","","","","","",">= 4 weeks",">= 12 weeks",">= 24 weeks"]},
+    {"id":null,"name":"Not yet sent","expressions":["valuation-detail","low-valuation-email","mid-valuation-email","high-valuation-email","valuation-advice","plan-help","plan-next","discover-firmgains","intro-services","business-sale-ideas","anniversary whats-on","is-there-progress","need-a-hand",""]}
+  ],
+  "conclusions":[
+    {"id":null,"name":"template","label":"Template to use","expressions":["valuation-detail","low-valuation-email","mid-valuation-email","high-valuation-email","valuation-advice","plan-help","plan-next","discover-firmgains","intro-services","business-sale-ideas","anniversary","whats-on","is-there-progress","need-a-hand"]},
+    {"id":null,"name":"subject","label":"Subject Line","expressions":["About Your Business Valuation: Reasonable or Risible?","We’ve taken a close look at your Firm Gains valuation","We’ve taken a close look at your Firm Gains valuation","We’ve taken a close look at your Firm Gains valuation","Why Your Valuation Means Nothing…","Get Your Business Sale Plans into Action (not inaction!)","Are you Fully Equipped for Your Business Sale?","There’s More Under the Surface wuth Firm Gains","Every Business Owner Needs a Helping Hand","What Makes a ‘Good’ Business Sale?","A Very Happy Anniversary… We Hope!","Psst… Here’s a couple of nuggets for you from Firm Gains","We hope your business sale is progressing well","Where have you got to?"]}
+  ],
+  "created":null,
+  "lastUpdated":null,
+  "tenantId":"firmgains"
+}
