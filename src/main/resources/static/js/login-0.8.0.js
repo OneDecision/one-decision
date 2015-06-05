@@ -30,7 +30,7 @@ var AuthenticatedRactive = Ractive.extend({
     if (tenant != undefined) {
       $('link[rel="icon"]').attr('href',$('link[rel="icon"]').attr('href').replace('omny',tenant));
       //$('link[rel="stylesheet"]').attr('href',$('link[rel="stylesheet"]').attr('href').replace('omny',tenant));
-      $('head').append('<link href="css/'+tenant+'-0.7.0.css" rel="stylesheet">');
+      $('head').append('<link href="css/'+tenant+'-0.8.0.css" rel="stylesheet">');
       $('.navbar-brand').empty().append('<img src="/images/'+tenant+'-logo.png" alt="logo"/>');
       // ajax loader 
       $('body').append('<div id="ajax-loader"><img class="ajax-loader" src="images/'+tenant+'-ajax-loader.gif" alt="Loading..."/></div>');

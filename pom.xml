@@ -3,7 +3,7 @@
   
   <groupId>link.omny</groupId>
   <artifactId>decisions</artifactId>
-  <version>0.7.0-SNAPSHOT</version>
+  <version>0.8.0-SNAPSHOT</version>
   
   <name>Decisions</name>
   <description>Decision Management microservices</description>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/omny-0.7.0.css" rel="stylesheet">
+  <link href="css/omny-0.8.0.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/icon/omny-icon-16x16.png" />
   <style>
     html,body,section#main {
@@ -54,7 +54,7 @@
   <script src="js/bootstrap.min.js"></script>
   <!--<script src="js/bootstrap3-typeahead.js"></script>
   <script src="js/ractive.min.js"></script>
-  <script src="js/login-0.7.0.js"></script>
-  <script src="js/login-ui-0.7.0.js"></script>-->
+  <script src="js/login-0.8.0.js"></script>
+  <script src="js/login-ui-0.8.0.js"></script>-->
 </body>
 </html>
