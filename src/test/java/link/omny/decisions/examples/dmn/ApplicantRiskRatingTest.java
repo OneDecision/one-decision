@@ -1,4 +1,4 @@
-package link.omny.decisions;
+package link.omny.decisions.examples.dmn;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import link.omny.decisions.examples.ExamplesConstants;
 import link.omny.decisions.impl.DecisionModelFactory;
 import link.omny.decisions.impl.DecisionService;
 import link.omny.decisions.model.dmn.Decision;
@@ -21,11 +22,14 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+/**
+ * Tests the engine's ability to run the ApplicationRiskRating model.
+ * 
+ * @author Tim Stephenson
+ */
 @RunWith(Parameterized.class)
-public class ApplicantRiskRatingTest {
+public class ApplicantRiskRatingTest implements ExamplesConstants {
 
-    private static final String DMN_RESOURCE = "/ApplicationRiskRating.dmn";
-    private static final String DECISION_ID = "DetermineApplicantRiskRating";
     private static DecisionService svc;
     private static DecisionModelFactory fact;
 
@@ -72,10 +76,10 @@ public class ApplicantRiskRatingTest {
 
     private Decision getDecision() throws Exception {
         if (decision == null) {
-            Definitions dm = fact.load(DMN_RESOURCE);
-            assertNotNull("Unable to load decision model: " + DMN_RESOURCE);
-            decision = dm.getDecisionById(DECISION_ID);
-            assertNotNull("Unable to find decision with id: " + DECISION_ID,
+            Definitions dm = fact.loadFromClassPath(ARR_DMN_RESOURCE);
+            assertNotNull("Unable to load decision model: " + ARR_DMN_RESOURCE);
+            decision = dm.getDecisionById(ARR_DECISION_ID);
+            assertNotNull("Unable to find decision with id: " + ARR_DECISION_ID,
                     decision);
 
             String script = svc.getScript(decision.getDecisionTable());

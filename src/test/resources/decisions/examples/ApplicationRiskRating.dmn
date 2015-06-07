@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Definitions id="dm1" namespace="http://knowprocess.com/test1"
+<Definitions id="ApplicationRiskRating" namespace="http://knowprocess.com/test1"
   xmlns="http://www.omg.org/spec/DMN/20130901" 
   xmlns:ol="http://omny.link/decisions"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -11,7 +11,7 @@
      <description>Domain model definition for a single applicant.</description>
    </ItemDefinition>
    <ItemDefinition id="conclusionDef" isCollection="false" name="conclusion" typeLanguage="http://tempuri.org">
-     <description>Domain model definition for a single conclusion.</description>
+     <description>Domain model definition for a single conclusion (policy).</description>
    </ItemDefinition>
    
    <BusinessKnowledgeModel id="bkm0" name="Applicant Model">
@@ -55,10 +55,10 @@
         <inputEntry id="over60" ol:type="LiteralExpression">
           <description>Is the applicant over 60?</description>
           <inputVariable>applicant</inputVariable>
-            <text>applicant.age > 60</text>
+          <text>applicant.age > 60</text>
         </inputEntry>
         <inputEntry id="between25And60">
-           <description>Is the applicant between 25 and 60?</description>
+          <description>Is the applicant between 25 and 60?</description>
           <inputVariable>applicant</inputVariable>
           <text>applicant.age >=25 &amp;&amp; applicant.age &lt;= 60</text>
           </inputEntry>
@@ -66,7 +66,7 @@
            <description>Is the applicant under 25?</description>
            <inputVariable>applicant</inputVariable>
            <text>applicant.age &lt; 25</text>
-      </inputEntry>
+        </inputEntry>
       </clause>
       <clause>
         <inputExpression id="dt0_c1_ie">
@@ -74,7 +74,7 @@
           <inputVariable>applicant</inputVariable>
         </inputExpression>
         <inputEntry id="inGoodHealth">
-           <description>Is the applicant in good health?</description>
+          <description>Is the applicant in good health?</description>
           <inputVariable>applicant</inputVariable>
           <text>applicant.health == 'Good'</text>
          </inputEntry>

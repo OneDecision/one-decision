@@ -86,7 +86,7 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
 
     @Test
     public void testReadAndValidateApplicantRiskRating() throws IOException {
-        Definitions dm = fact.loadFromClassPath(DMN_RESOURCE);
+        Definitions dm = fact.loadFromClassPath(ARR_DMN_RESOURCE);
         for (Decision d : dm.getDecisions()) {
             System.out.println("d: " + d.getId() + ":" + d.getName());
 

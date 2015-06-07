@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.List;
 
@@ -115,7 +116,7 @@ public class DecisionModelFactory {
         }
     }
     
-    public Definitions load(String resourceName) throws IOException {
+    public Definitions loadFromClassPath(String resourceName) throws IOException {
         InputStream is = null;
         try {
             is = getClass().getResourceAsStream(resourceName);
@@ -151,6 +152,25 @@ public class DecisionModelFactory {
         }
     }
 
+    public Definitions load(String definition) throws IOException {
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(Definitions.class);
+            Unmarshaller um = context.createUnmarshaller();
+
+            Object dm = um.unmarshal(new StringReader(definition));
+            if (dm instanceof JAXBElement<?>) {
+                return ((JAXBElement<Definitions>) dm).getValue();
+            } else {
+                return (Definitions) dm;
+            }
+        } catch (JAXBException e) {
+            String msg = "Unable to load decision model from stream";
+            LOGGER.error(msg, e);
+            throw new IOException(msg, e);
+        }
+    }
+
     /**
      * Search for the requested decision.
      * 
@@ -164,7 +184,7 @@ public class DecisionModelFactory {
      *             If the decision model cannot be found.
      */
     public Definitions find(String definitionsId) throws IOException {
-        return load("/" + definitionsId + ".dmn");
+        return loadFromClassPath("/" + definitionsId + ".dmn");
     }
 
     /**
@@ -183,6 +203,6 @@ public class DecisionModelFactory {
      */
     public Decision find(String definitionsId, String decisionId)
             throws IOException {
-        return load("/" + definitionsId + ".dmn").getDecisionById(decisionId);
+        return loadFromClassPath("/" + definitionsId + ".dmn").getDecisionById(decisionId);
     }
 }

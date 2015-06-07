@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * Handle decision execution requests as well as discovery of what decisions
@@ -99,15 +98,14 @@ public class DecisionController {
      *            DMN file's root definitions element.
      * @param decisionId
      *            Id of a particular decision in the bundle.
-     * @param JSON
-     *            serialised input to the specified decision.
-     * @param JSON
-     *            serialised output from the specified decision.
+     * @param params
+     *            <code>Map</code> of parameters expected as input to the
+     *            specified decision. Values are expected to be JSON serialized.
+     * @return JSON serialised output from the specified decision.
      */
     @RequestMapping(method = RequestMethod.GET, value = "/{definitionsId}/{decisionId}", headers = "Accept=application/json")
     @ResponseBody
     public final String executeDecision(
-            UriComponentsBuilder uriBuilder,
             @PathVariable("tenantId") String tenantId,
             @PathVariable("definitionsId") String definitionsId,
             @PathVariable("decisionId") String decisionId,
