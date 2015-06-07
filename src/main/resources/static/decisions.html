@@ -2,7 +2,7 @@
 <html lang='en-GB'>
 <head>
   <meta charset='utf-8'>
-  <title>Decision Management</title>
+  <title>Decisions Management</title>
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/omny-0.8.0.css" rel="stylesheet">
   <link href="css/decisions-0.8.0.css" rel="stylesheet">
@@ -23,24 +23,64 @@
     <h1>
       <a class="nav navbar-brand" href="http://omny.link">
       </a>
-      <span>Decisions model</span>
+      <span>Decisions Management</span>
     </h1>
     <div class="clearfix" id="messages">
        <!--<p class=" bg-danger text-danger">Beta! Please ensure you have backups!</p>-->
     </div>
 
-    <section id="entitySect" class=" entity" style="">
+    <section id="decisionsSect">
       <h2>
-        <span>Domain links</span>
-        {{#each entities:i}}
-          <a href="domain.html?entityIdx=1">{{name.toUpperCase()}}; </a>
-        {{/each}}
+        <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the contact table"></a>
+        <span>Decisions</span>
+        <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new contact"></a>
+        <a class="clickable glyphicon glyphicon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
+        <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
+        <a class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching decisions"></a>
       </h2>
+      <table id="decisionsTable" class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Hit Policy</th>
+            <th>Created</th>
+            <th>Last Updated</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{#each decisions:i}}
+          {{# (searchTerm!=undefined && matchFilter(this)) }}
+              <tr data-href="{{links[rel=='self'].href}}" on-click="select(this)">
+                <td>{{i+1}}</td>
+                <td>{{name}}</td>
+                <td>{{hitPolicy}}</td>
+                <td>{{formatDate(created)}}</td>
+                <td>{{formatDate(lastUpdated)}}</td>
+                <td class="col-actions">
+                  <a class="clickable glyphicon glyphicon-pencil" aria-hidden="true" onclick="ractive.select(this);ractive.toggleResults();" title="View or edit this decision"></a>
+                </td>
+              </tr>
+          {{/}}
+        {{/each}}
+        </tbody>
+        <tfoot>
+          {{# searchTerm!=undefined }}
+            <tr><th colspan="9">{{searchMatched == 0 ? 'No' : searchMatched}} matching decision{{searchMatched==1 ? '' : 's'}}</th></tr>
+          {{/}} 
+        </tfoot>
+      </table>
     </section>
 
-    <section id="dtSect" class="entity-fields">
+    <section id="dtSect" class="entity-fields" style="display:none">
       <h2>
-        <span>Decision Table</span>
+        <span>Define Decision</span>
+        <div class="pull-right">
+          <span class="glyphicon glyphicon-export" aria-hidden="true" onclick="ractive.publsih(ractive.get('decision'))" title="Publish to Repository"></span>
+          <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('decision'))" title="Delete"></span>
+          <!--<button class="btn" type="button">Validate</button>-->
+        </div>
       </h2>
       <table id="decisionTable" class="decision-table table table-striped">
         <thead>
@@ -113,10 +153,6 @@
         </tbody>
       </table>
 
-      <div class="pull-right">
-        <!--<button class="btn" type="button">Validate</button>-->
-        <button class="btn btn-primary" on-click="save(decision)" type="button">Save</button>
-      </div>
     </section>
 
   </script>
@@ -127,11 +163,6 @@
   <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap3-typeahead.js"></script>
   <!--
-       3. You can always get the most recent stable version from the URL below.
-       If you want the newest features, use the 'edge' version instead:
-
-           http://cdn.ractivejs.org/edge/ractive.min.js
-
        If you need IE8 support, change 'ractive' to 'ractive-legacy'.
   -->
   <script src="js/ractive.min.js"></script>
@@ -142,10 +173,11 @@
   <script src="js/omny-0.8.0.js"></script>
   <script>
     $(document).ready(function() {
-      var params = getSearchParameters();
+      /*var params = getSearchParameters();
       console.log('Params: '+JSON.stringify(params));
       ractive.set('decisionName',
           params['decision'] == undefined ? 'new' : params['decision']);
+      */
       if (ractive.tenantCallbacks==undefined) ractive.tenantCallbacks = $.Callbacks();
       ractive.tenantCallbacks.add(function() {
         ractive.fetchDomain();        

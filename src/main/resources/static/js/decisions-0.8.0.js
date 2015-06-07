@@ -1,29 +1,25 @@
 var EASING_DURATION = 500;
 fadeOutMessages = true;
 
-// 4. We've got an element in the DOM, we've created a template, and we've
-// loaded the library - now it's time to build our Hello World app.
 var ractive = new AuthenticatedRactive({
-  // The `el` option can be a node, an ID, or a CSS selector.
   el: 'container',
-
-  // If two-way data binding is enabled, whether to only update data based on
-  // text inputs on change and blur events, rather than any event (such as key
-  // events) that may result in new data
   lazy: true,
-
-  // We could pass in a string, but for the sake of convenience
-  // we're passing the ID of the <script> tag above.
   template: '#template',
-  // partial templates
-  // partials: { question: question },
-
-  // Here, we're passing in some initial data
   data: {
     csrfToken: getCookie(CSRF_COOKIE),
-    server: 'http://api.knowprocess.com',
     content: 'test',
+    decisionTemplate: { "name":"A new decision", "hitPolicy":null, "domainModelUri":null, "inputs":null, "outputs":null, "conditions":[{ "name":"a new condition","expressions":["-"],"label":"a new condition"}],"conclusions":[{ "name":"a new conclusion","expressions":["-"],"label":"a new conclusion"}] },
+    decision: $(this.decisionTemplate).clone(),
+    decisions: [],
     entities: [],
+    filter: undefined,
+    formatDate: function(timeString) {
+      return new Date(timeString).toLocaleDateString(navigator.languages);
+    },
+    matchFilter: function(obj) {
+      if (ractive.get('filter')==undefined) return true;
+      else return ractive.get('filter').value.toLowerCase()==obj[ractive.get('filter').field].toLowerCase();
+    },
     /* default for development, will be overridden if running in production */
     tenant: { id: 'omny' },
     //saveObserver:false,
@@ -31,6 +27,21 @@ var ractive = new AuthenticatedRactive({
     age: function(timeString) {
       return i18n.getAgeString(new Date(timeString))
     }
+  },
+  add: function () {
+    console.log('add...');
+    ractive.set('saveObserver',false);
+    var template = ractive.get('decisionTemplate');
+    //$().clone();
+    console.log('  tmplt:'+template);
+    template = JSON.parse(JSON.stringify(template));
+    console.log('  tmplt:'+template);
+    ractive.set('decision',template);
+    ractive.set('decision.tenantId',ractive.get('tenant.id'));
+    ractive.addCondition();
+    ractive.addConclusion();
+    ractive.set('saveObserver',true);
+    ractive.showDecision();
   },
   addCondition: function() {
     console.log('addCondition...');
@@ -59,46 +70,49 @@ var ractive = new AuthenticatedRactive({
       d.expressions.push('-');
     })
   },
-//  edit: function(type,i,j,obj) {
-//    console.log('edit '+type+' at position '+i+','+j+': '+obj.name+'...');
-//  },
-//  delete: function (obj) {
-//    console.log('delete '+obj+'...');
-//    var url = obj.links != undefined
-//        ? obj.links.filter(function(d) { console.log('this:'+d);if (d['rel']=='self') return d;})[0].href
-//        : obj._links.self.href;
-//    $.ajax({
-//        url: url,
-//        type: 'DELETE',
-//        success: completeHandler = function(data) {
-//          // ractive.fetch();
-//        },
-//        error: errorHandler = function(jqXHR, textStatus, errorThrown) {
-//            ractive.handleError(jqXHR,textStatus,errorThrown);
-//        }
-//    });
-//  },
+  edit: function(type,i,j,obj) {
+    console.log('edit '+type+' at position '+i+','+j+': '+obj.name+'...');
+  },
+  delete: function (decision) {
+    console.log('delete '+decision+'...');
+    $.ajax({
+        url: '/'+ractive.get('tenant.id')+'/decision-ui-models/'+decision.id,
+        type: 'DELETE',
+        success: completeHandler = function(data) {
+           ractive.fetch();
+           ractive.toggleResults();
+        }
+    });
+  },
   fetch: function () {
-    console.log('fetch...');
-    ractive.set('saveObserver', false);
-    $.getJSON('/'+ractive.get('tenant.id')+'/decision-ui-models/'+ractive.get('decisionName'),  function( data ) {
-      console.log('loaded decision...');
-      ractive.set('decision', data);
-      ractive.set('saveObserver',true);
-      $('.entity.active').fadeIn();
-      ractive.initAutoComplete();
+    $.ajax({
+      dataType: "json",
+      url: '/'+ractive.get('tenant.id')+'/decision-ui-models/',
+      crossDomain: true,
+      success: function( data ) {
+        if (data['_embedded'] == undefined) {
+          ractive.merge('decisions', data);
+          ractive.set('saveObserver',true);
+        }else{
+          ractive.merge('decisions', data['_embedded'].decisions);
+          ractive.set('saveObserver', true);
+        }
+        if (ractive.hasRole('admin')) $('.admin').show();
+        if (ractive.fetchCallbacks!=null) ractive.fetchCallbacks.fire();
+        ractive.set('searchMatched',$('#decisionsTable tbody tr:visible').length);
+      }
     });
   },
   fetchDomain: function () {
     console.log('fetchDomain...');
     ractive.set('saveObserver', false);
-    $.getJSON('/'+ractive.get('tenant.id')+'/domain/?projection=complete',  function( data ) {
+    $.getJSON('/'+ractive.get('tenant.id')+'/domain-model/',  function( data ) {
       console.log('loaded entities...');
       ractive.merge('entities', data.entities);
       ractive.set('saveObserver',true);
       $('.entity.active').fadeIn();
       
-      ractive.fetch();
+//      ractive.fetch();
       
       var entityAttrs = [];
       $(ractive.get('entities')).each(function(i,d) {
@@ -110,17 +124,6 @@ var ractive = new AuthenticatedRactive({
       // This may be too soon, check on the click handler of decision table conditions / conclusions
       
     });
-  },
-  handleError: function(jqXHR, textStatus, errorThrown) {
-    switch (jqXHR.status) {
-    case 401:
-    case 403:
-      ractive.showError("Session expired, please login again");
-      window.location.href='/login';
-      break;
-    default:
-      ractive.showError("Bother! Something has gone wrong: "+textStatus+':'+errorThrown);
-    }
   },
   initAutoComplete: function() {
     console.log('initAutoComplete');
@@ -176,7 +179,7 @@ var ractive = new AuthenticatedRactive({
 //          ractive.set('decision.id',location.substring());
         }
 //        if (jqXHR.status == 201) ractive.get('deciosn').push(ractive.get('current'));
-//        if (jqXHR.status == 204) ractive.splice('contacts',ractive.get('currentIdx'),1,ractive.get('current'));
+//        if (jqXHR.status == 204) ractive.splice('decisions',ractive.get('currentIdx'),1,ractive.get('current'));
         ractive.showMessage('Saved');
       },
       error: errorHandler = function(jqXHR, textStatus, errorThrown) {
@@ -184,46 +187,36 @@ var ractive = new AuthenticatedRactive({
       }
     });
   },
-  showActivityIndicator: function(msg, addClass) {
-    document.body.style.cursor='progress';
-    this.showMessage(msg, addClass);
+  select: function(decision) {
+    console.log('select...'+decision);
+    ractive.set('saveObserver', false);
+    $.getJSON('/'+ractive.get('tenant.id')+'/decision-ui-models/'+decision.id,  function( data ) {
+      console.log('loaded decision...');
+      ractive.set('decision', data);
+      ractive.set('saveObserver',true);
+      ractive.showDecision();
+      ractive.initAutoComplete();
+    });
   },
-  showError: function(msg) {
-    this.showMessage(msg, 'bg-danger text-danger');
+  showDecision: function(ctrl) {
+    console.log('showDecision: '+ctrl);
+    $('#decisionsTable').slideUp();
+    $('#decisionsTableToggle').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
+    $('#dtSect').slideDown();
   },
-  showFormError: function(formId, msg) {
-    this.showError(msg);
-    var selector = formId==undefined || formId=='' ? ':invalid' : '#'+formId+' :invalid';
-    $(selector).addClass('field-error');
-    $(selector)[0].focus();
+  toggleEdit: function(type,i,j,obj) {
+    console.log('toggleEdit '+type+' at position '+i+','+j+': '+obj.name+'...');
+    $($('.'+type+' input')[i]).toggle();
+    $($('.'+type+' .edit')[i]).removeClass('hide').toggle();
   },
-  showMessage: function(msg, additionalClass) {
-    if (additionalClass == undefined) additionalClass = 'bg-info text-info';
-    if (msg === undefined) msg = 'Working...';
-    $('#messages p').empty().append(msg).removeClass().addClass(additionalClass).show();
-//    document.getElementById('messages').scrollIntoView();
-    if (fadeOutMessages && additionalClass!='bg-danger text-danger') setTimeout(function() {
-      $('#messages p').fadeOut();
-    }, EASING_DURATION*10);
-  },
-//  toggleEdit: function(type,i,j,obj) {
-//    console.log('toggleEdit '+type+' at position '+i+','+j+': '+obj.name+'...');
-//    $($('.'+type+' input')[i]).toggle();
-//    $($('.'+type+' .edit')[i]).removeClass('hide').toggle();
-//  },
-//  toggleResults: function(ctrl) {
-//    console.log('toggleResults: '+ctrl);
-//    $('#contactsTableToggle').toggleClass('glyphicon-triangle-bottom').toggleClass('glyphicon-triangle-right');
-//    $('#contactsTable').slideToggle();
-//  },
-  /**
-   * Inverse of editField.
-   */
-  updateField: function (selector, path) {
-    var tmp = $(selector).text();
-    console.log('updateField '+path+' to '+tmp);
-    ractive.set(path,tmp);
-    $(selector).css('border-width','0px').css('padding','0px');
+  toggleResults: function(ctrl) {
+    console.log('toggleResults: '+ctrl);
+    $('#decisionsTableToggle').toggleClass('glyphicon-triangle-bottom').toggleClass('glyphicon-triangle-right');
+    $('#decisionsTable').slideToggle();
+    $('#dtSect').slideToggle();
+    if ($('#decisionsTable:visible').length>0) {
+      ractive.fetch();
+    }
   },
   upload: function (formId) {
     console.log('upload:'+formId);
@@ -250,3 +243,16 @@ var ractive = new AuthenticatedRactive({
   }
 });
 
+//Save on model change
+ractive.observe('decision.*', function(newValue, oldValue, keypath) {
+  console.log('current prop change: '+newValue +','+oldValue+' '+keypath);  
+  var ignored=[];
+  if (ractive.get('saveObserver') && ignored.indexOf(keypath)==-1) {
+    console.log('current prop change: '+newValue +','+oldValue+' '+keypath);
+    ractive.save(ractive.get('decision'));
+  } else { 
+    console.warn  ('Skipped save of '+keypath);
+    //console.log('current prop change: '+newValue +','+oldValue+' '+keypath);
+    //console.log('  saveObserver: '+ractive.get('saveObserver'));
+  }
+});
