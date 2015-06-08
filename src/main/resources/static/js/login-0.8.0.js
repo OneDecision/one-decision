@@ -26,6 +26,7 @@ var AuthenticatedRactive = Ractive.extend({
     });
   },
   applyBranding: function() {
+    if (ractive.get('profile')==undefined) return ;
     var tenant = ractive.get('profile').tenant;
     if (tenant != undefined) {
       $('link[rel="icon"]').attr('href',$('link[rel="icon"]').attr('href').replace('omny',tenant));
@@ -89,7 +90,7 @@ var AuthenticatedRactive = Ractive.extend({
     case 401:
     case 403: 
     case 405: /* Could also be a bug but in production we'll assume a timeout */ 
-      showError("Session expired, please login again");
+      this.showError("Session expired, please login again");
       window.location.href='/login';
       break; 
     default: 
@@ -97,6 +98,9 @@ var AuthenticatedRactive = Ractive.extend({
       console.error('msg:'+msg);
       ractive.showError(msg);
     }
+  },
+  getServer: function() {
+    return ractive.get('server')==undefined ? '' : ractive.get('server');
   },
   hash: function(email) {
     return hex_md5(email.trim().toLowerCase());
@@ -109,12 +113,16 @@ var AuthenticatedRactive = Ractive.extend({
     }
     return false;
   },
+  hideMessage: function() {
+    $('#messages').hide();
+  },
   initAutoComplete: function() {
     console.log('initAutoComplete');
     if (ractive.get('tenant.typeaheadControls')!=undefined && ractive.get('tenant.typeaheadControls').length>0) {
       $.each(ractive.get('tenant.typeaheadControls'), function(i,d) {
         console.log('binding ' +d.url+' to typeahead control: '+d.selector);
-        $.get(d.url, function(data){
+        $.get(ractive.getServer()+d.url, function(data){
+          if (d.name!=undefined) ractive.set(d.name,data); 
           $(d.selector).typeahead({ minLength:0,source:data });
           $(d.selector).on("click", function (ev) {
             newEv = $.Event("keydown");
@@ -167,12 +175,9 @@ var AuthenticatedRactive = Ractive.extend({
   },
   loadTenantConfig: function(tenant) {
     console.log('loadTenantConfig:'+tenant);
-    $.getJSON('/tenants/'+tenant+'.json', function(response) {
+    $.getJSON(ractive.getServer()+'/tenants/'+tenant+'.json', function(response) {
       console.log('... response: '+response);
       ractive.set('tenant', response);
-      $.ajaxSetup({
-        headers: {'X-Tenant': ractive.get('tenant.id')}
-      });
       ractive.applyBranding();
       if (ractive.tenantCallbacks!=undefined) ractive.tenantCallbacks.fire(); 
     });
@@ -211,6 +216,7 @@ var AuthenticatedRactive = Ractive.extend({
     if (fadeOutMessages && additionalClass!='bg-danger text-danger') setTimeout(function() {
       $('#messages').fadeOut();
     }, EASING_DURATION*10);
+    else $('#messages').append('<span class="text-danger pull-right glyphicon glyphicon-remove" onclick="ractive.hideMessage()"></span>');
   },
   switchToTenant: function(tenant) {
     if (tenant==undefined || typeof tenant != 'string') {
