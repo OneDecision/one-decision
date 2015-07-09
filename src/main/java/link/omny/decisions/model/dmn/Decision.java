@@ -420,8 +420,8 @@ public class Decision extends DrgElement {
     }
 
     public void setDecisionTable(DecisionTable dt) {
-        setExpression(new JAXBElement<DecisionTable>(
-                new QName("DecisionTable"), DecisionTable.class, dt));
+        setExpression(new JAXBElement<DecisionTable>(new QName(
+                Definitions.DMN_1_0, "DecisionTable"), DecisionTable.class, dt));
     }
 
     /**

@@ -31,9 +31,9 @@
 
     <section id="decisionsSect">
       <h2>
-        <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the contact table"></a>
+        <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the decision table"></a>
         <span>Decisions</span>
-        <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new contact"></a>
+        <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new decision"></a>
         <a class="clickable glyphicon glyphicon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
         <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
         <a class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching decisions"></a>
@@ -77,7 +77,10 @@
       <h2>
         <span>Define Decision</span>
         <div class="pull-right">
-          <span class="glyphicon glyphicon-export" aria-hidden="true" onclick="ractive.publsih(ractive.get('decision'))" title="Publish to Repository"></span>
+          <a id="save_as_image" href="#" download="{{decision.name}}.png" target="_blank">
+            <span class="glyphicon glyphicon-picture" aria-hidden="true" onclick="ractive.decision2Image();" title="Save image"></span>
+          </a>
+          <span class="glyphicon glyphicon-export" aria-hidden="true" onclick="ractive.publish(ractive.get('decision'))" title="Publish to Repository"></span>
           <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('decision'))" title="Delete"></span>
           <!--<button class="btn" type="button">Validate</button>-->
         </div>
@@ -85,7 +88,7 @@
       <table id="decisionTable" class="decision-table table table-striped">
         <thead>
           <tr>
-            <th class="decision-name" colspan="2">
+            <th class="decision-name" colspan="3">
               <input title="{{decision.name}}" value="{{decision.name}}"/>
             </th>
           </tr>
@@ -94,32 +97,27 @@
           {{#each decision.conditions:i}}
             <tr class="condition" data-condition="{{name}}">
               <th class="">
-                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="border:0px"></span>
               </th>
               <th class="expr-name">
                 <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
+              </th>
+              <th class="expr-action">
+                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteCondition(i)"></span>
               </th>
               {{#each expressions:j}}
                 <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
               {{/each}}
             {{#if (i==0)}}
               <td class="expr" rowspan="{{decision.conditions[0].expressions.length+decision.conclusions[0].expressions.length+2}}">
-                <div class="input-group">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn" data-toggle="dropdown" aria-expanded="false" on-click="addConditionExpr()"><span class="glyphicon-plus"></span> Add</button>
-                  </div><!-- /btn-group -->
-                </div><!-- /input-group -->
+                <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConditionExpr()"></span>
               </td>
             {{/if}}
             </tr>
           {{/each}}
           <tr class="newCondition">
             <th colspan="2">
-              <div class="input-group">
-                <div class="input-group-btn">
-                  <button type="button" class="btn" data-toggle="dropdown" aria-expanded="false" on-click="addCondition()"><span class="glyphicon-plus"></span> Add</button>
-                </div><!-- /btn-group -->
-              </div><!-- /input-group -->
+              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addCondition()"></span>
             </th>
             {{#each decision.conditions[0].expressions}}
               <td>&nbsp;</td>
@@ -128,10 +126,13 @@
           {{#each decision.conclusions:i}}
             <tr class="conclusion" data-conclusion="{{name}}">
               <th class="">
-                <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-flash" aria-hidden="true" style="border:0px"></span>
               </th>
               <th class="expr-name">
                 <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
+              </th>
+              <th class="expr-action">
+                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteConclusion(i)"></span>
               </th>
               {{#each expressions:j}}
                 <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
@@ -140,11 +141,7 @@
           {{/each}}
           <tr class="newConclusion">
             <th colspan="2">
-              <div class="input-group">
-                <div class="input-group-btn">
-                  <button type="button" class="btn" data-toggle="dropdown" aria-expanded="false" on-click="addConclusion()"><span class="glyphicon-plus"></span> Add</button>
-                </div><!-- /btn-group -->
-              </div><!-- /input-group -->
+              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConclusion()"></span>
             </th>
             {{#each decision.conclusions[0].expressions}}
               <td contenteditable>&nbsp;</td>
@@ -168,6 +165,8 @@
   <script src="js/ractive.min.js"></script>
   <!-- <script src='http://cdn.ractivejs.org/latest/ractive.min.js'></script>-->
   <script src="js/md5.min.js"></script>
+  <script src="js/canvas2image.js"></script>
+  <script src="js/html2canvas.js"></script>
   <script src="js/login-0.8.0.js"></script>
   <script src="js/decisions-0.8.0.js"></script>
   <script src="js/omny-0.8.0.js"></script>
@@ -180,7 +179,7 @@
       */
       if (ractive.tenantCallbacks==undefined) ractive.tenantCallbacks = $.Callbacks();
       ractive.tenantCallbacks.add(function() {
-        ractive.fetchDomain();        
+        ractive.fetchDomain();
       });
     });
   </script>

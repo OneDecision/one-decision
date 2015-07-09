@@ -6,13 +6,13 @@
   border: none;
   cursor: pointer;
   text-overflow: ellipsis;
-	width: 150px;
+	width: 200px;
 }
 .expr input {
   border: none;
   cursor: pointer;
   text-overflow: ellipsis;
-  width: 75px;
+  width: 100%;
 }
 input:focus {
   border: 1px solid #ccc;
@@ -33,6 +33,7 @@ th.condition {
   border: 1px solid #cccccc;
   border-top: 1px solid #cccccc !important;
 }
+.expr-action,
 .expr-name {
   border-right: 1px solid #ccc;
 }
@@ -43,4 +44,7 @@ th.condition {
 .table-striped>tbody>tr:nth-child(odd)>td>input:focus, 
 .table-striped>tbody>tr:nth-child(odd)>th>input:focus {
   background-color: #fff;	
+}
+#deploymentName {
+  width: 350px;	
 }

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Decisions Repository</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/omny-0.8.0.css" rel="stylesheet">
+  <link href="css/decisions-0.8.0.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/icon/omny-icon-16x16.png" />
+</head>
+<body>
+  <div class="clearfix" id="messages"></div>
+  <div class="container" id="container"></div>
+  <script id='template' type='text/ractive'>
+    <div class="profile pull-right">
+      <form name="logoutForm" action="/logout" method="POST">
+          <span id="tenantId" class="replaceable super_admin" contenteditable="true" onblur="ractive.switchToTenant($('#tenantId').text())" name="tenantId" value="{{tenant == null ? 'Click to set' : tenant.id}}"></span>
+        <span class="profile-img">Logged in as: {{username}}</span>
+        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()"></span>
+        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}" />
+      </form>
+    </div>
+    <h1>
+      <a class="nav navbar-brand" href="http://omny.link">
+      </a>
+      <span>Decisions Repository</span>
+    </h1>
+    <div class="clearfix" id="messages"></div>
+
+    <section id="decisionsSect">
+      <h2>
+        <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the decision model table"></a>
+        <span>Decisions</span>
+        <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new decision model"></a>
+        <a class="clickable glyphicon glyphicon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
+        <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
+        <a class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching decisions"></a>
+      </h2>
+        <div id="upload" style="display:none">
+          <form action="/{{tenant.id}}/decision-models/upload" class="well form-inline" enctype="multipart/form-data" id="uploadForm" method="post">
+              <fieldset>
+                <div class="form-group">
+                  <label for="deploymentName">Deployment Message</label>
+                  <input id="file" multiple="multiple" name="file" style="display: none" type="file">
+                  <input name="tenantId" id="tenantId" type="hidden" value="{{tenant.id}}">
+                  <input name="deploymentMessage" id="deploymentMessage" placeholder="Name or tag of this decision model deployment">
+                  <button class="btn btn-primary" on-click="addDeploymentResource()" type="button">Select Files</button>
+                </div>
+                <div class="pull-right">
+                  <button class="btn" on-click="collapseAdd()" type="button">Cancel</button>
+                  <button class="btn" on-click="upload('uploadForm')" type="button">Upload</button>
+                </div>
+              </fieldset>
+            </form>
+        </div>
+      <table id="decisionsTable" class="table table-striped">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Deployment Message</th>
+            <th>Created</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{#each decisions:i}}
+          {{# (searchTerm!=undefined && matchFilter(this)) }}
+              <tr data-href="{{links[rel=='self'].href}}" on-click="select(this)">
+                <td>{{i+1}}</td>
+                <td>{{name}}</td>
+                <td>{{deploymentMessage}}</td>
+                <td>{{formatDate(created)}}</td>
+                <td class="col-actions">
+                  <a class="clickable glyphicon glyphicon-pencil" aria-hidden="true" onclick="ractive.select(this);ractive.toggleResults();" title="View or edit this decision"></a>
+                  <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="delete(this)"></a>                
+                </td>
+              </tr>
+          {{/}}
+        {{/each}}
+        </tbody>
+        <tfoot>
+          {{# searchTerm!=undefined }}
+            <tr><th colspan="9">{{searchMatched == 0 ? 'No' : searchMatched}} matching decision{{searchMatched==1 ? '' : 's'}}</th></tr>
+          {{/}} 
+        </tfoot>
+      </table>
+    </section>
+
+    <section id="currentSect" style="display:none">
+        <h2>
+          <span>{{current.name}}</span>
+          <div class="pull-right">
+            <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.id}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
+            <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete({{current.deploymentId}})" title="Delete this definition"></a>
+          </div>          
+        </h2>
+        <p>
+          <span class="a-primary-label control-label">{{current.deploymentMessage}}: </span>
+          <span class="a-secondary-label control-label">Id: </span> {{current.id}};
+          <span class="a-secondary-label control-label">Definition Id: </span> {{current.definitionId}};
+          <span class="a-secondary-label control-label">Deployed: </span> {{formatDateTime(current.created)}};
+        </p>
+        <img src="/{{tenant.id}}/decision-models/{{current.id}}.png" alt="image of decision"/>
+    </section>
+  </script>
+
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap3-typeahead.js"></script>
+  <!-- If you need IE8 support, change 'ractive' to 'ractive-legacy'. -->
+  <script src="js/ractive.min.js"></script>
+  <script src="js/md5.min.js"></script>
+  <script src="js/login-0.8.0.js"></script>
+  <script src="js/decisions-dmn-0.8.0.js"></script>
+  <script src="js/omny-0.8.0.js"></script>
+
+</body>
+</html>

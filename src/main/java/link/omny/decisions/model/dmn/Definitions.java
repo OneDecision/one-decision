@@ -206,6 +206,14 @@ public class Definitions extends DmnElement {
         getDrgElement().add(bkm);
     }
 
+    public void setBusinessKnowledgeModel(BusinessKnowledgeModel bkm) {
+        getDrgElement().add(
+                new JAXBElement<BusinessKnowledgeModel>(new QName(
+                        "BusinessKnowledgeModel"),
+                        BusinessKnowledgeModel.class, bkm));
+
+    }
+
     /**
      * Filter getDrgElements to just those containing decisions.
      * 
@@ -232,8 +240,8 @@ public class Definitions extends DmnElement {
 
     public void addDecision(Decision decision) {
         getDrgElement().add(
-                new JAXBElement<Decision>(new QName("Decision"),
-                        Decision.class, decision));
+                new JAXBElement<Decision>(new QName(Definitions.DMN_1_0,
+                        "Decision"), Decision.class, decision));
 
     }
 

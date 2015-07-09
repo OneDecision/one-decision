@@ -39,13 +39,12 @@ import org.springframework.core.convert.converter.Converter;
  * Converts between the UI model and DMN serialisation.
  * 
  * @author Tim Stephenson
- *
  */
 public class DecisionModelConverter implements
         Converter<DecisionModel, Definitions> {
 
-    private static final String URI_JAVA_6 = "http://omny.link/java/6";
-    private static final String URI_JAVASCRIPT_5 = "http://omny.link/ecma-262/5.1";
+    private static final String URI_JSON = "http://www.ecma-international.org/ecma-404/";
+    private static final String URI_JAVASCRIPT_5 = "http://www.ecma-international.org/ecma-262/5.1/";
 
     protected DomainModelFactory domainFact;
 
@@ -60,7 +59,7 @@ public class DecisionModelConverter implements
         target.setExpressionLanguage(URI_JAVASCRIPT_5);
         target.setNamespace("http://omny.link/" + source.getTenantId());
         // target.setNamespace(Definitions.DMN_1_0);
-        target.setTypeLanguage(URI_JAVA_6);
+        target.setTypeLanguage(URI_JSON);
 
         BusinessKnowledgeModel bkm = objFact.createTBusinessKnowledgeModel();
         target.getDrgElement().add(objFact.createBusinessKnowledgeModel(bkm));
@@ -160,7 +159,7 @@ public class DecisionModelConverter implements
             }
 
             // new InputClause(inExpr, entries);
-            dt.getClause().add(clause);
+            // dt.getClause().add(clause);
         }
 
         for (DecisionExpression conclusion : source.getConclusions()) {

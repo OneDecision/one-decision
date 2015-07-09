@@ -61,7 +61,7 @@ var ractive = new AuthenticatedRactive({
   fetch: function () {
     console.log('fetch...');
     ractive.set('saveObserver', false);
-    $.getJSON('/'+ractive.get('tenant.id')+'/domain-model/?projection=complete',  function( data ) {
+    $.getJSON(ractive.getServer()+'/'+ractive.get('tenant.id')+'/domain-model/?projection=complete',  function( data ) {
       console.log('loaded domain model...');
       ractive.set('domain', data);
 //      ractive.merge('entities', data.entities);
@@ -95,7 +95,7 @@ var ractive = new AuthenticatedRactive({
     var domain = ractive.get('domain');
     console.log('save...'+JSON.stringify(domain)+' ...');
     $.ajax({
-      url: ractive.get('tenant.id')+'/domain-model/',
+      url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/domain-model/',
       type: 'PUT',
       contentType: 'application/json',
       data: JSON.stringify(domain),

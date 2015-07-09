@@ -1,0 +1,37 @@
+                   ------------------------------
+                   Getting Started with Decisions
+                   ------------------------------
+                           --------------
+                           Tim Stephenson
+                           --------------
+
+Pre-requisites
+
+  A decision model (.dmn file) complying with the DMN 1.0 specification. 
+                           
+Steps
+
+  * Deploy a decision model (.dmn file).
+  
+    POST /decision-models/
+  
+  * (optional) View rendition of decision model diagram. 
+  
+    GET /decision-model/{definitionsId} Accept: image/*
+  
+  * View list of decisions available within a given model.
+  
+    GET /decision-model/{definitionsId} Accept: application/json
+  
+  * Introspect the input and output parameters of a decision within the model.
+  
+    GET /decision/{definitionsId}/{decisionId} Accept: application/json
+  
+  * Invoke a decision to receive its conclusion.
+  
+    GET /decision/{definitionsId}/{decisionId}?input1=foo&input2=bar Accept: application/json
+    
+ Restrictions / Known issues 
+ 
+  * DMN file name must be named in the convention id.dmn where id is the definitions/@id
+    contained within the file. 

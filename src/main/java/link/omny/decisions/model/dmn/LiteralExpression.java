@@ -56,7 +56,7 @@ import javax.xml.namespace.QName;
 })
 public class LiteralExpression extends Expression {
 
-    @XmlElement(name = "text")
+	@XmlElement(name = "text", namespace = Definitions.DMN_1_0)
     protected Text text;
     @XmlElement(name = "Import")
     protected DecisionModelImport _import;
@@ -155,5 +155,4 @@ public class LiteralExpression extends Expression {
     public void setExpressionLanguage(String value) {
         this.expressionLanguage = value;
     }
-
 }

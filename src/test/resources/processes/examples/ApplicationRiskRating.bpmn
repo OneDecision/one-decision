@@ -9,7 +9,7 @@
     <serviceTask activiti:class="com.knowprocess.resource.spi.RestGet" completionQuantity="1" id="_3" implementation="##WebService" isForCompensation="false" name="Invoke Decision" startQuantity="1">
       <extensionElements>
         <activiti:field name="globalResource">
-          <activiti:expression>http://localhost:8082/decisions/ApplicationRiskRating/ApplicantRiskRating?applicant=${omny_riskRatingApplication}</activiti:expression>
+          <activiti:expression>http://localhost:8082/omny/decisions/ApplicationRiskRating/ApplicantRiskRating?applicant=${omny_riskRatingApplication}</activiti:expression>
         </activiti:field>
         <activiti:field name="resourceUsername">
           <activiti:string>tstephen</activiti:string>

@@ -133,6 +133,7 @@ public class DecisionModelFactory {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Definitions load(InputStream inputStream) throws IOException {
         JAXBContext context;
         try {
@@ -152,6 +153,7 @@ public class DecisionModelFactory {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Definitions load(String definition) throws IOException {
         JAXBContext context;
         try {
@@ -179,22 +181,6 @@ public class DecisionModelFactory {
      * 
      * @param definitionsId
      *            The id of the decision model (definitions element id).
-     * @return decision model.
-     * @throws IOException
-     *             If the decision model cannot be found.
-     */
-    public Definitions find(String definitionsId) throws IOException {
-        return loadFromClassPath("/" + definitionsId + ".dmn");
-    }
-
-    /**
-     * Search for the requested decision.
-     * 
-     * For now this is simply a resource check, but will add a more full-fledged
-     * database backend in due course.
-     * 
-     * @param definitionsId
-     *            The id of the decision model (definitions element id).
      * @param decisionId
      *            The id of the decision sought (within the decision model)
      * @return
@@ -203,6 +189,7 @@ public class DecisionModelFactory {
      */
     public Decision find(String definitionsId, String decisionId)
             throws IOException {
-        return loadFromClassPath("/" + definitionsId + ".dmn").getDecisionById(decisionId);
+        return loadFromClassPath("/" + definitionsId + ".dmn").getDecisionById(
+                decisionId);
     }
 }

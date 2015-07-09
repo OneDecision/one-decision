@@ -27,7 +27,7 @@ h1, h2, h3, h4, h5, h6 {
 /* START BOOTSTRAP OVERRIDES */
 
 body {
-  color: #949699;
+  color: #646669;
   font-family: Roboto/*CalibriRegular*/;
   font-size: 16px;
   line-height: 2.5em;
@@ -200,9 +200,6 @@ tfoot th {
   top: 10px;
   width: 40px;  
 }
-.bg-danger { 
-  padding: 0 10px 0 10px;
-}
 .btn {
   min-width: 80px;
 }
@@ -290,9 +287,6 @@ h2 a.glyphicon:hover {
 	position:relative;
 	bottom:5px;	
 }
-.text-danger { 
-  font-style: italic;
-}
 /* END BOOTSTRAP OVERRIDES */
 
 .clickable:hover {
@@ -378,6 +372,9 @@ form#upload {
   padding: 0 10px 0 10px;
   width: 50%;
   z-index: 10;
+}
+#messages.text-danger { 
+  font-style: italic;
 }
 
 /* ICONS */ 

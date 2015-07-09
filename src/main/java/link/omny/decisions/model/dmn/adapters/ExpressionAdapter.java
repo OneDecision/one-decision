@@ -10,6 +10,7 @@ import link.omny.decisions.model.dmn.Expression;
 import link.omny.decisions.model.dmn.LiteralExpression;
 import link.omny.decisions.model.dmn.Text;
 
+import org.springframework.beans.BeanUtils;
 import org.w3c.dom.Element;
 
 public class ExpressionAdapter extends
@@ -46,23 +47,24 @@ public class ExpressionAdapter extends
         if (null == v) {
             return null;
         }
-        Element el = findElement(v, "text");
-        if (findElement(v, "text") != null) {
+        if (isLiteral(v)) {
             LiteralExpression literal = new LiteralExpression();
             adaptToExpression(v, literal);
             // TODO replaced el.getTextContent here
+            Element el = findElement(v, "text");
             literal.setText(new Text().addContent(el.getFirstChild()
                     .getNodeValue()));
             literal.setImport(v._import);
             literal.setExpressionLanguage(v.expressionLanguage);
             return literal;
         } else {
-            return adaptToExpression(v, new UnknownExpression());
+            return adaptToExpression(v, new LiteralExpression());
         }
     }
 
     private Expression adaptToExpression(AdaptedExpression v,
             Expression expression) {
+        BeanUtils.copyProperties(v, expression);
         expression.getInputVariable().addAll(v.getInputVariable());
         expression.setItemDefinition(v.getItemDefinition());
         return expression;
@@ -73,32 +75,35 @@ public class ExpressionAdapter extends
         if (null == v) {
             return null;
         }
-        AdaptedExpression AdaptedExpression = new AdaptedExpression();
+        AdaptedExpression adaptedExpression = new AdaptedExpression();
+        BeanUtils.copyProperties(v, adaptedExpression);
+        try {
+            adaptedExpression.getInputVariable().addAll(v.getInputVariable());
+        } catch (Exception e) {
+            // TODO
+            e.getMessage();
+        }
         if (v instanceof LiteralExpression) {
             LiteralExpression literal = (LiteralExpression) v;
-            AdaptedExpression.setId(literal.getId());
-            AdaptedExpression.setName(literal.getName());
-            AdaptedExpression.setDescription(literal.getDescription());
-            // try {
-            // AdaptedExpression.getInputVariable().addAll(
-            // literal.getInputVariable());
-            // } catch (Exception e) {
-            // e.getMessage();
-            // }
-            AdaptedExpression.text = literal.getText();
-            AdaptedExpression._import = literal.getImport();
-            AdaptedExpression.expressionLanguage = literal
-                    .getExpressionLanguage();
+            adaptedExpression.setId(literal.getId());
+            adaptedExpression.setName(literal.getName());
+            adaptedExpression.setDescription(literal.getDescription());
+            adaptedExpression.text = literal.getText();
         } else if (v instanceof Expression) {
             // continue
         } else {
+            // Cannot happen?
             System.out.println("Unrecognised expression sub-type: "
                     + v.getClass().getName());
         }
-        return AdaptedExpression;
+        return adaptedExpression;
     }
 
-    public Element findElement(AdaptedExpression v, String name) {
+    private static boolean isLiteral(final Expression v) {
+        return findElement(v, "text") != null;
+    }
+
+    private static Element findElement(final Expression v, final String name) {
         Element el = null;
         for (Object o : v.getAny()) {
             if (o instanceof Element

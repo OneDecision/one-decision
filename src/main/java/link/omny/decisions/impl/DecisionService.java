@@ -13,6 +13,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import link.omny.decisions.api.DecisionsException;
+import link.omny.decisions.impl.del.DelExpression;
 import link.omny.decisions.model.dmn.Clause;
 import link.omny.decisions.model.dmn.Decision;
 import link.omny.decisions.model.dmn.DecisionRule;
@@ -22,15 +23,23 @@ import link.omny.decisions.model.dmn.LiteralExpression;
 import link.omny.decisions.model.dmn.adapters.ExpressionAdapter;
 import link.omny.decisions.model.dmn.adapters.ExpressionAdapter.AdaptedExpression;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DecisionService {
 
+	protected static final Logger LOGGER = LoggerFactory
+			.getLogger(DecisionService.class);
+
+	private static final List<String> EXCLUDED_OBJECTS = newArrayList(
+			"context", "print", "println");
+
+	protected List<DelExpression> compilers;
+
     private Map<String, String> cache = new HashMap<String, String>();
     private ScriptEngine jsEng;
-    private static final List<String> EXCLUDED_OBJECTS = newArrayList(
-            "context", "print", "println");
 
     private static List<String> newArrayList(String... objects) {
         List<String> list = new ArrayList<String>();
@@ -45,18 +54,32 @@ public class DecisionService {
         jsEng = sem.getEngineByName("JavaScript");
     }
 
+	public List<DelExpression> getDelExpressions() {
+		if (compilers == null) {
+			compilers = new ArrayList<DelExpression>();
+		}
+		return compilers;
+	}
+
+	public void setDelExpressions(List<DelExpression> compilers) {
+		this.compilers = compilers;
+	}
+
     public Map<String, String> execute(Decision d, Map<String, String> params)
             throws DecisionsException {
         String script = getScript(d.getDecisionTable());
 
         for (Entry<String, String> o : params.entrySet()) {
-            System.out.println("JSON input in Java: " + o);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("JSON input in Java: " + o);
+			}
             jsEng.put(o.getKey(), o.getValue());
             try {
                 Object r = jsEng.eval(script);
-                System.out.println("  response: " + r);
+				LOGGER.debug("  response: " + r);
             } catch (ScriptException ex) {
-                ex.printStackTrace();
+				LOGGER.error(ex.getMessage(), ex);
+				throw new DecisionsException("Unable to evaluate decision", ex);
             }
             for (Entry<String, Object> o2 : jsEng.getBindings(
                     ScriptContext.ENGINE_SCOPE).entrySet()) {
@@ -65,7 +88,9 @@ public class DecisionService {
                 }
             }
         }
-        System.out.println("vars returned: " + params);
+		if (LOGGER.isInfoEnabled()) {
+			LOGGER.info("vars returned: " + params);
+		}
         return params;
     }
 
@@ -84,13 +109,22 @@ public class DecisionService {
             // System.out.println("    var: " + var);
             // }
             // System.out.println("ie: " + inputExpression);
-            if (o.getInputExpression() != null) {
+			if (o.getInputExpression() != null
+					&& o.getInputExpression().getOnlyInputVariable() != null) {
                 varsToInit.add(o.getInputExpression().getOnlyInputVariable()
                         .getName());
+			} else {
+				LOGGER.debug(String.format(
+						"clause %1$s does not have an input expression",
+						o.getName()));
             }
 
             if (o.getOutputDefinition() != null) {
                 varsToInit.add(o.getOutputDefinition().getLocalPart());
+			} else {
+				LOGGER.debug(String.format(
+						"clause %1$s does not have an output definition",
+						o.getName()));
             }
         }
         for (String var : varsToInit) {
@@ -111,14 +145,12 @@ public class DecisionService {
                 Expression ex = conditions.get(i);
 
                 if (ex instanceof LiteralExpression) {
-                    sb.append(((LiteralExpression) ex).getText().getContent()
-                            .get(0));
+					sb.append(compile((LiteralExpression) ex));
                 } else if (ex instanceof AdaptedExpression) {
                     LiteralExpression le = (LiteralExpression) adapter
                             .unmarshal((AdaptedExpression) ex);
-                    sb.append(le.getText().getContent().get(0));
+					sb.append(compile(le));
                 } else {
-                    // TODO
                     throw new IllegalStateException(
                             "Only LiteralExpressions handled at this time");
                 }
@@ -129,8 +161,7 @@ public class DecisionService {
                 Expression ex = conclusions.get(i);
                 if (ex instanceof LiteralExpression) {
                     sb.append("  ");
-                    sb.append(((LiteralExpression) ex).getText().getContent()
-                            .get(0));
+					sb.append(compile((LiteralExpression) ex));
                     sb.append(";\n");
                 } else if (ex instanceof AdaptedExpression) {
                     sb.append("  ");
@@ -152,4 +183,25 @@ public class DecisionService {
         }
         return sb.toString();
     }
+
+	protected String compile(LiteralExpression ex) {
+		Object expr = ex.getText().getContent().get(0);
+		// Casting ought to be pretty safe, but who knows what will happen in
+		// the future
+		if (!(expr  instanceof String)) { 
+			throw new DecisionsException(
+					String.format(
+							"LiteralExpression is expected to be a String but was %1$s",
+							expr.getClass().getName()));
+		}
+		return compile((String) expr);
+	}
+	
+	protected String compile(String expr) {
+		String rtn = expr;
+		for (DelExpression compiler : getDelExpressions()) {
+			rtn = compiler.compile(expr);
+		}
+		return rtn;
+	}
 }

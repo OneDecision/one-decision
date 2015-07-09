@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Definitions id="ApplicationRiskRating" namespace="http://knowprocess.com/test1"
+<Definitions id="ApplicationRiskRating" namespace="http://omny.link/decisions/examples"
   xmlns="http://www.omg.org/spec/DMN/20130901" 
   xmlns:ol="http://omny.link/decisions"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -33,7 +33,7 @@
      </authorityRequirement> -->
   </BusinessKnowledgeModel>
        
-  <Decision id="ApplicantRiskRating" name="Determine applicant's risk rating">
+  <Decision id="DetermineApplicantRiskRating" name="Determine applicant's risk rating">
     <description>Determines health insurance applicant's risk rating</description>
     <question>What is the risk rating for the specified health insurance applicant?</question>
     <allowedAnswers>"High", "Medium", "Low"</allowedAnswers>
@@ -48,7 +48,7 @@
         preferedOrientation="Rule-as-Row">
       <description>Calculate applicant risk rating based on age and health</description>
       <clause>
-        <inputExpression id="dt0_c0_ie">
+        <inputExpression id="dt0_c0_ie" ol:type="LiteralExpression">
           <description>The applicant's age</description>
           <inputVariable>applicant</inputVariable>
         </inputExpression>
@@ -57,28 +57,28 @@
           <inputVariable>applicant</inputVariable>
           <text>applicant.age > 60</text>
         </inputEntry>
-        <inputEntry id="between25And60">
+        <inputEntry id="between25And60" ol:type="LiteralExpression">
           <description>Is the applicant between 25 and 60?</description>
           <inputVariable>applicant</inputVariable>
           <text>applicant.age >=25 &amp;&amp; applicant.age &lt;= 60</text>
           </inputEntry>
-        <inputEntry id="under25">
+        <inputEntry id="under25" ol:type="LiteralExpression">
            <description>Is the applicant under 25?</description>
            <inputVariable>applicant</inputVariable>
            <text>applicant.age &lt; 25</text>
         </inputEntry>
       </clause>
       <clause>
-        <inputExpression id="dt0_c1_ie">
+        <inputExpression id="dt0_c1_ie" ol:type="LiteralExpression">
           <description>The applicant's health</description>
           <inputVariable>applicant</inputVariable>
         </inputExpression>
-        <inputEntry id="inGoodHealth">
+        <inputEntry id="inGoodHealth" ol:type="LiteralExpression">
           <description>Is the applicant in good health?</description>
           <inputVariable>applicant</inputVariable>
           <text>applicant.health == 'Good'</text>
          </inputEntry>
-         <inputEntry id="inBadHealth">
+         <inputEntry id="inBadHealth" ol:type="LiteralExpression">
            <description>Is the applicant in bad health?</description>
            <inputVariable>applicant</inputVariable>
            <text>applicant.health == 'Bad'</text>
@@ -86,17 +86,17 @@
       </clause>
       <clause>
         <outputDefinition id="dt0_c2_od">conclusion</outputDefinition>
-        <outputEntry id="highRisk">
+        <outputEntry id="highRisk" ol:type="LiteralExpression">
            <description>Applicant is high risk</description>
            <inputVariable>conclusion</inputVariable>
            <text>conclusion.riskRating = 'High'</text>
-      </outputEntry>
-        <outputEntry id="mediumRisk">
+        </outputEntry>
+        <outputEntry id="mediumRisk" ol:type="LiteralExpression">
            <description>Applicant is medium risk</description>
            <inputVariable>conclusion</inputVariable>
            <text>conclusion.riskRating = 'Medium'</text>
-       </outputEntry>
-        <outputEntry id="lowRisk">
+        </outputEntry>
+        <outputEntry id="lowRisk" ol:type="LiteralExpression">
            <description>Applicant is low risk</description>
            <inputVariable>conclusion</inputVariable>
            <text>conclusion.riskRating = 'Low'</text>

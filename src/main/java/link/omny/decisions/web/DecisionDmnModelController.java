@@ -60,48 +60,95 @@ public class DecisionDmnModelController {
         return list;
     }
 
-    @RequestMapping(value = "/{definitionId}", method = RequestMethod.GET, produces = { "application/json" })
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json" })
     public @ResponseBody DmnModel getModelForTenant(
             @PathVariable("tenantId") String tenantId,
-            @PathVariable("definitionId") String definitionId) {
+            @PathVariable("id") String id) {
         LOGGER.info(String.format(
-                "Seeking decision model %1$s for tenant %2$s", definitionId,
-                tenantId));
+                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
 
-
-        DmnModel model = repo.findByDefinitionId(tenantId, definitionId);
+        DmnModel model = repo.findByDefinitionId(tenantId, id);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model;
+    }
+
+    @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "application/xml" })
+    public @ResponseBody String getDmnForTenant(
+            @PathVariable("tenantId") String tenantId,
+            @PathVariable("id") String id) {
+        LOGGER.info(String.format(
+                "Seeking decision model (dmn) %1$s for tenant %2$s", id,
+                tenantId));
+
+        DmnModel model = repo.findByDefinitionId(tenantId, id);
+        LOGGER.debug(String.format("... result from db: %1$s", model));
+
+        return model.getDefinitionXml();
+    }
+
+    @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "image/png" })
+    public @ResponseBody byte[] getImageForTenant(
+            @PathVariable("tenantId") String tenantId,
+            @PathVariable("id") String id) {
+        LOGGER.info(String.format(
+                "Seeking decision model image %1$s for tenant %2$s", id,
+                tenantId));
+
+        DmnModel model = repo.findByDefinitionId(tenantId, id);
+        LOGGER.debug(String.format("... result from db: %1$s", model));
+
+        return model.getImage();
     }
 
     /**
      * Upload DMN representation of decision.
      * 
      * @param file
-     *            A DMN file posted in a multi-part request
+     *            A DMN file posted in a multi-part request and optionally an
+     *            image of it.
+     * @return
      * @throws IOException
      *             If cannot parse the file.
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public @ResponseBody void handleFileUpload(
+    public @ResponseBody DmnModel handleFileUpload(
             @PathVariable("tenantId") String tenantId,
-            @RequestParam(value = "file", required = true) MultipartFile file)
+            @RequestParam(value = "deploymentMessage", required = false) String deploymentMessage,
+            @RequestParam(value = "file", required = true) MultipartFile... files)
             throws IOException {
-        LOGGER.info(String.format("Uploading activities for: %1$s", tenantId));
-        String content = new String(file.getBytes());
+        LOGGER.info(String.format("Uploading dmn for: %1$s", tenantId));
 
-        createModelForTenant(tenantId, decisionModelFactory.load(content));
-    }
+        if (files.length > 2) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Expected one DMN file and optionally one image file but received %1$d",
+                            files.length));
+        }
 
-    public DmnModel createModelForTenant(String tenantId, Definitions model)
-            throws IOException {
-        LOGGER.info(String.format("Creating decision model for tenant %1$s",
-                tenantId));
+        String dmnContent = null;
+        String dmnFileName = null;
+        byte[] image = null;
+        for (MultipartFile resource : files) {
+            LOGGER.debug(String.format("Deploying file: %1$s",
+                    resource.getOriginalFilename()));
+            if (resource.getOriginalFilename().toLowerCase().endsWith(".dmn")
+                    || resource.getOriginalFilename().toLowerCase()
+                            .endsWith(".dmn.xml")) {
+                LOGGER.debug("... DMN resource");
+                dmnContent = new String(resource.getBytes(), "UTF-8");
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("DMN: " + dmnContent);
+                }
+                dmnFileName = resource.getOriginalFilename();
+            } else {
+                LOGGER.debug("... non-DMN resource");
+                image = resource.getBytes();
+            }
+        }
 
-        // TODO perform checks that the model changes are not destructive.
-
-        return createModelForTenant(tenantId, converter.convert(model));
+        return createModelForTenant(tenantId, dmnFileName, deploymentMessage,
+                decisionModelFactory.load(dmnContent), image);
     }
 
     /**
@@ -115,14 +162,36 @@ public class DecisionDmnModelController {
      * @return
      * @throws IOException
      */
+    public DmnModel createModelForTenant(String tenantId,
+            String originalFileName, String deploymentMessage,
+            Definitions model, byte[] image) {
+        DmnModel dmnModel = createModelForTenant(tenantId, originalFileName,
+                deploymentMessage, model);
+        dmnModel.setImage(image);
+        return dmnModel;
+    }
+
+    public DmnModel createModelForTenant(String tenantId,
+            String originalFileName, String deploymentMessage, Definitions model) {
+        LOGGER.info(String.format("Creating decision model for tenant %1$s",
+                tenantId));
+
+        // TODO perform checks that the model changes are not destructive.
+
+        DmnModel dmnModel = converter.convert(model);
+        dmnModel.setOriginalFileName(originalFileName);
+        dmnModel.setDeploymentMessage(deploymentMessage);
+        return createModelForTenant(tenantId, dmnModel);
+    }
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public @ResponseBody DmnModel createModelForTenant(
             @PathVariable("tenantId") String tenantId,
-            @RequestBody DmnModel model) throws IOException {
+            @RequestBody DmnModel model) {
         model.setTenantId(tenantId);
         return repo.save(model);
     }
-    
+
     /**
      * Model updates are typically additive but for the time being at least this
      * is not enforced.
@@ -158,17 +227,17 @@ public class DecisionDmnModelController {
      * 
      * @param tenantId
      *            The tenant whose model is to be removed.
-     * @param definitionId
-     *            Id of a particular decision.
+     * @param id
+     *            Id of a particular decision (allocated by the repository not
+     *            any id from within the DMN).
      */
-    @RequestMapping(value = "/{definitionId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody void deleteModelForTenant(
             @PathVariable("tenantId") String tenantId,
-            @PathVariable("definitionId") String definitionId) {
+            @PathVariable("id") Long id) {
         LOGGER.info(String.format(
-                "Deleting decision model %1$s for tenant %2$s", definitionId,
-                tenantId));
+                "Deleting decision model %1$s for tenant %2$s", id, tenantId));
 
-        repo.delete(repo.findByDefinitionId(tenantId, definitionId));
+        repo.delete(id);
     }
 }

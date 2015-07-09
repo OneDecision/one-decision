@@ -144,8 +144,9 @@ public class Expression extends DmnElement {
                     "Expected 1 input variable but found "
                             + getInputVariable().size());
         }
-        return (InformationItem) ((JAXBElement<Object>) getInputVariable().get(
-                0)).getValue();
+        JAXBElement<Object> jaxbElement = (JAXBElement<Object>) getInputVariable().get(
+                0);
+		return (InformationItem) jaxbElement.getValue();
     }
 
     // public InformationItem addInputVariable(String name) {

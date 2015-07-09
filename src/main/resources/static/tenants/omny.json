@@ -8,7 +8,8 @@
   "omny-bar": [
     { "url": "index.html", "classes": "glyphicon omny-icon-address-book", "title": "Home" },
     { "url": "domain.html", "classes": "glyphicon omny-icon-domain-model", "title": "Domain Model" },
-    { "url": "decisions.html", "classes": "glyphicon glyphicon-list-alt", "title": "Decisions" }
+    { "url": "decisions-ui.html", "classes": "glyphicon glyphicon-list-alt", "title": "Decisions Definer" },
+    { "url": "decisions-dmn.html", "classes": "glyphicon glyphicon-list-alt", "title": "Decisions Repository" }
   ],
   "partials": [
   ],

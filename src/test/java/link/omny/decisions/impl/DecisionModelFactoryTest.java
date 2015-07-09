@@ -1,6 +1,7 @@
 package link.omny.decisions.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import javax.xml.namespace.QName;
 
 import link.omny.decisions.examples.ExamplesConstants;
 import link.omny.decisions.model.dmn.Clause;
@@ -22,6 +24,8 @@ import link.omny.decisions.model.dmn.DecisionTableOrientation;
 import link.omny.decisions.model.dmn.Definitions;
 import link.omny.decisions.model.dmn.DrgElement;
 import link.omny.decisions.model.dmn.Expression;
+import link.omny.decisions.model.dmn.InformationItem;
+import link.omny.decisions.model.dmn.LiteralExpression;
 import link.omny.decisions.model.dmn.ObjectFactory;
 
 import org.junit.Before;
@@ -45,7 +49,7 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
                 .setId("dm0")
                 .setName("Decision Model 1")
                 .setDescription(
-                        "A minimal test decision model to test the model serialisation and fluent API");
+                        "A minimal test decision model to test the model serialisation API");
 
         Decision d = new Decision();
         assertTrue(d instanceof DrgElement);
@@ -87,14 +91,72 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
     @Test
     public void testReadAndValidateApplicantRiskRating() throws IOException {
         Definitions dm = fact.loadFromClassPath(ARR_DMN_RESOURCE);
+
+        assertNotNull("Definitions element was null", dm);
+        assertEquals(2, dm.getItemDefinition().size());
+        assertEquals(1, dm.getDecisions().size());
+        assertEquals("Applicant Model", dm.getBusinessKnowledgeModel()
+                .getName());
+        assertEquals(1, dm.getBusinessKnowledgeModel().getInformationItem()
+                .size());
+        assertEquals("applicant", dm.getBusinessKnowledgeModel()
+                .getInformationItem().get(0).getId());
+        // TODO What about this:
+        // <LiteralExpression expressionLanguage="http://tempuri.org"
+        // id="idvalue2" name="conclusion">...
+
         for (Decision d : dm.getDecisions()) {
             System.out.println("d: " + d.getId() + ":" + d.getName());
+            assertEquals("DetermineApplicantRiskRating", d.getId());
 
             DecisionTable dt = d.getDecisionTable();
+            assertEquals("dt0", dt.getId());
             if (dt != null) {
                 List<Clause> clauses = dt.getClause();
-                for (Clause clause : clauses) {
-                    System.out.println("clause: " + clause.getName());
+                assertEquals(3, clauses.size());
+                for (int i = 0; i < 3; i++) {
+                    Clause clause = clauses.get(i);
+                    switch (i) {
+                    case 0:
+                        Expression inExpr = clause.getInputExpression();
+                        assertNotNull(inExpr);
+                        assertEquals("dt0_c0_ie", inExpr.getId());
+                        assertEquals(1, inExpr.getInputVariable().size());
+                        assertEquals("applicant", ((InformationItem) inExpr
+                                .getInputVariable().get(0).getValue()).getId());
+                        assertEquals("applicant", inExpr.getOnlyInputVariable()
+                                .getId());
+                        assertEquals(3, clause.getInputEntry().size());
+                        for (int j = 0; j < 3; j++) {
+                            Expression inEntry = clause.getInputEntry().get(j);
+                            switch (j) {
+                            case 0:
+                                assertTrue(inEntry instanceof LiteralExpression);
+                                LiteralExpression le = (LiteralExpression) inEntry;
+                                assertEquals("applicant.age > 60",
+                                        le.getText().getContent().get(0));
+                                break;
+                            }
+                        }
+                        break;
+                    case 1:
+                        inExpr = clause.getInputExpression();
+                        assertNotNull(inExpr);
+                        assertEquals("dt0_c1_ie", inExpr.getId());
+                        assertEquals(1, inExpr.getInputVariable().size());
+                        assertEquals("applicant", ((InformationItem) inExpr
+                                .getInputVariable().get(0).getValue()).getId());
+                        assertEquals("applicant", inExpr.getOnlyInputVariable()
+                                .getId());
+                        break;
+                    case 2:
+                        QName outDef = clause.getOutputDefinition();
+                        assertNotNull(outDef);
+                        assertEquals("conclusion", outDef.getLocalPart());
+                        assertEquals(3, clause.getOutputEntry().size());
+
+                        break;
+                    }
                     for (Expression inputEntry : clause.getInputEntry()) {
                         System.out.println("in: " + inputEntry.getName());
                     }
@@ -123,5 +185,7 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
 
         File f = new File("target", dm.getName() + ".dmn");
         fact.write("application/dmn", dm, f);
+        assertTrue(f.exists());
+        System.out.println("wrote dmn to :" + f.getAbsolutePath());
     }
 }

@@ -73,10 +73,28 @@ var ractive = new AuthenticatedRactive({
   edit: function(type,i,j,obj) {
     console.log('edit '+type+' at position '+i+','+j+': '+obj.name+'...');
   },
+  decision2Image: function() {
+    // first hide controls 
+    $('.decision-name').attr('colspan',2);
+    $('#decisionTable .glyphicon-plus, #decisionTable .glyphicon-remove').parent().hide();
+    html2canvas($("#decisionTable"), {
+      onrendered: function(canvas) {
+        theCanvas = canvas;
+        document.body.appendChild(canvas);
+        // Convert and download as image 
+        Canvas2Image.saveAsPNG(canvas); 
+        // Clean up 
+        document.body.removeChild(canvas);
+        // restore controls 
+        $('.decision-name').attr('colspan',3);
+        $('#decisionTable .glyphicon-plus, #decisionTable .glyphicon-remove').parent().show();
+      }
+    });
+  },
   delete: function (decision) {
     console.log('delete '+decision+'...');
     $.ajax({
-        url: '/'+ractive.get('tenant.id')+'/decision-ui-models/'+decision.id,
+        url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-ui-models/'+decision.id,
         type: 'DELETE',
         success: completeHandler = function(data) {
            ractive.fetch();
@@ -84,10 +102,18 @@ var ractive = new AuthenticatedRactive({
         }
     });
   },
+  deleteCondition: function (idx) {
+    console.log('deleteCondition: '+idx+'...');
+    ractive.get('decision.conditions').splice(idx,1);
+  },
+  deleteConclusion: function (idx) {
+    console.log('deleteConclusion: '+idx+'...');
+    ractive.get('decision.conclusions').splice(idx,1);
+  },
   fetch: function () {
     $.ajax({
       dataType: "json",
-      url: '/'+ractive.get('tenant.id')+'/decision-ui-models/',
+      url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-ui-models/',
       crossDomain: true,
       success: function( data ) {
         if (data['_embedded'] == undefined) {
@@ -106,7 +132,7 @@ var ractive = new AuthenticatedRactive({
   fetchDomain: function () {
     console.log('fetchDomain...');
     ractive.set('saveObserver', false);
-    $.getJSON('/'+ractive.get('tenant.id')+'/domain-model/',  function( data ) {
+    $.getJSON(ractive.getServer()+'/'+ractive.get('tenant.id')+'/domain-model/',  function( data ) {
       console.log('loaded entities...');
       ractive.merge('entities', data.entities);
       ractive.set('saveObserver',true);
@@ -122,7 +148,8 @@ var ractive = new AuthenticatedRactive({
       });
       ractive.set('entityAttrs', entityAttrs);
       // This may be too soon, check on the click handler of decision table conditions / conclusions
-      
+
+      if (ractive.fetchDomainCallbacks!=null) ractive.fetchDomainCallbacks.fire();
     });
   },
   initAutoComplete: function() {
@@ -190,7 +217,7 @@ var ractive = new AuthenticatedRactive({
   select: function(decision) {
     console.log('select...'+decision);
     ractive.set('saveObserver', false);
-    $.getJSON('/'+ractive.get('tenant.id')+'/decision-ui-models/'+decision.id,  function( data ) {
+    $.getJSON(ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-ui-models/'+decision.id,  function( data ) {
       console.log('loaded decision...');
       ractive.set('decision', data);
       ractive.set('saveObserver',true);
@@ -198,8 +225,8 @@ var ractive = new AuthenticatedRactive({
       ractive.initAutoComplete();
     });
   },
-  showDecision: function(ctrl) {
-    console.log('showDecision: '+ctrl);
+  showDecision: function() {
+    console.log('showDecision');
     $('#decisionsTable').slideUp();
     $('#decisionsTableToggle').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
     $('#dtSect').slideDown();
@@ -227,7 +254,7 @@ var ractive = new AuthenticatedRactive({
     var entity = $('#'+formId+' .entity').val();
     return $.ajax({
         type: 'POST',
-        url: '/'+ractive.get('tenant.id')+'/'+entity+'/upload',
+        url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/'+entity+'/upload',
         data: formData,
         cache: false,
         contentType: false,

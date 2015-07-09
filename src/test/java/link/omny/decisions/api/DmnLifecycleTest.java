@@ -1,8 +1,13 @@
 package link.omny.decisions.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import link.omny.decisions.Application;
@@ -52,7 +57,9 @@ public class DmnLifecycleTest implements ExamplesConstants {
         Definitions model = fac.loadFromClassPath(ARR_DMN_RESOURCE);
 
         // Create
-        DmnModel dmnModel = svc.createModelForTenant(TENANT_ID, model);
+        DmnModel dmnModel = svc.createModelForTenant(TENANT_ID,
+                ARR_DMN_RESOURCE.substring(ARR_DMN_RESOURCE.lastIndexOf('/')),
+                "A test deployment of " + ARR_DMN_RESOURCE, model);
 
         // Retrieve
         List<DmnModel> models = svc.listForTenant(TENANT_ID);
@@ -67,13 +74,21 @@ public class DmnLifecycleTest implements ExamplesConstants {
         assertEquals(dmnModel.getDefinitionXml(), model2.getDefinitionXml());
 
         // Delete
-        svc.deleteModelForTenant(TENANT_ID, model.getId());
+        svc.deleteModelForTenant(TENANT_ID, dmnModel.getId());
     }
 
     @Test
     public void testUpload() throws IOException {
+        // Definitions referenceModel = fac.loadFromClassPath(ARR_DMN_RESOURCE);
+        File baseDir = new File("target" + File.separator + "test-classes");
+        File dmnToUpload = new File(baseDir, ARR_DMN_RESOURCE);
+        assertTrue("Cannot find DMN file to use as test input",
+                dmnToUpload.exists());
+        Path path = Paths.get(dmnToUpload.getAbsolutePath());
+        byte[] content = Files.readAllBytes(path);
+
         // Create
-        DmnModel dmnModel = svc.handleFileUpload(TENANT_ID,
+        DmnModel dmnModel = svc.handleFileUpload(TENANT_ID, null,
                 MockMultipartFileUtil.newInstance(ARR_DMN_RESOURCE));
 
         // Retrieve
@@ -83,6 +98,6 @@ public class DmnLifecycleTest implements ExamplesConstants {
                 .getDefinitionXml());
 
         // Delete
-        svc.deleteModelForTenant(TENANT_ID, dmnModel.getDefinitionId());
+        svc.deleteModelForTenant(TENANT_ID, dmnModel.getId());
     }
 }

@@ -1,0 +1,99 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Definitions expressionLanguage="http://foo.com/application/javascript"
+  namespace="http://knowprocess.com/test1" id="ApplicationRiskRating"
+  name="Application Risk Decisions" xmlns:ns2="http://www.omg.org/spec/DMN/20130901">
+  <ns2:ItemDefinition typeLanguage="http://tempuri.org"
+    isCollection="false" id="applicantDef" name="Applicant">
+    <ns2:description>Domain model definition for a single applicant.</ns2:description>
+  </ns2:ItemDefinition>
+  <ns2:ItemDefinition typeLanguage="http://tempuri.org"
+    isCollection="false" id="conclusionDef" name="conclusion">
+    <ns2:description>Domain model definition for a single conclusion
+      (policy).</ns2:description>
+  </ns2:ItemDefinition>
+  <ns2:BusinessKnowledgeModel id="bkm0"
+    name="Applicant Model">
+    <ns2:description>Business Knowledge Model describing the Applicants
+      for the Health Insurance domain</ns2:description>
+    <ns2:InformationItem id="applicant" name="applicant">
+      <ns2:description>An applicant for health insurance</ns2:description>
+      <ns2:itemDefinition>ns2:applicantDef</ns2:itemDefinition>
+    </ns2:InformationItem>
+    <ns2:LiteralExpression expressionLanguage="http://tempuri.org"
+      id="idvalue2" name="conclusion">
+      <ns2:description>The conclusion being created for the applicant</ns2:description>
+      <ns2:itemDefinition>ns2:conclusionDef</ns2:itemDefinition>
+      <ns2:text />
+    </ns2:LiteralExpression>
+  </ns2:BusinessKnowledgeModel>
+  <ns2:Decision id="DetermineApplicantRiskRating" name="Determine applicant's risk rating">
+    <ns2:description>Determines health insurance applicant's risk rating</ns2:description>
+    <ns2:question>What is the risk rating for the specified health
+      insurance applicant?</ns2:question>
+    <ns2:allowedAnswers>"High", "Medium", "Low"</ns2:allowedAnswers>
+    <ns2:DecisionTable aggregation="COLLECT"
+      preferedOrientation="Rule-as-Row" isComplete="true" isConsistent="true"
+      id="dt0" name="Applicant Risk Rating" hitconclusion="UNIQUE">
+      <ns2:description>Calculate applicant risk rating based on age and
+        health</ns2:description>
+      <ns2:clause>
+        <ns2:inputExpression />
+        <ns2:inputEntry>
+          <text>applicant.age &gt; 60</text>
+        </ns2:inputEntry>
+        <ns2:inputEntry>
+          <text>applicant.age &gt;=25 &amp;&amp; applicant.age &lt;= 60</text>
+        </ns2:inputEntry>
+        <ns2:inputEntry>
+          <text>applicant.age &lt; 25</text>
+        </ns2:inputEntry>
+      </ns2:clause>
+      <ns2:clause>
+        <ns2:inputExpression />
+        <ns2:inputEntry>
+          <text>applicant.health == 'Good'</text>
+        </ns2:inputEntry>
+        <ns2:inputEntry>
+          <text>applicant.health == 'Bad'</text>
+        </ns2:inputEntry>
+      </ns2:clause>
+      <ns2:clause>
+        <ns2:outputDefinition>ns2:conclusion</ns2:outputDefinition>
+        <ns2:outputEntry>
+          <text>conclusion.riskRating = 'High'</text>
+        </ns2:outputEntry>
+        <ns2:outputEntry>
+          <text>conclusion.riskRating = 'Medium'</text>
+        </ns2:outputEntry>
+        <ns2:outputEntry>
+          <text>conclusion.riskRating = 'Low'</text>
+        </ns2:outputEntry>
+      </ns2:clause>
+      <ns2:rule>
+        <ns2:condition>over60</ns2:condition>
+        <ns2:condition>inGoodHealth</ns2:condition>
+        <ns2:conclusion>mediumRisk</ns2:conclusion>
+      </ns2:rule>
+      <ns2:rule>
+        <ns2:condition>over60</ns2:condition>
+        <ns2:condition>inBadHealth</ns2:condition>
+        <ns2:conclusion>highRisk</ns2:conclusion>
+      </ns2:rule>
+      <ns2:rule>
+        <ns2:condition>between25And60</ns2:condition>
+        <ns2:condition></ns2:condition>
+        <ns2:conclusion>mediumRisk</ns2:conclusion>
+      </ns2:rule>
+      <ns2:rule>
+        <ns2:condition>under25</ns2:condition>
+        <ns2:condition>inGoodHealth</ns2:condition>
+        <ns2:conclusion>lowRisk</ns2:conclusion>
+      </ns2:rule>
+      <ns2:rule>
+        <ns2:condition>under25</ns2:condition>
+        <ns2:condition>inBadHealth</ns2:condition>
+        <ns2:conclusion>mediumRisk</ns2:conclusion>
+      </ns2:rule>
+    </ns2:DecisionTable>
+  </ns2:Decision>
+</ns2:Definitions>
