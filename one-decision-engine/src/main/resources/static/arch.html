@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Architecture</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/one-decision-0.8.0.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/one-decision-16x16.png" />
+</head>
+<body>
+  <div class="clearfix" id="messages"></div>
+  <div class="container" id="container"></div>
+  <script id='template' type='text/ractive'>
+    <div class="profile pull-right">
+      <form name="logoutForm" action="/logout" method="POST">
+        <span class="profile-img">Logged in as: {{username}}</span>
+        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()"></span>
+      </form>
+    </div>
+    <h1>
+      <a class="nav navbar-brand" href="http://onedecision.io">
+        <img src="images/one-decision-logo-120x55.png" alt="logo"/>
+      </a>
+      <span>Decisions Architecture</span>
+    </h1>
+    <div class="clearfix" id="messages">
+      <p class=""></p>
+    </div>
+
+    <section>
+      <h2>Overview</h2>
+      <p>Decisions is a collection of RESTful APIs to define, manage and invoke decision services. </p>
+
+      <figure>
+        <img src="/arch.png" alt="Decisions Architecture">
+        <figcaption>Overview of Decisions Architetcure</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Models</h2>
+      <p>Decisions uses two models: the DMN 1.0 model is used natively at execution time and a UI-model designed to support decision table definition. For details of DMN see: <a href="#">here</a>. The UI model is shown below.</p>
+
+      <figure>
+        <img src="/arch.png" alt="Decisions UI Model">
+        <figcaption>Decisions UI Model</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      
+      <p>Jump to the <a href="/swagger-ui.html">API documentation</a> to see the operations available and try them out.</p> 
+
+    </section>
+
+  </script>
+
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/bootstrap3-typeahead.js"></script>
+  <script src="js/ractive.min.js"></script>
+  <script src="js/md5.min.js"></script>
+  <script src="js/one-decision-0.8.0.js"></script>
+  <script src="js/decisions-0.8.0.js"></script>
+</body>
+</html>

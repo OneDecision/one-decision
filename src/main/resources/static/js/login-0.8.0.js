@@ -1,1 +1,0 @@
-/home/tstephen/git/platform/work-mgmt/src/main/resources/static/js/login-0.8.0.js

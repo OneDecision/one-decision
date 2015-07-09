@@ -1,0 +1,12 @@
+{ 
+  "id": "onedecision", 
+  "contactFields": [ 
+    { "label": "Age", "key": "age"},
+    { "label": "Health", "key": "health"},
+    { "label": "Risk Rating", "key": "riskRating"}
+  ],
+  "partials": [
+  ],
+  "typeaheadControls": [
+  ]
+}
