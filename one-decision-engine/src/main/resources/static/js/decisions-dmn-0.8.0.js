@@ -67,7 +67,6 @@ var ractive = new OneDecisionApp({
           ractive.merge('decisions', data['_embedded'].decisions);
           ractive.set('saveObserver', true);
         }
-        if (ractive.hasRole('admin')) $('.admin').show();
         if (ractive.fetchCallbacks!=null) ractive.fetchCallbacks.fire();
         ractive.set('searchMatched',$('#decisionsTable tbody tr:visible').length);
       }

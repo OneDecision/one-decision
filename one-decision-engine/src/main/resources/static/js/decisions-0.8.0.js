@@ -5,7 +5,7 @@ var ractive = new OneDecisionApp({
   data: {
     csrfToken: getCookie(CSRF_COOKIE),
     content: 'test',
-    decisionTemplate: { "name":"A new decision", "hitPolicy":null, "domainModelUri":null, "inputs":null, "outputs":null, "conditions":[{ "name":"a new condition","expressions":["-"],"label":"a new condition"}],"conclusions":[{ "name":"a new conclusion","expressions":["-"],"label":"a new conclusion"}] },
+    decisionTemplate: { "name":"A new decision", "hitPolicy":null, "domainModelUri":null, "conditions":[],"conclusions":[] },
     decision: $(this.decisionTemplate).clone(),
     decisions: [],
     entities: [],
@@ -41,7 +41,8 @@ var ractive = new OneDecisionApp({
   },
   addCondition: function() {
     console.log('addCondition...');
-    var newCondition = { name: 'Select...', expressions: new Array(parseInt(ractive.get('decision.conditions')[0].expressions.length)) };
+    var conds = ractive.get('decision.conditions')[0];
+    var newCondition = { name: 'Select...', expressions: new Array(parseInt(conds == undefined ? '0' : conds.expressions.length)) };
     console.log('  '+JSON.stringify(newCondition));
     var idx = ractive.get('decision.conditions').push(newCondition);
     console.log('Adding typeahead to conditions: '+idx);
@@ -49,7 +50,8 @@ var ractive = new OneDecisionApp({
   },
   addConclusion: function() {
     console.log('addConclusion...');
-    var newConclusion = { name: 'Select...', expressions: new Array(parseInt(ractive.get('decision.conditions')[0].expressions.length)) };
+    var conds = ractive.get('decision.conditions')[0];
+    var newConclusion = { name: 'Select...', expressions: new Array(parseInt(conds == undefined ? '0' : conds.expressions.length)) };
     console.log('  '+JSON.stringify(newConclusion));
     var idx = ractive.get('decision.conclusions').push(newConclusion);
     console.log('Adding typeahead to conclusion: '+idx);
@@ -119,7 +121,6 @@ var ractive = new OneDecisionApp({
           ractive.merge('decisions', data['_embedded'].decisions);
           ractive.set('saveObserver', true);
         }
-        if (ractive.hasRole('admin')) $('.admin').show();
         if (ractive.fetchCallbacks!=null) ractive.fetchCallbacks.fire();
         ractive.set('searchMatched',$('#decisionsTable tbody tr:visible').length);
       }
@@ -268,4 +269,20 @@ ractive.observe('decision.*', function(newValue, oldValue, keypath) {
     //console.log('current prop change: '+newValue +','+oldValue+' '+keypath);
     //console.log('  saveObserver: '+ractive.get('saveObserver'));
   }
+});
+
+
+$(document).ready(function() {
+  console.info('Running ready handler');
+  
+  if (ractive.initCallbacks==undefined) ractive.initCallbacks = $.Callbacks();
+  ractive.initCallbacks.add(function() {
+    ractive.fetchDomain();
+    ractive.applyBranding();
+    ractive.fetch();
+    ractive.initControls();
+  });
+
+  if (ractive.initCallbacks!=undefined) ractive.initCallbacks.fire();
+
 });

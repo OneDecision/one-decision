@@ -180,28 +180,11 @@ tfoot th {
 .a-secondary-data {
 }
 
-.admin,
-.super-admin { 
-  display: none;
-}
 .ajax-loader {
   position: absolute;
   left: 45%;
   top: 300px;
   z-index: 200; 
-}
-.beta {
-  border: solid 1px #ff6c06;
-  color: #ff6c06;
-  font-family: barmenoregular, sans-serif;
-  font-style: italic;
-  line-height: 1.1em;
-  padding: 0;
-  position: absolute;
-  left: 10px;
-  text-align: center;
-  top: 10px;
-  width: 40px;  
 }
 .btn {
   min-width: 80px;
