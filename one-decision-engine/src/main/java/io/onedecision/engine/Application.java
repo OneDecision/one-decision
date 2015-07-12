@@ -37,8 +37,7 @@ import com.google.common.base.Predicate;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = { "io.onedecision.engine.decisions",
-		"io.onedecision.engine.domain" })
+@ComponentScan(basePackages = { "io.onedecision.engine" })
 @EntityScan({ "io.onedecision.engine.decisions", "io.onedecision.engine.domain" })
 @EnableJpaRepositories({ "io.onedecision.engine.domain.repositories",
 		"io.onedecision.engine.decisions.repositories" })
