@@ -1,6 +1,3 @@
-var EASING_DURATION = 500;
-fadeOutMessages = true;
-
 var ractive = new OneDecisionApp({
   el: 'container',
   lazy: true,
@@ -172,16 +169,6 @@ var ractive = new OneDecisionApp({
 //        $(ev.target).trigger(newEv);
 //        return true;
 //     });
-  },
-  oninit: function() {
-    console.log('oninit');
-    //this.ajaxSetup();
-    $( document ).ajaxStart(function() {
-      $( "#ajax-loader" ).show();
-    });
-    $( document ).ajaxStop(function() {
-      $( "#ajax-loader" ).hide();
-    });
   },
   save: function (decision) {
     console.log('save '+JSON.stringify(decision)+' ...');

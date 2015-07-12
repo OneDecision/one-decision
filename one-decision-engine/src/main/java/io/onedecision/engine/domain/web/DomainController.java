@@ -62,7 +62,7 @@ public class DomainController {
         }
     }
 
-    private DomainModel getDefaultDomain() {
+	protected DomainModel getDefaultDomain() {
         DomainModel model = new DomainModel();
 		model.setName("Example customer model");
         model.setDescription("A general purpose and extensible customer model for the web");

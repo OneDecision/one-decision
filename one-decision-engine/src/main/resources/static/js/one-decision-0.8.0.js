@@ -199,28 +199,3 @@ function transformToAssocArray( prmstr ) {
   }
   return params;
 }
-
-$(document).ready(function() {
-  ractive.set('saveObserver',false);
-  
-  if (ractive.initCallbacks==undefined) ractive.initCallbacks = $.Callbacks();
-  ractive.initCallbacks.add(function() {
-    ractive.applyBranding();
-    ractive.fetch();
-    ractive.initControls();
-  });
-  
-  var s = getSearchParameters()['s'];
-  if (s!=undefined) ractive.set('searchTerm',s);
-
-  var id = getSearchParameters()['id'];
-  if (id!=undefined) {
-    ractive.set('searchId',id);
-    if (ractive.fetchCallbacks==undefined) ractive.fetchCallbacks = $.Callbacks();
-    ractive.fetchCallbacks.add(function() {
-      ractive.edit(ractive.find(ractive.get('searchId')));
-    });
-  }
-  
-  ractive.set('saveObserver', true);
-});

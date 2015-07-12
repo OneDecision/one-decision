@@ -1,28 +1,13 @@
-var EASING_DURATION = 500;
-fadeOutMessages = true;
-
-// 4. We've got an element in the DOM, we've created a template, and we've
-// loaded the library - now it's time to build our Hello World app.
-var ractive = new AuthenticatedRactive({
-  // The `el` option can be a node, an ID, or a CSS selector.
+var ractive = new OneDecisionApp({
   el: 'container',
-
-  // If two-way data binding is enabled, whether to only update data based on
-  // text inputs on change and blur events, rather than any event (such as key
-  // events) that may result in new data
   lazy: true,
-
-  // We could pass in a string, but for the sake of convenience
-  // we're passing the ID of the <script> tag above.
   template: '#template',
-
   // partial templates
-  // partials: { question: question },
-
-  // Here, we're passing in some initial data
+  // partials: { },
   data: {
     csrfToken: getCookie(CSRF_COOKIE),
     //saveObserver:false,
+    entityIdx:0,
     username: localStorage['username'],
     age: function(timeString) {
       return i18n.getAgeString(new Date(timeString))
@@ -50,9 +35,6 @@ var ractive = new AuthenticatedRactive({
         success: completeHandler = function(data) {
           ractive.fetch();
         },
-        error: errorHandler = function(jqXHR, textStatus, errorThrown) {
-            ractive.handleError(jqXHR,textStatus,errorThrown);
-        }
     });
   },
   fetch: function () {
@@ -63,6 +45,7 @@ var ractive = new AuthenticatedRactive({
       ractive.set('domain', data);
 //      ractive.merge('entities', data.entities);
       ractive.set('saveObserver',true);
+      if ($('.entity.active').length==0) $($('.entity')[0]).addClass('active');
       $('.entity.active').fadeIn();
     });
   },
@@ -71,16 +54,6 @@ var ractive = new AuthenticatedRactive({
     $('.entity.active').fadeOut().removeClass('active');
     ractive.set('entityIdx', ractive.get('entityIdx')+1);
     $('#entity'+ractive.get('entityIdx')+'Sect').fadeIn().addClass('active');
-  },
-  oninit: function() {
-    console.log('oninit');
-    //this.ajaxSetup();
-    $( document ).ajaxStart(function() {
-      $( "#ajax-loader" ).show();
-    });
-    $( document ).ajaxStop(function() {
-      $( "#ajax-loader" ).hide();
-    });
   },
   previousEntity: function() {
     console.log('previousEntity');
@@ -123,3 +96,31 @@ var ractive = new AuthenticatedRactive({
   }
 });
 
+$(document).ready(function() {
+  console.info('Running ready handler');
+  ractive.set('saveObserver',false);
+  
+  if (ractive.initCallbacks==undefined) ractive.initCallbacks = $.Callbacks();
+  ractive.initCallbacks.add(function() {
+    console.info('initialization handler');
+    ractive.applyBranding();
+    ractive.fetch();
+    ractive.initControls();
+  });
+  
+  var s = getSearchParameters()['s'];
+  if (s!=undefined) ractive.set('searchTerm',s);
+
+  var id = getSearchParameters()['id'];
+  if (id!=undefined) {
+    ractive.set('searchId',id);
+    if (ractive.fetchCallbacks==undefined) ractive.fetchCallbacks = $.Callbacks();
+    ractive.fetchCallbacks.add(function() {
+      console.info('fetch handler');
+      ractive.edit(ractive.find(ractive.get('searchId')));
+    });
+  }
+  
+  if (ractive.initCallbacks!=undefined) ractive.initCallbacks.fire();
+  ractive.set('saveObserver', true);
+});

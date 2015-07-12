@@ -14,10 +14,8 @@
   <script id='template' type='text/ractive'>
     <div class="profile pull-right">
       <form name="logoutForm" action="/logout" method="POST">
-          <span id="tenantId" class="replaceable super_admin" contenteditable="true" onblur="ractive.switchToTenant($('#tenantId').text())" name="tenantId" value="{{tenant == null ? 'Click to set' : tenant.id}}"></span>
         <span class="profile-img">Logged in as: {{username}}</span>
         <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()"></span>
-        <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}" />
       </form>
     </div>
     <h1>
@@ -168,22 +166,18 @@
   </script>
 
   <script src="js/jquery-1.11.0.min.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="js/bootstrap.min.js"></script>
   <script src="js/bootstrap3-typeahead.js"></script>
-  <!--
-       If you need IE8 support, change 'ractive' to 'ractive-legacy'.
-  -->
   <script src="js/ractive.min.js"></script>
   <script src="js/md5.min.js"></script>
-  <script src="js/login-0.8.0.js"></script>
+  <script src="js/one-decision-0.8.0.js"></script>
   <script src="js/domain-0.8.0.js"></script>
-  <script src="js/omny-0.8.0.js"></script>
-  <script>
-    $(document).ready(function() {
-      var params = getSearchParameters();
-      ractive.set('entityIdx', params['entityIdx'] == undefined ? 0 : params['entityIdx']);
-    });
-  </script>
+  <!-- 
+//    $(document).ready(function() {
+//      console.warn('Ready handler in html');
+//      var params = getSearchParameters();
+//      ractive.set('entityIdx', params['entityIdx'] == undefined ? 0 : params['entityIdx']);
+//    });-->
+
 </body>
 </html>

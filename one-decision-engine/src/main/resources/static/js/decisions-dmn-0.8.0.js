@@ -73,16 +73,6 @@ var ractive = new OneDecisionApp({
       }
     });
   },
-  oninit: function() {
-    console.log('oninit');
-    //this.ajaxSetup();
-    $( document ).ajaxStart(function() {
-      $( "#ajax-loader" ).show();
-    });
-    $( document ).ajaxStop(function() {
-      $( "#ajax-loader" ).hide();
-    });
-  },
   select: function(decision) {
     console.log('select...'+decision);
     ractive.set('saveObserver', false);
