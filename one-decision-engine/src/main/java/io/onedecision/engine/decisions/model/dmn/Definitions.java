@@ -8,7 +8,7 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
-import io.onedecision.engine.decisions.api.DecisionsException;
+import io.onedecision.engine.decisions.api.DecisionException;
 
 import java.io.Writer;
 import java.util.ArrayList;
@@ -401,7 +401,7 @@ public class Definitions extends DmnElement {
         return (Definitions) super.setName(value);
     }
 
-    public void write(Writer out) throws DecisionsException {
+    public void write(Writer out) throws DecisionException {
         JAXBContext jaxbContext;
         try {
             jaxbContext = JAXBContext.newInstance(Definitions.class);
@@ -412,7 +412,7 @@ public class Definitions extends DmnElement {
 
             jaxbMarshaller.marshal(this, out);
         } catch (JAXBException e) {
-            throw new DecisionsException(String.format(
+            throw new DecisionException(String.format(
                     "Unable to serialise %1$s", getId()), e);
         }
     }

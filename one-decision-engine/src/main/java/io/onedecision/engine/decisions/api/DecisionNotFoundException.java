@@ -1,8 +1,7 @@
-package io.onedecision.engine.decisions.web;
+package io.onedecision.engine.decisions.api;
 
-import io.onedecision.engine.decisions.api.DecisionsException;
 
-public class DecisionNotFoundException extends DecisionsException {
+public class DecisionNotFoundException extends DecisionException {
 
     private static final long serialVersionUID = -7579907826337455003L;
 

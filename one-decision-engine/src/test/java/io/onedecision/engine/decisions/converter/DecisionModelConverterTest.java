@@ -3,7 +3,7 @@ package io.onedecision.engine.decisions.converter;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.api.DecisionModelFactory;
-import io.onedecision.engine.decisions.api.DecisionsException;
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
@@ -36,7 +36,7 @@ public class DecisionModelConverterTest implements ExamplesConstants {
     @Test
 	@Ignore
     public void testConvertSingleDecisionTable() throws JsonParseException,
-            JsonMappingException, IOException, DecisionsException {
+            JsonMappingException, IOException, DecisionException {
         DecisionModel jsonModel = getJsonModel(ARR_JSON_RESOURCE);
         converter.setDomainModelFactory(new MockDomainModelFactory(
 				"http://onedecision.io/health", "/domains/health.json"));

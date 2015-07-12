@@ -3,7 +3,7 @@ package io.onedecision.engine.decisions.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import io.onedecision.engine.Application;
-import io.onedecision.engine.decisions.api.DecisionsException;
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.test.MockMultipartFileUtil;
@@ -54,7 +54,7 @@ public class DecisionControllerTest implements ExamplesConstants {
 
     @Test
     public void testDecisionViaController() throws IOException,
-            DecisionsException {
+            DecisionException {
         Map<String, String> vars = new HashMap<String, String>();
         vars.put("applicant", "{\"age\":18,\"health\":\"Good\"}");
         String conclusion = decisionController.executeDecision(TENANT_ID,

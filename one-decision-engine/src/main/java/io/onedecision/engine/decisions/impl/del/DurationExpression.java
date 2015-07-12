@@ -1,6 +1,6 @@
 package io.onedecision.engine.decisions.impl.del;
 
-import io.onedecision.engine.decisions.api.DecisionsException;
+import io.onedecision.engine.decisions.api.DecisionException;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -30,7 +30,7 @@ public class DurationExpression implements DelExpression {
 				System.out.println("converted script to " + s);
 				return s;
 			} catch (DatatypeConfigurationException e) {
-				throw new DecisionsException("Cannot parse inputDuration");
+				throw new DecisionException("Cannot parse inputDuration");
 			}
 
 		} else {

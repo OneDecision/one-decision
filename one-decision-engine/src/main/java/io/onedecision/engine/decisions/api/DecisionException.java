@@ -1,14 +1,14 @@
 package io.onedecision.engine.decisions.api;
 
-public class DecisionsException extends RuntimeException {
+public class DecisionException extends RuntimeException {
 
 	private static final long serialVersionUID = 434480901378400857L;
 
-	public DecisionsException(String message) {
+	public DecisionException(String message) {
         super(message);
     }
 
-    public DecisionsException(String msg, Exception cause) {
+    public DecisionException(String msg, Exception cause) {
         super(msg, cause);
     }
 

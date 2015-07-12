@@ -65,7 +65,7 @@ public class DecisionService {
 	}
 
     public Map<String, String> execute(Decision d, Map<String, String> params)
-            throws DecisionsException {
+            throws DecisionException {
         String script = getScript(d.getDecisionTable());
 
         for (Entry<String, String> o : params.entrySet()) {
@@ -78,7 +78,7 @@ public class DecisionService {
 				LOGGER.debug("  response: " + r);
             } catch (ScriptException ex) {
 				LOGGER.error(ex.getMessage(), ex);
-				throw new DecisionsException("Unable to evaluate decision", ex);
+				throw new DecisionException("Unable to evaluate decision", ex);
             }
             for (Entry<String, Object> o2 : jsEng.getBindings(
                     ScriptContext.ENGINE_SCOPE).entrySet()) {
@@ -93,7 +93,7 @@ public class DecisionService {
         return params;
     }
 
-    public String getScript(DecisionTable dt) throws DecisionsException {
+    public String getScript(DecisionTable dt) throws DecisionException {
         if (cache.containsKey(dt.getId())) {
             return cache.get(dt.getId());
         }
@@ -188,7 +188,7 @@ public class DecisionService {
 		// Casting ought to be pretty safe, but who knows what will happen in
 		// the future
 		if (!(expr  instanceof String)) { 
-			throw new DecisionsException(
+			throw new DecisionException(
 					String.format(
 							"LiteralExpression is expected to be a String but was %1$s",
 							expr.getClass().getName()));

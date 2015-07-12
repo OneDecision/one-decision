@@ -54,7 +54,7 @@ public class DecisionUIModelController {
         }
     }
 
-    private List<ExampleModel> getExampleUIModels() {
+	protected List<ExampleModel> getExampleUIModels() {
         if (examples == null) {
             examples = new ArrayList<ExampleModel>();
             examples.add(new ApplicationRiskRatingModel());

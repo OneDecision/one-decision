@@ -1,8 +1,9 @@
 package io.onedecision.engine.decisions.web;
 
 import io.onedecision.engine.decisions.api.DecisionModelFactory;
+import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.DecisionService;
-import io.onedecision.engine.decisions.api.DecisionsException;
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
@@ -64,7 +65,7 @@ public class DecisionController {
             @PathVariable("definitionId") String definitionId,
             @PathVariable("decisionId") String decisionId,
             @RequestParam Map<String, String> params) throws IOException,
-            DecisionsException {
+            DecisionException {
         LOGGER.info(String.format(
                 "handling request to decision: %1$s.%2$s, with params: %3$s",
                 definitionId, decisionId, params));
