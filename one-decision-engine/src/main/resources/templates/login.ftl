@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
   <link href="css/one-decision-0.8.0.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/one-decision-icon-16x16.png" />
     <style>
@@ -59,12 +59,10 @@
       </form>
   </script>
 
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="js/jquery-1.11.0.min.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/bootstrap3-typeahead.js"></script>
-  <script src="js/ractive.min.js"></script>
+  <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+  <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
+  <script src="/webjars/ractive/0.7.1/ractive.min.js"></script>
   <script src="js/one-decision-0.8.0.js"></script>
   <script src="js/login-ui-0.8.0.js"></script>
 </body>

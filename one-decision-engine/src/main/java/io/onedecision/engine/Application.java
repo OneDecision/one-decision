@@ -78,13 +78,14 @@ public class Application extends WebMvcConfigurerAdapter {
                 regex("/.*/domain.*"));
     }
     
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        // Allegedly sets welcome page though does not appear to be working
-        registry.addViewController("/").setViewName("index");
-        registry.addViewController("/login").setViewName("login");
-        // registry.addViewController("/loginError").setViewName("loginError");
-    }
+	 @Override
+	 public void addViewControllers(ViewControllerRegistry registry) {
+	 // Allegedly sets welcome page though does not appear to be working
+//	 registry.addViewController("/").setViewName("index");
+	 registry.addViewController("/").setViewName("forward:/index.html");
+	 registry.addViewController("/login").setViewName("login");
+	 // registry.addViewController("/loginError").setViewName("loginError");
+	 }
 
     @Bean
     public ApplicationSecurity applicationSecurity() {
@@ -105,14 +106,14 @@ public class Application extends WebMvcConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
 					.antMatchers("/css/**", "/data/**", "/docs/**",
-							"/fonts/**", "/images/**", "/js/**")
-                    .permitAll()
-	                    .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-	                    .antMatchers("/*.html", "/users/**")
-                    .hasRole("user")
-                    	.antMatchers("/admin/**")
-                    .hasRole("admin")
-                    	.anyRequest().authenticated()  
+							"/fonts/**", "/images/**", "/js/**", "/webjars/**")
+							.permitAll()
+	                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+	                .antMatchers("/*.html", "/users/**")
+                    	.hasRole("user")
+                    .antMatchers("/admin/**")
+                    	.hasRole("admin")
+                    .anyRequest().authenticated()  
                     .and().formLogin()
                     	.loginPage("/login").failureUrl("/login?error")
                     .successHandler(getSuccessHandler()).permitAll()

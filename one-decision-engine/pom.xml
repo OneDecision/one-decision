@@ -116,6 +116,21 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+    	<groupId>org.webjars</groupId>
+    	<artifactId>bootstrap</artifactId>
+    	<version>3.3.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>Bootstrap-3-Typeahead</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
+		  <groupId>org.webjars</groupId>
+		  <artifactId>ractive</artifactId>
+		  <version>0.7.1</version>
+		</dependency>
     <!-- TEST dependencies -->
     <dependency>
       <groupId>com.h2database</groupId>
