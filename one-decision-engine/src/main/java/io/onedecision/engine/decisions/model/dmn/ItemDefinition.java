@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import lombok.NoArgsConstructor;
-
 import org.w3c.dom.Element;
 
 
@@ -71,7 +69,6 @@ import org.w3c.dom.Element;
     "allowedValue",
     "itemComponentRef"
 })
-@NoArgsConstructor
 public class ItemDefinition extends DmnElement {
 
     protected ItemDefinition.TypeDefinition typeDefinition;
@@ -84,6 +81,8 @@ public class ItemDefinition extends DmnElement {
     @XmlAttribute(name = "isCollection")
     protected Boolean isCollection;
 
+    public ItemDefinition() {}
+    
     public ItemDefinition(String name, String description) {
         setId(name + "Def");
         setName(name);

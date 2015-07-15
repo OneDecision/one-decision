@@ -64,8 +64,7 @@ public class DecisionController {
             @PathVariable("tenantId") String tenantId,
             @PathVariable("definitionId") String definitionId,
             @PathVariable("decisionId") String decisionId,
-            @RequestParam Map<String, String> params) throws IOException,
-            DecisionException {
+            @RequestParam Map<String, String> params) throws IOException, DecisionException {
         LOGGER.info(String.format(
                 "handling request to decision: %1$s.%2$s, with params: %3$s",
                 definitionId, decisionId, params));

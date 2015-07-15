@@ -16,9 +16,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,12 +25,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "OL_DOMAIN_MODEL")
-@Data
 @Component
-@NoArgsConstructor
 public class DomainModel {
-    protected static final Logger LOGGER = LoggerFactory
-            .getLogger(DomainModel.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(DomainModel.class);
 
     @Id
     @Column(name = "id")
@@ -75,4 +69,67 @@ public class DomainModel {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DomainEntity> entities;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public Date getFirstCreated() {
+		return firstCreated;
+	}
+
+	public void setFirstCreated(Date firstCreated) {
+		this.firstCreated = firstCreated;
+	}
+
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public String getTenantId() {
+		return tenantId;
+	}
+
+	public void setTenantId(String tenantId) {
+		this.tenantId = tenantId;
+	}
+
+	public List<DomainEntity> getEntities() {
+		return entities;
+	}
+
+	public void setEntities(List<DomainEntity> entities) {
+		this.entities = entities;
+	}
 }

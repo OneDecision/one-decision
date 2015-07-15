@@ -2,9 +2,6 @@ package io.onedecision.engine.decisions.model.dmn;
 
 import java.util.List;
 
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
 public class InputClause extends Clause {
 
     public InputClause(Expression expr, List<Expression> entries) {
@@ -15,5 +12,7 @@ public class InputClause extends Clause {
     public InputClause(Expression expr) {
         setInputExpression(expr);
     }
+    
+    public InputClause() {}
 
 }

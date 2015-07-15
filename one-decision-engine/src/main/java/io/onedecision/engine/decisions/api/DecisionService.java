@@ -29,8 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DecisionService {
 
-	protected static final Logger LOGGER = LoggerFactory
-			.getLogger(DecisionService.class);
+	protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionService.class);
 
 	private static final List<String> EXCLUDED_OBJECTS = newArrayList(
 			"context", "print", "println");

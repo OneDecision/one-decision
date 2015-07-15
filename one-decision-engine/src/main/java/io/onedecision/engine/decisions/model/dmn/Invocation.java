@@ -15,8 +15,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.NoArgsConstructor;
-
 /**
  * <p>Java class for tInvocation complex type.
  * 
@@ -41,7 +39,6 @@ import lombok.NoArgsConstructor;
 @XmlType(name = "tInvocation", propOrder = {
     "binding"
 })
-@NoArgsConstructor
 public class Invocation extends Expression {
 
     protected List<Binding> binding;

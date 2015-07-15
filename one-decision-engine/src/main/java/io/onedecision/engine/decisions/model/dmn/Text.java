@@ -9,8 +9,6 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.NoArgsConstructor;
-
 import org.w3c.dom.Element;
 
 /**
@@ -37,12 +35,13 @@ import org.w3c.dom.Element;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "content" })
-@NoArgsConstructor
 public class Text {
 
     @XmlMixed
     @XmlAnyElement(lax = true)
     protected List<Object> content;
+    
+    public Text() {}
 
     public Text(String expr) {
         this();

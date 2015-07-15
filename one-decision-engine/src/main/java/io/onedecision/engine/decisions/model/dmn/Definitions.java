@@ -28,9 +28,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import lombok.NoArgsConstructor;
-
-
 /**
  * <p>Java class for tDefinitions complex type.
  * 
@@ -67,7 +64,6 @@ import lombok.NoArgsConstructor;
     "elementCollection",
     "businessContextElement"
 })
-@NoArgsConstructor
 // @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Definitions extends DmnElement {
 
@@ -96,6 +92,8 @@ public class Definitions extends DmnElement {
         setId(id);
         setName(name);
     }
+    
+    public Definitions() {}
 
     /**
      * Gets the value of the import property.

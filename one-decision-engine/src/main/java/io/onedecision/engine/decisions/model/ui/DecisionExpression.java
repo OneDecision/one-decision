@@ -10,24 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
 @Entity
 @Table(name = "OL_UI_EXPRESSION")
 @Component
-@NoArgsConstructor
 public class DecisionExpression {
 
-    protected static final Logger LOGGER = LoggerFactory
-            .getLogger(DecisionExpression.class);
+    protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionExpression.class);
 
     @Id
     @Column(name = "id")
@@ -45,6 +39,8 @@ public class DecisionExpression {
     @JsonProperty
     protected String label;
 
+    public DecisionExpression() {}
+    
     public DecisionExpression(List<String> expressions) {
         setExpressions((String[]) expressions.toArray());
     }
@@ -60,4 +56,32 @@ public class DecisionExpression {
         }
         return label;
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String[] getExpressions() {
+		return expressions;
+	}
+
+	public void setExpressions(String[] expressions) {
+		this.expressions = expressions;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
 }

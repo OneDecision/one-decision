@@ -87,13 +87,6 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
     </dependency>
-    <!-- Generates boilerplate from annotations, remember to set up your IDE using the swing UI embedded in the jar! -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.14.8</version>
-      <scope>provided</scope>
-    </dependency>
     <!-- Generates REST documentation -->
     <dependency>
         <groupId>io.springfox</groupId>

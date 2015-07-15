@@ -13,8 +13,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import lombok.NoArgsConstructor;
-
 
 /**
  * <p>Java class for tInformationItem complex type.

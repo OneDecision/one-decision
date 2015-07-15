@@ -19,8 +19,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import lombok.NoArgsConstructor;
-
 /**
  * <p>Java class for tDecisionTable complex type.
  * 
@@ -53,7 +51,6 @@ import lombok.NoArgsConstructor;
     "clause",
     "rule"
 })
-@NoArgsConstructor
 public class DecisionTable extends Expression {
 
     protected List<Clause> clause;
@@ -79,6 +76,8 @@ public class DecisionTable extends Expression {
         setId(id);
         setName(name);
     }
+    
+    public DecisionTable() {}
 
     @Override
     public DecisionTable setItemDefinition(QName value) {
