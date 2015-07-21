@@ -2,11 +2,11 @@
 @import url('//fonts.googleapis.com/css?family=Roboto:400italic,400,700');
 @font-face {
   font-family: 'barmenoregular';
-  src: url('fonts/barmeno_regular-webfont.eot');
-  src: url('fonts/barmeno_regular-webfont.eot?#iefix') format('embedded-opentype'),
-       url('fonts/barmeno_regular-webfont.woff') format('woff'),
-       url('fonts/barmeno_regular-webfont.ttf') format('truetype'),
-       url('fonts/barmeno_regular-webfont.svg#barmenoregular') format('svg');
+  src: url('/fonts/barmeno_regular-webfont.eot');
+  src: url('/fonts/barmeno_regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/fonts/barmeno_regular-webfont.woff') format('woff'),
+       url('/fonts/barmeno_regular-webfont.ttf') format('truetype'),
+       url('/fonts/barmeno_regular-webfont.svg#barmenoregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,13 +24,11 @@ h1, h2, h3, h4, h5, h6 {
  *   grey:   949699;
  */
 
-/* START BOOTSTRAP OVERRIDES */
-
 body {
   color: #646669;
   font-family: Roboto,Arial,sans-serif;
   font-size: 16px;
-  line-height: 2.5em;
+  line-height: 2.0em;
 }
 h1 { 
 	color: #0e9acd;
@@ -50,6 +48,10 @@ th {
 .btn {
   min-width: 80px;
 }
+.navbar-bg {
+  width: 100%;
+  height: 95px;
+}
 .navbar-brand { 
 	padding: 0;
   position: relative;
@@ -59,27 +61,10 @@ th {
   margin-left: 10px;
   margin-right: 10px;
 }
-
-/* END BOOTSTRAP OVERRIDES */
-
-.a-primary-label {
-  font-weight:bold;
-  text-decoration: underline; 
+.profile-heading { 
+  font-size: 50px;
 }
 
-.a-primary-data {
+.author {
+  color: #0e9acd;
 }
-
-.a-secondary-label {
-  font-weight:bold; 
-}
-
-.a-secondary-data {
-}
-.ajax-loader {
-  position: absolute;
-  left: 45%;
-  top: 300px;
-  z-index: 200; 
-}
-
