@@ -10,7 +10,7 @@
   <properties>
     <java.version>1.7</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <activiti.version>5.18.0-SNAPSHOT</activiti.version>
+    <activiti.version>5.17.0</activiti.version>
     <start-class>io.onedecision.engine.Application</start-class>
   </properties>
   
