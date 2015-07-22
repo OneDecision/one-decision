@@ -2,7 +2,7 @@ package io.onedecision.engine.decisions.examples.dmn;
 
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
-import io.onedecision.engine.decisions.model.dmn.validators.DmnErrors;
+import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 import io.onedecision.engine.decisions.model.dmn.validators.SchemaValidator;
 
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class ExamplesSchemaValidTest {
 
 	@Test
 	public void testSchemaValid() {
-		DmnErrors errors = new DmnErrors();
+		DmnValidationErrors errors = new DmnValidationErrors();
 		schemaValidator.validate(getClass().getResourceAsStream(resourceName),
 				errors);
 		assertTrue(!errors.hasErrors());
