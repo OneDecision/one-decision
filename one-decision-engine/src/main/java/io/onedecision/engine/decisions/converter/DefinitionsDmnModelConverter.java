@@ -12,8 +12,10 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts between the UI model and DMN serialisation.
+ * Converts between the DMN Definitions object and the persistent wrapper class.
  * 
+ * @see Definitions
+ * @see DmnModel
  * @author Tim Stephenson
  */
 @Component
