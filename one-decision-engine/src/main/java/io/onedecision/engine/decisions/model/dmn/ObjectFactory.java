@@ -457,8 +457,11 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20130901", name = "conclusion", scope = DecisionRule.class)
     @XmlIDREF
-    public JAXBElement<List<Object>> createTDecisionRuleConclusion(List<Object> value) {
-        return new JAXBElement<List<Object>>(_TDecisionRuleConclusion_QNAME, ((Class) List.class), DecisionRule.class, ((List<Object> ) value));
+    public JAXBElement<List<Expression>> createTDecisionRuleConclusion(
+            List<Expression> l) {
+        return new JAXBElement<List<Expression>>(
+                _TDecisionRuleConclusion_QNAME, ((Class) List.class),
+                DecisionRule.class, ((List<Expression>) l));
     }
 
     /**
@@ -467,8 +470,11 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20130901", name = "condition", scope = DecisionRule.class)
     @XmlIDREF
-    public JAXBElement<List<Object>> createTDecisionRuleCondition(List<Object> value) {
-        return new JAXBElement<List<Object>>(_TDecisionRuleCondition_QNAME, ((Class) List.class), DecisionRule.class, ((List<Object> ) value));
+    public JAXBElement<List<Expression>> createTDecisionRuleCondition(
+            List<Expression> value) {
+        return new JAXBElement<List<Expression>>(_TDecisionRuleCondition_QNAME,
+                ((Class) List.class), DecisionRule.class,
+                ((List<Expression>) value));
     }
 
 }

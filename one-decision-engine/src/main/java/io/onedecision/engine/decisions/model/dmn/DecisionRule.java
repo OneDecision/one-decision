@@ -9,12 +9,14 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -37,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * 
  */
+@XmlRootElement(name = "DecisionRule")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDecisionRule", propOrder = {
     "condition",
@@ -45,9 +48,9 @@ import javax.xml.bind.annotation.XmlType;
 public class DecisionRule {
 
     @XmlElementRef(name = "condition", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<List<Object>>> condition;
+    protected List<JAXBElement<List<Expression>>> condition;
     @XmlElementRef(name = "conclusion", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<List<Object>>> conclusion;
+    protected List<JAXBElement<List<Expression>>> conclusion;
 
     /**
      * Gets the value of the condition property.
@@ -71,27 +74,30 @@ public class DecisionRule {
      * 
      * 
      */
-    public List<JAXBElement<List<Object>>> getCondition() {
+    public List<JAXBElement<List<Expression>>> getCondition() {
         if (condition == null) {
-            condition = new ArrayList<JAXBElement<List<Object>>>();
+            condition = new ArrayList<JAXBElement<List<Expression>>>();
         }
         return this.condition;
     }
 
     public List<Expression> getConditions() {
         List<Expression> conditions = new ArrayList<Expression>();
-        for (JAXBElement<List<Object>> o : getCondition()) {
+        for (JAXBElement<List<Expression>> o : getCondition()) {
             if (o.getValue() instanceof JAXBElement) {
                 conditions.add((Expression) ((JAXBElement) o.getValue())
                         .getValue());
             } else {
-                conditions.addAll(adapt((List<Object>) o.getValue()));
+                conditions.addAll(adapt((List<Expression>) o.getValue()));
             }
         }
         return conditions;
     }
 
-    private List<Expression> adapt(List<Object> value) {
+    private List<Expression> adapt(List<Expression> value) {
+		if (value == null) {
+			return Collections.emptyList();
+		}
         List<Expression> list = new ArrayList<Expression>();
         for (Object object : value) {
             list.add((Expression) object);
@@ -123,16 +129,16 @@ public class DecisionRule {
      * 
      * 
      */
-    public List<JAXBElement<List<Object>>> getConclusion() {
+    public List<JAXBElement<List<Expression>>> getConclusion() {
         if (conclusion == null) {
-            conclusion = new ArrayList<JAXBElement<List<Object>>>();
+            conclusion = new ArrayList<JAXBElement<List<Expression>>>();
         }
         return this.conclusion;
     }
 
     public List<Expression> getConclusions() {
         List<Expression> conclusions = new ArrayList<Expression>();
-        for (JAXBElement<List<Object>> o : getConclusion()) {
+        for (JAXBElement<List<Expression>> o : getConclusion()) {
             if (o.getValue() instanceof JAXBElement) {
                 conclusions.add((Expression) ((JAXBElement) o.getValue())
                         .getValue());

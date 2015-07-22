@@ -1,8 +1,10 @@
 package io.onedecision.engine.decisions.model.dmn.adapters;
 
 import io.onedecision.engine.decisions.model.dmn.DecisionModelImport;
+import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
+import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.dmn.Text;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -10,11 +12,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.w3c.dom.Element;
 
 public class ExpressionAdapter extends
         XmlAdapter<ExpressionAdapter.AdaptedExpression, Expression> {
+
+    protected static final Logger LOGGER = LoggerFactory
+            .getLogger(ExpressionAdapter.class);
+
+	protected ObjectFactory objFact = new ObjectFactory();
 
     // @XmlRootElement(name = "Decision")
     public static class AdaptedExpression extends Expression {
@@ -25,7 +34,7 @@ public class ExpressionAdapter extends
         // protected List<JAXBElement<Object>> inputVariable;
         // protected QName itemDefinition;
 
-        @XmlElement(name = "text")
+		@XmlElement(name = "text", namespace = Definitions.DMN_1_0)
         protected Text text;
         @XmlElement(name = "Import")
         protected DecisionModelImport _import;
@@ -52,7 +61,8 @@ public class ExpressionAdapter extends
             adaptToExpression(v, literal);
             // TODO replaced el.getTextContent here
             Element el = findElement(v, "text");
-            literal.setText(new Text().addContent(el.getFirstChild()
+			Text txt = objFact.createTLiteralExpressionText();
+			literal.setText(txt.addContent(el.getFirstChild()
                     .getNodeValue()));
             literal.setImport(v._import);
             literal.setExpressionLanguage(v.expressionLanguage);
@@ -89,11 +99,21 @@ public class ExpressionAdapter extends
             adaptedExpression.setName(literal.getName());
             adaptedExpression.setDescription(literal.getDescription());
             adaptedExpression.text = literal.getText();
+            if (literal.getText() != null
+                    && literal.getText().getContent() != null
+                    && literal.getText().getContent().size() > 0) {
+                System.out.println("Have text for literal: "
+                        + literal.getText().getContent());
+                assert (adaptedExpression.getText().getContent().size() == literal
+                        .getText().getContent().size());
+            }
         } else if (v instanceof Expression) {
             // continue
+            LOGGER.warn("Ignoring mashalling of abstract expression: "
+                    + v.getId());
         } else {
             // Cannot happen?
-            System.out.println("Unrecognised expression sub-type: "
+            LOGGER.error("Unrecognised expression sub-type: "
                     + v.getClass().getName());
         }
         return adaptedExpression;
