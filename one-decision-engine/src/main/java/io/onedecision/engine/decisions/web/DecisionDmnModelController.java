@@ -63,11 +63,11 @@ public class DecisionDmnModelController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json" })
     public @ResponseBody DmnModel getModelForTenant(
             @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") String id) {
+            @PathVariable("id") Long id) {
         LOGGER.info(String.format(
                 "Seeking decision model %1$s for tenant %2$s", id, tenantId));
 
-        DmnModel model = repo.findByDefinitionId(tenantId, id);
+        DmnModel model = repo.findOneForTenant(tenantId, id);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model;
@@ -147,7 +147,8 @@ public class DecisionDmnModelController {
             }
         }
 
-        return createModelForTenant(tenantId, dmnFileName, deploymentMessage,
+        return createModelForTenant(tenantId, dmnFileName,
+                deploymentMessage,
                 decisionModelFactory.load(dmnContent), image);
     }
 

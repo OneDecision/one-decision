@@ -11,9 +11,6 @@ import io.onedecision.engine.decisions.web.DecisionDmnModelController;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import org.junit.Test;
@@ -62,13 +59,19 @@ public class DmnLifecycleTest implements ExamplesConstants {
         // Retrieve
         List<DmnModel> models = svc.listForTenant(TENANT_ID);
         assertEquals(1, models.size());
+        assertEquals(dmnModel, models.get(0));
         assertEquals(dmnModel.getDefinitionXml(), models.get(0)
                 .getDefinitionXml());
+
+        // Retrieve DMN only
+        String definitions = svc.getDmnForTenant(TENANT_ID,
+                dmnModel.getDefinitionId());
+        assertEquals(dmnModel.getDefinitionXml(), definitions);
 
         // Update
         models.get(0).setName(models.get(0).getName() + " updated");
         svc.updateModelForTenant(TENANT_ID, model.getId(), models.get(0));
-        DmnModel model2 = svc.getModelForTenant(TENANT_ID, model.getId());
+        DmnModel model2 = svc.getModelForTenant(TENANT_ID, dmnModel.getId());
         assertEquals(dmnModel.getDefinitionXml(), model2.getDefinitionXml());
 
         // Delete
@@ -82,8 +85,6 @@ public class DmnLifecycleTest implements ExamplesConstants {
         File dmnToUpload = new File(baseDir, ARR_DMN_RESOURCE);
         assertTrue("Cannot find DMN file to use as test input",
                 dmnToUpload.exists());
-        Path path = Paths.get(dmnToUpload.getAbsolutePath());
-        byte[] content = Files.readAllBytes(path);
 
         // Create
         DmnModel dmnModel = svc.handleFileUpload(TENANT_ID, null,

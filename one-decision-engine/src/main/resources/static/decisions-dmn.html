@@ -91,7 +91,7 @@
         <h2>
           <span>{{current.name}}</span>
           <div class="pull-right">
-            <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.id}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
+            <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.definitionId}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
             <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete({{current.deploymentId}})" title="Delete this definition"></a>
           </div>          
         </h2>
@@ -101,7 +101,6 @@
           <span class="a-secondary-label control-label">Definition Id: </span> {{current.definitionId}};
           <span class="a-secondary-label control-label">Deployed: </span> {{formatDateTime(current.created)}};
         </p>
-          <img src="/{{tenant.id}}/decision-models/{{current.id}}.png" alt="image of decision"/>
     </section>
     {{/}}
   </script>

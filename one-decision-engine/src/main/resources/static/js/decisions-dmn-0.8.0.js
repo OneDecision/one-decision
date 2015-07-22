@@ -16,6 +16,9 @@ var ractive = new OneDecisionApp({
     formatDate: function(timeString) {
       return new Date(timeString).toLocaleDateString(navigator.languages);
     },
+    formatDateTime: function(timeString) {
+      return new Date(timeString).toLocaleString(navigator.languages);
+    },
     matchFilter: function(obj) {
       if (ractive.get('filter')==undefined) return true;
       else return ractive.get('filter').value.toLowerCase()==obj[ractive.get('filter').field].toLowerCase();
