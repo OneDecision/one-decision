@@ -7,11 +7,11 @@
   expressionLanguage="http://foo.com/application/javascript"
   name="Application Risk Decisions">
   
-   <ItemDefinition id="applicantDef" isCodlection="false" name="Applicant" typeLanguage="http://tempuri.org">
+   <ItemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
      <description>Domain model definition for a single applicant.</description>
    </ItemDefinition>
-   <ItemDefinition id="conclusionDef" isCodlection="false" name="conclusion" typeLanguage="http://tempuri.org">
-     <description>Domain model definition for a single conclusion (podicy).</description>
+   <ItemDefinition id="conclusionDef" isCollection="false" name="conclusion" typeLanguage="http://tempuri.org">
+     <description>Domain model definition for a single conclusion (policy).</description>
    </ItemDefinition>
    
    <BusinessKnowledgeModel id="bkm0" name="Applicant Model">
@@ -33,19 +33,19 @@
      </authorityRequirement> -->
   </BusinessKnowledgeModel>
        
-  <Decision id="DetermineApplicantRiskRating" name="Determine applicant's risk rating">
+  <Decision id="1_d" name="Determine applicant's risk rating">
     <description>Determines health insurance applicant's risk rating</description>
     <question>What is the risk rating for the specified health insurance applicant?</question>
     <allowedAnswers>"High", "Medium", "Low"</allowedAnswers>
    
     <DecisionTable 
-        aggregation="CodLECT" 
+        aggregation="COLLECT" 
         hitconclusion="UNIQUE" 
         id="dt0" 
         isComplete="true" 
         isConsistent="true" 
         name="Applicant Risk Rating" 
-        preferedOrientation="Rule-as-Codumn">
+        preferedOrientation="Rule-as-Column">
       <description>Calculate applicant risk rating based on age and health</description>
       <clause>
         <inputExpression id="dt0_c0_ie" od:type="LiteralExpression">
