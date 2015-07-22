@@ -1,4 +1,4 @@
-package io.onedecision.engine.domain.api;
+package io.onedecision.engine.domain.api.test;
 
 import static org.junit.Assert.assertNotNull;
 import io.onedecision.engine.domain.api.DomainModelFactory;
@@ -13,12 +13,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MockDomainModelFactory implements DomainModelFactory {
-    protected static ObjectMapper mapper;
+    protected static ObjectMapper mapper = new ObjectMapper();
 
     protected Map<String, DomainModel> domains;
 
     public MockDomainModelFactory() {
-        mapper = new ObjectMapper();
         domains = new HashMap<String, DomainModel>();
     }
 

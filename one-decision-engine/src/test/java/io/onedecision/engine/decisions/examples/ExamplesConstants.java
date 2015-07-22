@@ -8,7 +8,7 @@ public interface ExamplesConstants {
     static final String ARR_JSON_RESOURCE = "/decisions/examples/ApplicationRiskRating.json";
     static final String ARR_DMN_RESOURCE = "/decisions/examples/ApplicationRiskRating.dmn";
     static final String ARR_DEFINITION_ID = "ApplicationRiskRating";
-    static final String ARR_DECISION_ID = "DetermineApplicantRiskRating";
+	static final String ARR_DECISION_ID = "1_d";
 
     // Email Follow Up example
     static final String EFU_JSON_RESOURCE = "/decisions/examples/EmailFollowUp.json";

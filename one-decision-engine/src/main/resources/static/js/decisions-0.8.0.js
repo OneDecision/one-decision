@@ -151,49 +151,37 @@ var ractive = new OneDecisionApp({
   },
   initAutoComplete: function() {
     console.log('initAutoComplete');
-//    $('.expr-name .typeahead').click(function(ev) {
-//      console.log(this);
-//      console.log(ev);
-//      if (this.typeahead()==undefined) {
-//        console.error('not inited');
-//      } else {
-//        console.log('inited');
-//      }
-//    });
     $('.expr-name .typeahead').each(function(i,d) {
       console.log('binding entities to typeahead control: '+d.name);
       $(d).typeahead({ minLength:0,source:ractive.get('entityAttrs')}); 
     });
-//      $(d.selector).on("click", function (ev) {
-//        newEv = $.Event("keydown");
-//        newEv.keyCode = newEv.which = 40;
-//        $(ev.target).trigger(newEv);
-//        return true;
-//     });
   },
   save: function (decision) {
     console.log('save '+JSON.stringify(decision)+' ...');
 
-//    var id = decision.id;
     var id = decision._links === undefined ? undefined : (
         decision._links.self.href.indexOf('?') == -1 ? decision._links.self.href : decision._links.self.href.substr(0,decision._links.self.href.indexOf('?')-1)
     );
     console.log('saving as id: '+id);
     decision.tenantId = ractive.get('tenant.id');
     $.ajax({
-      url: id == undefined ? '/decision-ui-models/' : id,
+      url: id == undefined 
+          ? ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-ui-models/' 
+          : id.replace(/\/decision-ui-models\//, '/'+ractive.get('tenant.id')+'/decision-ui-models/'),
       type: id == undefined ? 'POST' : 'PUT',
       contentType: 'application/json',
       data: JSON.stringify(decision),
       success: completeHandler = function(data, textStatus, jqXHR) {
         console.log('data: '+ data);
         var location = jqXHR.getResponseHeader('Location');
-        if (location != undefined) { 
-          ractive.set('decision._links.self.href',location);
-//          ractive.set('decision.id',location.substring());
+        if (jqXHR.status == 201) { 
+          //console.log('Created '+location);
+          ractive.get('decisions').push(data);
         }
-//        if (jqXHR.status == 201) ractive.get('deciosn').push(ractive.get('current'));
-//        if (jqXHR.status == 204) ractive.splice('decisions',ractive.get('currentIdx'),1,ractive.get('current'));
+        if (jqXHR.status == 200) { 
+          //console.log('Updated '+id);
+          ractive.splice('decisions',ractive.get('currentIdx'),1,data);
+        }
         ractive.showMessage('Saved');
       },
       error: errorHandler = function(jqXHR, textStatus, errorThrown) {
@@ -201,9 +189,10 @@ var ractive = new OneDecisionApp({
       }
     });
   },
-  select: function(decision) {
+  select: function(idx,decision) {
     console.log('select...'+decision);
     ractive.set('saveObserver', false);
+    ractive.set('currentIdx', idx);
     $.getJSON(ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-ui-models/'+decision.id,  function( data ) {
       console.log('loaded decision...');
       ractive.set('decision', data);

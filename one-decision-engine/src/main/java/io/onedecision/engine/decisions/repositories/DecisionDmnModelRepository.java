@@ -9,7 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(path = "/decision-models")
+@RepositoryRestResource(exported = false)
 public interface DecisionDmnModelRepository extends
         CrudRepository<DmnModel, Long> {
 

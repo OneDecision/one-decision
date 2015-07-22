@@ -1,7 +1,5 @@
 package io.onedecision.engine.decisions.model.ui;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,15 +38,18 @@ public class DecisionExpression {
     protected String label;
 
     public DecisionExpression() {}
-    
-    public DecisionExpression(List<String> expressions) {
-        setExpressions((String[]) expressions.toArray());
-    }
 
     public DecisionExpression(String name, String[] expressions) {
         setName(name);
         setExpressions(expressions);
     }
+
+	public DecisionExpression(String name, String label,
+			String[] expressions) {
+		setName(name);
+		setLabel(label);
+		setExpressions(expressions);
+	}
 
     public String getLabel() {
         if (label == null) {

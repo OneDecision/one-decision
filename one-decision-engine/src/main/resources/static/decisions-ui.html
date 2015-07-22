@@ -50,7 +50,7 @@
         <tbody>
         {{#each decisions:i}}
           {{# (searchTerm!=undefined && matchFilter(this)) }}
-              <tr data-href="{{links[rel=='self'].href}}" on-click="select(this)">
+              <tr data-href="{{links[rel=='self'].href}}" on-click="select(i,this)">
                 <td>{{i+1}}</td>
                 <td>{{name}}</td>
                 <td>{{hitPolicy}}</td>

@@ -106,8 +106,7 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
         // id="idvalue2" name="conclusion">...
 
         for (Decision d : dm.getDecisions()) {
-            System.out.println("d: " + d.getId() + ":" + d.getName());
-            assertEquals("DetermineApplicantRiskRating", d.getId());
+            assertEquals(ExamplesConstants.ARR_DECISION_ID, d.getId());
 
             DecisionTable dt = d.getDecisionTable();
             assertEquals("dt0", dt.getId());

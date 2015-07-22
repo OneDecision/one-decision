@@ -73,6 +73,12 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Override scope so we can provide test helpers  -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
   		<groupId>org.glassfish</groupId>
   		<artifactId>javax.json</artifactId>

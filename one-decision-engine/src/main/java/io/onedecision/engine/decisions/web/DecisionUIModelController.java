@@ -9,15 +9,20 @@ import io.onedecision.engine.decisions.repositories.DecisionUIModelRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Controller to support the decision definition UI.
@@ -110,7 +115,6 @@ public class DecisionUIModelController {
      *            The new model.
      * @return
      */
-    @RequestMapping(value = "/", method = RequestMethod.POST)
     public @ResponseBody DecisionModel createModelForTenant(
             @PathVariable("tenantId") String tenantId,
             @RequestBody DecisionModel model) {
@@ -123,18 +127,35 @@ public class DecisionUIModelController {
         return repo.save(model);
     }
 
-    /**
-     * Model updates are typically additive but for the time being at least this
-     * is not enforced.
-     * 
-     * @param tenantId
-     *            The tenant whose model is to be updated.
-     * @param id
-     *            Name of the decision to be updated.
-     * @param model
-     *            The updated model.
-     * @return
-     */
+	/*
+	 * TODO this method is needed to return the expected Location header until
+	 * such time as full Hateos is implemented. Please do not rely on it.
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
+	public @ResponseBody DecisionModel createModelForTenant(
+			@PathVariable("tenantId") String tenantId,
+			@RequestBody DecisionModel model, 
+			HttpServletRequest request, HttpServletResponse response) {
+		DecisionModel dm= createModelForTenant(tenantId,
+				model);
+		response.setHeader("Location",
+				String.format("%1$s%2$d", request.getRequestURL(), dm.getId()));
+		return dm;
+	}
+
+	/**
+	 * Model updates are typically additive but for the time being at least this
+	 * is not enforced.
+	 * 
+	 * @param tenantId
+	 *            The tenant whose model is to be updated.
+	 * @param id
+	 *            Name of the decision to be updated.
+	 * @param model
+	 *            The updated model.
+	 * @return
+	 */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public @ResponseBody DecisionModel updateModelForTenant(
             @PathVariable("tenantId") String tenantId,

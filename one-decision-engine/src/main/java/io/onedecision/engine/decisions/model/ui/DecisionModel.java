@@ -31,9 +31,6 @@ public class DecisionModel implements Serializable {
 
     private static final long serialVersionUID = -1955316879920138892L;
 
-    // protected static final Logger LOGGER = LoggerFactory
-    // .getLogger(DecisionModel2.class);
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -58,6 +55,10 @@ public class DecisionModel implements Serializable {
     @JsonProperty
     private List<String> outputs;
 
+	public DecisionModel() {
+		created = new Date();
+	}
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<DecisionExpression> conditions;
 
@@ -68,12 +69,12 @@ public class DecisionModel implements Serializable {
     private List<DecisionExpression> rules;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @JsonProperty
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-    // @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @JsonProperty
     private Date lastUpdated;
 
@@ -84,15 +85,13 @@ public class DecisionModel implements Serializable {
 
     @PrePersist
     public void preInsert() {
-        created = new Date();
+		if (created == null) {
+        	created = new Date();
+        }
     }
 
     @PreUpdate
     public void preUpdate() {
-        // if (LOGGER.isWarnEnabled() && lastUpdated != null) {
-        // LOGGER.warn(String.format(
-        // "Overwriting update date %1$s with 'now'.", lastUpdated));
-        // }
         lastUpdated = new Date();
     }
 
