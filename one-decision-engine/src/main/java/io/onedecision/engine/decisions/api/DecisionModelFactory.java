@@ -99,9 +99,6 @@ public class DecisionModelFactory {
             mapper.getSerializationConfig().withAppendedAnnotationIntrospector(
                     introspector);
             // TODO omit null values, but not like this
-            // StdSerializerProvider provider = new StdSerializerProvider();
-            // provider.setNullValueSerializer(new NoOpNullSerializer());
-            // mapper.setSerializerProvider(provider);
         }
         return mapper;
     }

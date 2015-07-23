@@ -90,15 +90,12 @@ public class Application extends WebMvcConfigurerAdapter {
         return or(regex("/.*/decisions.*"), regex("/.*/decision-ui-models.*"),
                 regex("/.*/domain.*"));
     }
-    
-	 @Override
-	 public void addViewControllers(ViewControllerRegistry registry) {
-	 // Allegedly sets welcome page though does not appear to be working
-//	 registry.addViewController("/").setViewName("index");
-	 registry.addViewController("/").setViewName("forward:/index.html");
-	 registry.addViewController("/login").setViewName("login");
-	 // registry.addViewController("/loginError").setViewName("loginError");
-	 }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("forward:/index.html");
+        registry.addViewController("/login").setViewName("login");
+    }
 
     @Bean
     public ApplicationSecurity applicationSecurity() {
@@ -131,7 +128,6 @@ public class Application extends WebMvcConfigurerAdapter {
                     	.loginPage("/login").failureUrl("/login?error")
                     .successHandler(getSuccessHandler()).permitAll()
                     .and().csrf().disable().httpBasic();
-                    //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         }
 
         private AuthenticationSuccessHandler getSuccessHandler() {

@@ -115,11 +115,6 @@ public class DecisionService {
 
         List<String> varsToInit = new ArrayList<String>();
         for (Clause o : dt.getClause()) {
-            // System.out.println("  c: " + o);
-            // for (InformationItem var : o.getInputVariables()) {
-            // System.out.println("    var: " + var);
-            // }
-            // System.out.println("ie: " + inputExpression);
 			if (o.getInputExpression() != null
 					&& o.getInputExpression().getOnlyInputVariable() != null) {
                 varsToInit.add(o.getInputExpression().getOnlyInputVariable()

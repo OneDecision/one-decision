@@ -58,22 +58,16 @@ public class DomainEntity {
     @JsonProperty
     protected String imageUrl;
 
-    /**
-     */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     @JsonProperty
     private Date firstCreated;
 
-    /**
-     */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     @JsonProperty
     private Date lastUpdated;
 
-    /**
-     */
     @NotNull
     @JsonProperty
     @Column(nullable = false)

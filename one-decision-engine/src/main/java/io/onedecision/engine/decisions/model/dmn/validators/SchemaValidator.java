@@ -24,6 +24,8 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
@@ -37,6 +39,9 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class SchemaValidator implements ErrorHandler {
+
+    protected static final Logger LOGGER = LoggerFactory
+            .getLogger(SchemaValidator.class);
 
     class LocalResourceResolver implements LSResourceResolver {
         @Override
@@ -110,9 +115,9 @@ public class SchemaValidator implements ErrorHandler {
         try {
             parser.parse(new InputSource(is), (DefaultHandler) null);
         } catch (Exception e) {
-            errors.reject("Schema validation failed",
-                    "Exception: " + e.getMessage());
-            // e.printStackTrace(System.out);
+            String msg = "Schema validation failed";
+            LOGGER.error(msg, e);
+            errors.reject(msg, "Exception: " + e.getMessage());
         }
         if (this.errors.size() > 0) {
             errors.reject("Schema validation failed", this.errors.toString());

@@ -38,14 +38,7 @@ public class ExpressionAdapter extends
 
 	protected ObjectFactory objFact = new ObjectFactory();
 
-    // @XmlRootElement(name = "Decision")
     public static class AdaptedExpression extends Expression {
-
-        // @XmlElementRef(name = "inputVariable", namespace =
-        // "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class,
-        // required = false)
-        // protected List<JAXBElement<Object>> inputVariable;
-        // protected QName itemDefinition;
 
 		@XmlElement(name = "text", namespace = Definitions.DMN_1_0)
         protected Text text;
@@ -100,12 +93,8 @@ public class ExpressionAdapter extends
         }
         AdaptedExpression adaptedExpression = new AdaptedExpression();
         BeanUtils.copyProperties(v, adaptedExpression);
-        try {
-            adaptedExpression.getInputVariable().addAll(v.getInputVariable());
-        } catch (Exception e) {
-            // TODO
-            e.getMessage();
-        }
+        adaptedExpression.getInputVariable().addAll(v.getInputVariable());
+
         if (v instanceof LiteralExpression) {
             LiteralExpression literal = (LiteralExpression) v;
             adaptedExpression.setId(literal.getId());
@@ -115,8 +104,6 @@ public class ExpressionAdapter extends
             if (literal.getText() != null
                     && literal.getText().getContent() != null
                     && literal.getText().getContent().size() > 0) {
-                System.out.println("Have text for literal: "
-                        + literal.getText().getContent());
                 assert (adaptedExpression.getText().getContent().size() == literal
                         .getText().getContent().size());
             }

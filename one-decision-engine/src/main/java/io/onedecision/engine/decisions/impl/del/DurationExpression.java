@@ -23,7 +23,13 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.Duration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DurationExpression implements DelExpression {
+
+    protected static final Logger LOGGER = LoggerFactory
+            .getLogger(DurationExpression.class);
 
 	@Override
 	public String compile(String script) {
@@ -33,14 +39,13 @@ public class DurationExpression implements DelExpression {
 		if (matcher.matches()) {
 			// Note: 1st capturing group discards all but the duration string
 			String inputDuration = matcher.group(1);
-			System.out.println(inputDuration);
 			try {
 				Duration newDuration = DatatypeFactory.newInstance()
 						.newDuration(inputDuration);
 				String s = script
 						.replace(inputDuration, String.valueOf(newDuration
 								.getTimeInMillis(new Date())));
-				System.out.println("converted script to " + s);
+                LOGGER.debug("converted script to " + s);
 				return s;
 			} catch (DatatypeConfigurationException e) {
 				throw new DecisionException("Cannot parse inputDuration");

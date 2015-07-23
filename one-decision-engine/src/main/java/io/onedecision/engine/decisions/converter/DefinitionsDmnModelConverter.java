@@ -13,6 +13,7 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.converter;
 
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.DecisionModelFactory;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
@@ -20,6 +21,8 @@ import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -35,6 +38,9 @@ import org.springframework.stereotype.Component;
 public class DefinitionsDmnModelConverter implements
         Converter<Definitions, DmnModel> {
 
+    protected static final Logger LOGGER = LoggerFactory
+            .getLogger(DefinitionsDmnModelConverter.class);
+
     @Autowired
     private DecisionModelFactory decisionModelFactory;
 
@@ -45,8 +51,9 @@ public class DefinitionsDmnModelConverter implements
         try {
             decisionModelFactory.write("application/xml", model, sw);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            String msg = "Unable to serialize definitions model";
+            LOGGER.error(msg, e);
+            throw new DecisionException(msg, e);
         }
         return new DmnModel(model, sw.toString());
     }

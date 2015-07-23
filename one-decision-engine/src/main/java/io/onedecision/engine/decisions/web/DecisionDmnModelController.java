@@ -232,7 +232,6 @@ public class DecisionDmnModelController {
         }
         // TODO perform checks that the model changes are not destructive.
 
-        // model2 = repo.findById(tenantId, id);
         repo.save(model);
     }
 

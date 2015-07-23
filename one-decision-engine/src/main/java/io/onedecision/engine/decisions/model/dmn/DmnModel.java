@@ -32,7 +32,8 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * 
+ * Persistent wrapper for DMN model adding repository attributes such as
+ * deployment time.
  * 
  * @author Tim Stephenson
  */

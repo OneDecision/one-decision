@@ -39,16 +39,9 @@ public class DecisionRule {
     @JsonProperty
     private Long id;
 
-    // @NotNull
-    // @JsonProperty
-    // protected String name;
-
     @JsonProperty 
     protected String[] expressions;
 
-    // @JsonProperty
-    // protected String label;
-    
     public DecisionRule() {}
 
     public DecisionRule(String[] expressions) {
@@ -70,16 +63,4 @@ public class DecisionRule {
 	public void setExpressions(String[] expressions) {
 		this.expressions = expressions;
 	}
-
-    // public DecisionRule(String name, String[] expressions) {
-    // setName(name);
-    // setExpressions(expressions);
-    // }
-
-    // public String getLabel() {
-    // if (label == null) {
-    // return name;
-    // }
-    // return label;
-    // }
 }
