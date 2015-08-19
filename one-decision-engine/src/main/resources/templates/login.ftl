@@ -64,7 +64,7 @@
   <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
   <script src="/webjars/ractive/0.7.1/ractive.min.js"></script>
   <script src="js/one-decision-0.8.0.js"></script>
-  <script src="js/login-ui-0.8.0.js"></script>
+  <script src="js/one-decision-login-0.8.0.js"></script>
 </body>
 
 </html>
