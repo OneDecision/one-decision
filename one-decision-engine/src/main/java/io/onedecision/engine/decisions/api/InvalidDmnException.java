@@ -13,10 +13,16 @@
  ******************************************************************************/
 package io.onedecision.engine.decisions.api;
 
+import java.util.ArrayList;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+
 public class InvalidDmnException extends DecisionException {
 
     private static final long serialVersionUID = 5963000172167072118L;
     public static final String MESSAGE = "The DMN file is invalid";
+    private ArrayList<String> messages;
 
     public InvalidDmnException(String msg, Exception cause) {
         super(msg, cause);
@@ -24,6 +30,30 @@ public class InvalidDmnException extends DecisionException {
 
     public InvalidDmnException(String message) {
         super(message);
+    }
+
+    public InvalidDmnException(String message,
+            ArrayList<String> individualMessages) {
+        super(message);
+        messages = individualMessages;
+    }
+
+    public static InvalidDmnException wrap(
+            Set<ConstraintViolation<?>> constraintViolations) {
+        ArrayList<String> messages = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+        for (ConstraintViolation<?> violation : constraintViolations) {
+            String msg = String.format("%1$s.%2$s %3$s", violation
+                    .getLeafBean().getClass().getSimpleName(),
+                    violation.getPropertyPath(), violation.getMessage());
+            messages.add(msg);
+            sb.append(msg).append("\n");
+        }
+        return new InvalidDmnException(sb.toString(), messages);
+    }
+
+    public ArrayList<String> getMessages() {
+        return messages;
     }
 
 }

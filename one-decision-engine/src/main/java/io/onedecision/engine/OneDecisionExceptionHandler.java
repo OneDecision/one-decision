@@ -18,6 +18,8 @@ import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.InvalidDmnException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 
+import javax.validation.ConstraintViolationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,14 @@ public class OneDecisionExceptionHandler {
     public InvalidDmnException handleInvalidDmn(InvalidDmnException e) {
         LOGGER.error(e.getMessage(), e);
         return e;
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseBody
+    public InvalidDmnException handleInvalidDmn(ConstraintViolationException e) {
+        LOGGER.error(e.getMessage(), e);
+        return InvalidDmnException.wrap((e.getConstraintViolations()));
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
