@@ -52,7 +52,11 @@ var OneDecisionApp = Ractive.extend({
     if (parts.length == 2) return parts.pop().split(";").shift();
   },
   handleError: function(jqXHR, textStatus, errorThrown) {
-    switch (jqXHR.status) { 
+    switch (jqXHR.status) {
+    case 400:  
+      var msg = jqXHR.responseJSON == null ? textStatus+': '+errorThrown : errorThrown+': '+jqXHR.responseJSON.message;
+      ractive.showError(msg);
+      break; 
     case 401:
     case 403: 
     case 405:  

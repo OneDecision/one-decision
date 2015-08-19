@@ -138,7 +138,8 @@ var ractive = new OneDecisionApp({
           ractive.collapseAdd();
           ractive.fetch();
           ractive.showMessage('Successfully uploaded data');
-        }
+        },
+        error: ractive.handleError
       });
   }
 });

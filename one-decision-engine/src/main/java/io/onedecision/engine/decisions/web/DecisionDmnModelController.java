@@ -14,6 +14,7 @@
 package io.onedecision.engine.decisions.web;
 
 import io.onedecision.engine.decisions.api.DecisionModelFactory;
+import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.converter.DefinitionsDmnModelConverter;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
@@ -158,6 +159,10 @@ public class DecisionDmnModelController {
                 LOGGER.debug("... non-DMN resource");
                 image = resource.getBytes();
             }
+        }
+
+        if (dmnContent == null) {
+            throw new NoDmnFileInUploadException();
         }
 
         return createModelForTenant(tenantId, dmnFileName,

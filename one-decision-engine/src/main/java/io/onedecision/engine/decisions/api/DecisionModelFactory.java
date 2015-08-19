@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -164,7 +165,7 @@ public class DecisionModelFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public Definitions load(String definition) throws IOException {
+    public Definitions load(@NotNull String definition) throws IOException {
         JAXBContext context;
         try {
             context = JAXBContext.newInstance(Definitions.class);
@@ -179,7 +180,7 @@ public class DecisionModelFactory {
         } catch (JAXBException e) {
             String msg = "Unable to load decision model from stream";
             LOGGER.error(msg, e);
-            throw new IOException(msg, e);
+            throw new InvalidDmnException(msg, e);
         }
     }
 
