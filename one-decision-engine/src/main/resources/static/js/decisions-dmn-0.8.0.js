@@ -65,8 +65,9 @@ var ractive = new OneDecisionApp({
         url: '/'+ractive.get('tenant.id')+'/decision-models/'+decision.id,
         type: 'DELETE',
         success: completeHandler = function(data) {
-           ractive.fetch();
-           ractive.showResults();
+          ractive.set('current',undefined);
+          ractive.fetch();
+          ractive.showResults();
         }
     });
   },
@@ -102,6 +103,7 @@ var ractive = new OneDecisionApp({
   },
   showDecision: function() {
     console.log('showDecision');
+    $('#currentHighlightedDmn').html(hljs.highlight('xml',formatXml(ractive.get('current.definitionXml'))).value);
     $('#decisionsTable').slideUp();
     $('#decisionsTableToggle').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
     $('#currentSect').slideDown();
@@ -143,3 +145,35 @@ var ractive = new OneDecisionApp({
       });
   }
 });
+
+// Thanks to https://gist.github.com/sente/1083506
+function formatXml(xml) {
+  var formatted = '';
+  var reg = /(>)(<)(\/*)/g;
+  xml = xml.replace(reg, '$1\r\n$2$3');
+  var pad = 0;
+  jQuery.each(xml.split('\r\n'), function(index, node) {
+      var indent = 0;
+      if (node.match( /.+<\/\w[^>]*>$/ )) {
+          indent = 0;
+      } else if (node.match( /^<\/\w/ )) {
+          if (pad != 0) {
+              pad -= 1;
+          }
+      } else if (node.match( /^<\w[^>]*[^\/]>.*$/ )) {
+          indent = 1;
+      } else {
+          indent = 0;
+      }
+
+      var padding = '';
+      for (var i = 0; i < pad; i++) {
+          padding += '  ';
+      }
+
+      formatted += padding + node + '\r\n';
+      pad += indent;
+  });
+
+  return formatted;
+}
