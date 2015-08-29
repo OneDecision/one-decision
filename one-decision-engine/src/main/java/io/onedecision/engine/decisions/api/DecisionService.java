@@ -26,9 +26,11 @@ import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter.Adap
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -45,7 +47,7 @@ public class DecisionService {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionService.class);
 
 	private static final List<String> EXCLUDED_OBJECTS = newArrayList(
-			"context", "print", "println");
+            "context", "print", "println", "System");
 
 	protected List<DelExpression> compilers;
 
@@ -110,10 +112,10 @@ public class DecisionService {
             return cache.get(dt.getId());
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("var System = java.lang.System;\n");
         ExpressionAdapter adapter = new ExpressionAdapter();
 
-        List<String> varsToInit = new ArrayList<String>();
+        Set<String> varsToInit = new HashSet<String>();
         for (Clause o : dt.getClause()) {
 			if (o.getInputExpression() != null
 					&& o.getInputExpression().getOnlyInputVariable() != null) {
