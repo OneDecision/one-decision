@@ -68,7 +68,7 @@ public class DecisionControllerTest implements ExamplesConstants {
     @Test
     public void testDecisionViaController() throws IOException,
             DecisionException {
-        Map<String, String> vars = new HashMap<String, String>();
+        Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("applicant", "{\"age\":18,\"health\":\"Good\"}");
         String conclusion = decisionController.executeDecision(TENANT_ID,
                 ARR_DEFINITION_ID, ARR_DECISION_ID, vars);

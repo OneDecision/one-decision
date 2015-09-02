@@ -72,7 +72,7 @@ public class DecisionModelConverter implements
 
 	public Definitions convert(DecisionModel source) {
 		Definitions target = objFact.createTDefinitions();
-		target.setId(source.getId() + "Model");
+		target.setId(createId(source));
 		target.setName(source.getName() + " Model");
 		target.setExpressionLanguage(URI_JAVASCRIPT_5);
 		target.setNamespace("http://onedecision.io/" + source.getTenantId());
@@ -118,9 +118,9 @@ public class DecisionModelConverter implements
 		dt.setPreferedOrientation(DecisionTableOrientation.RULE_AS_COLUMN);
 		decision.setExpression(objFact.createDecisionTable(dt));
 
-        List<String> added = new ArrayList<String>();
 		for (DecisionExpression condition : source.getConditions()) {
-			String inputVarName = inferVarName(condition.getName());
+            List<String> added = new ArrayList<String>();
+            String inputVarName = inferVarName(condition.getName());
 			InformationItem inputVar = findInformationItem(target, inputVarName);
 			JAXBElement<Object> inputExpr = objFact
 					.createTExpressionInputVariable(inputVar);
@@ -133,6 +133,7 @@ public class DecisionModelConverter implements
                     LiteralExpression le = objFact.createTLiteralExpression();
                     le.setId(createId(dt, source, source.getConditions(),
                             condition, expr));
+                    // le.setName(condition.getName());
                     le.getInputVariable().add(inputExpr);
 
                     Text txt = objFact.createTLiteralExpressionText();
@@ -142,6 +143,7 @@ public class DecisionModelConverter implements
                 }
 			}
 			Clause clause = objFact.createTClause();
+            clause.setName(getLeaf(condition.getName()));
 			clause.getInputEntry().addAll(entries);
 
 			Expression inExpr = objFact.createTLiteralExpression();
@@ -156,12 +158,13 @@ public class DecisionModelConverter implements
 		}
 
 		for (DecisionExpression conclusion : source.getConclusions()) {
+            List<String> added = new ArrayList<String>();
 			Clause clause = objFact.createTClause();
+            clause.setName(getLeaf(conclusion.getName()));
 			// TODO customer namespace?
 			clause.setOutputDefinition(new QName(inferVarName(conclusion
 					.getName())));
 
-            added.clear();
 			for (String expr : conclusion.getExpressions()) {
                 if (!added.contains(expr)) {
                     added.add(expr);
@@ -169,6 +172,10 @@ public class DecisionModelConverter implements
                     le.setId(createId(dt, source, source.getConclusions(),
                             conclusion, expr));
                     le.setDescription(conclusion.getLabel());
+                    // TODO appear unable to set output definition as expected
+                    // by DecisionService.getScript
+                    le.setItemDefinition(new QName(inferVarName(conclusion
+                            .getName())));
                     Text txt = objFact.createTLiteralExpressionText();
                     txt.getContent().add(conclusion.getName() + " = " + expr);
                     le.setText(txt);
@@ -184,11 +191,20 @@ public class DecisionModelConverter implements
 		return target;
 	}
 
-	private InformationItem findInformationItem(Definitions definitions,
+    private String getLeaf(String name) {
+        if (name.contains(".")) {
+            return name.substring(name.indexOf('.') + 1);
+        }
+        return name;
+    }
+
+    private InformationItem findInformationItem(Definitions definitions,
 			String varName) {
 		for (InformationItem item : definitions.getBusinessKnowledgeModel()
 				.getInformationItem()) {
-			if (item.getId().equals(varName)) {
+            System.out.println(String.format("comparing %1$s (%2$s) to %3$s",
+                    item.getId(), item.getName(), varName));
+            if (item.getId().equals(varName)) {
 				return item;
 			}
 		}
@@ -196,23 +212,25 @@ public class DecisionModelConverter implements
 	}
 
 	private void inferRules(DecisionModel source, DecisionTable dt) {
-        List<Expression> l = new ArrayList<Expression>();
 		for (int i = 0; i < source.getConditions().get(0).getExpressions().length; i++) {
 			System.out.println("expression  " + i);
 			DecisionRule dmRule = objFact.createTDecisionRule();
 
 			for (DecisionExpression condExpr : source.getConditions()) {
-                LOGGER.debug(String.format("  condition: %1$s %2$s: %3$s",
-                        condExpr.getId(), condExpr.getName(),
+                LOGGER.debug(String.format("  condition: %1$s (%2$s): %3$s",
+                        condExpr.getName(), condExpr.getLabel(),
                         condExpr.getExpressions()[i]));
-				l.clear();
+                List<Expression> l = new ArrayList<Expression>();
 				if (condExpr.getExpressions()[i] == null
 						|| "".equals(condExpr.getExpressions()[i])
 						|| "-".equals(condExpr.getExpressions()[i])) {
+                    ;
 				} else {
                     // TODO despite adding ok here the IDREFS are not serialized
-					Expression entry = findConditionEntry(dt,
+                    LiteralExpression entry = (LiteralExpression) findConditionEntry(
+                            dt,
 							condExpr.getExpressions()[i]);
+                    // entry.setName(condExpr.getName());
                     l.add(entry);
 				}
                 JAXBElement<List<Expression>> ruleCond = objFact
@@ -223,12 +241,17 @@ public class DecisionModelConverter implements
                 LOGGER.debug(String.format("  conclusion: %1$s %2$s: %3$s",
                         concExpr.getId(), concExpr.getName(),
                         concExpr.getExpressions()[i]));
-				l.clear();
+                List<Expression> l = new ArrayList<Expression>();
 				if (concExpr.getExpressions()[i] == null
 						|| "".equals(concExpr.getExpressions()[i])
 						|| "-".equals(concExpr.getExpressions()[i])) {
 				} else {
                     // TODO same issue here as condition above
+                    // LiteralExpression entry = (LiteralExpression)
+                    // findConclusionEntry(
+                    // dt, concExpr.getExpressions()[i]);
+                    // // entry.setName(condExpr.getName());
+                    // l.add(entry);
 				}
                 JAXBElement<List<Expression>> ruleCond = objFact
                         .createTDecisionRuleConclusion(l);
@@ -249,25 +272,57 @@ public class DecisionModelConverter implements
 
 	}
 
-	private Expression findConditionEntry(DecisionTable dt, String string) {
-		for (Clause clause : dt.getClause()) {
-			for (Expression entry : clause.getInputEntry()) {
-				if (entry instanceof LiteralExpression) {
-					String val = (String) ((LiteralExpression) entry).getText()
-							.getContent().get(0);
-					System.out.println("  match?: " + string + " = " + val);
-					if (string.equals(val)) {
-						return entry;
-					}
-				}
-			}
-		}
-		throw new DecisionException("Cannot find input for " + string);
-	}
+    private Clause findCondition(DecisionTable dt, String string) {
+        for (Clause clause : dt.getClause()) {
+            System.out
+                    .println("  match?: " + string + " = " + clause.getName());
+            if (string.equals(clause.getName())) {
+                return clause;
+            }
+        }
+        throw new DecisionException("Cannot find input for " + string);
+    }
+
+    private Expression findConditionEntry(DecisionTable dt, String string) {
+        for (Clause clause : dt.getClause()) {
+            for (Expression entry : clause.getInputEntry()) {
+                if (entry instanceof LiteralExpression) {
+                    String val = (String) ((LiteralExpression) entry).getText()
+                            .getContent().get(0);
+                    System.out.println("  match?: " + string + " = " + val);
+                    if (string.equals(val)) {
+                        return entry;
+                    }
+                }
+            }
+        }
+        throw new DecisionException("Cannot find input for " + string);
+    }
+
+    // private Expression findConclusionEntry(DecisionTable dt, String string) {
+    // for (Clause clause : dt.getClause()) {
+    // for (Expression entry : clause.getOutputDefinition().get) {
+    // if (entry instanceof LiteralExpression) {
+    // String val = (String) ((LiteralExpression) entry).getText()
+    // .getContent().get(0);
+    // System.out.println("  match?: " + string + " = " + val);
+    // if (string.equals(val)) {
+    // return entry;
+    // }
+    // }
+    // }
+    // }
+    // throw new DecisionException("Cannot find input for " + string);
+    // }
 
 	private String createTypeDef(DomainEntity type) {
 		return type.getName() + "Def";
 	}
+
+    private String createId(DecisionModel source) {
+        return source.getId() == null ? UUID.randomUUID().toString()
+                : toCamelCase(source.getId().toString()) + "Model";
+    }
 
 	private String createId(DecisionTable dt, DecisionModel source,
 			DecisionExpression condition) {
@@ -275,8 +330,8 @@ public class DecisionModelConverter implements
 	}
 
 	private String createId(DecisionTable dt, DecisionModel source,
-			List<DecisionExpression> conditions, DecisionExpression condition,
-			String expr) {
+            List<? extends DecisionExpression> conditions,
+            DecisionExpression condition, String expr) {
 		List<String> exprs = Arrays.asList(condition.getExpressions());
 		return dt.getId() + "_c" + conditions.indexOf(condition) + "_e"
 				+ exprs.indexOf(expr);

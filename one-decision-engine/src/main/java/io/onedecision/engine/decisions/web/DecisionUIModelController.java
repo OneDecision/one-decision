@@ -15,7 +15,6 @@ package io.onedecision.engine.decisions.web;
 
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 import io.onedecision.engine.decisions.model.ui.ExampleModel;
-import io.onedecision.engine.decisions.model.ui.examples.ApplicationRiskRatingModel;
 import io.onedecision.engine.decisions.model.ui.examples.EmailFollowUpModel;
 import io.onedecision.engine.decisions.repositories.DecisionUIModelRepository;
 
@@ -75,7 +74,7 @@ public class DecisionUIModelController {
 	protected List<ExampleModel> getExampleUIModels() {
         if (examples == null) {
             examples = new ArrayList<ExampleModel>();
-            examples.add(new ApplicationRiskRatingModel());
+            // examples.add(new ApplicationRiskRatingModel());
             examples.add(new EmailFollowUpModel());
         }
         return examples;

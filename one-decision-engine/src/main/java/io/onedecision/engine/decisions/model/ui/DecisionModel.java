@@ -25,6 +25,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -73,12 +74,15 @@ public class DecisionModel implements Serializable {
 	}
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<DecisionExpression> conditions;
+    @JoinColumn(name = "MODEL_ID")
+    private List<DecisionCondition> conditions;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<DecisionExpression> conclusions;
+    @JoinColumn(name = "MODEL_ID")
+    private List<DecisionConclusion> conclusions;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "MODEL_ID")
     private List<DecisionExpression> rules;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -156,19 +160,19 @@ public class DecisionModel implements Serializable {
 		this.outputs = outputs;
 	}
 
-	public List<DecisionExpression> getConditions() {
+    public List<DecisionCondition> getConditions() {
 		return conditions;
 	}
 
-	public void setConditions(List<DecisionExpression> conditions) {
+    public void setConditions(List<DecisionCondition> conditions) {
 		this.conditions = conditions;
 	}
 
-	public List<DecisionExpression> getConclusions() {
+    public List<DecisionConclusion> getConclusions() {
 		return conclusions;
 	}
 
-	public void setConclusions(List<DecisionExpression> conclusions) {
+    public void setConclusions(List<DecisionConclusion> conclusions) {
 		this.conclusions = conclusions;
 	}
 

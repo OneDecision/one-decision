@@ -13,6 +13,8 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.model.ui;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +32,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "OL_UI_EXPRESSION")
 @Component
-public class DecisionExpression {
+public class DecisionExpression implements Serializable {
+
+    private static final long serialVersionUID = -6617913335737220584L;
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionExpression.class);
 
@@ -45,6 +49,7 @@ public class DecisionExpression {
     protected String name;
 
     @JsonProperty 
+    // TODO This needs to be longer but @Lob appears incompatible with String[]
     protected String[] expressions;
 
     @JsonProperty

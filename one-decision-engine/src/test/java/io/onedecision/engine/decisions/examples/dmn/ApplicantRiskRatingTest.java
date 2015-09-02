@@ -50,7 +50,7 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
     private String applicant;
     private String policy;
     private Decision decision;
-    private Map<String, String> vars = new HashMap<String, String>();
+    private Map<String, Object> vars = new HashMap<String, Object>();
 
     @Parameters
     public static Collection<String[]> data() {

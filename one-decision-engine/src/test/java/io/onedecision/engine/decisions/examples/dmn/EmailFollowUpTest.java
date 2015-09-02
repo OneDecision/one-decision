@@ -43,7 +43,7 @@ public class EmailFollowUpTest implements ExamplesConstants {
 	private String contactInstance;
 	private String emailInstance;
 	private Decision decision;
-	private Map<String, String> vars = new HashMap<String, String>();
+    private Map<String, Object> vars = new HashMap<String, Object>();
 
 	@Parameters
 	public static Collection<String[]> data() {

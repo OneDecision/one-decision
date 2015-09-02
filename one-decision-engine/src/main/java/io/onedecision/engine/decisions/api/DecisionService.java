@@ -16,8 +16,10 @@ package io.onedecision.engine.decisions.api;
 import io.onedecision.engine.decisions.impl.del.DelExpression;
 import io.onedecision.engine.decisions.model.dmn.Clause;
 import io.onedecision.engine.decisions.model.dmn.Decision;
+import io.onedecision.engine.decisions.model.dmn.DecisionModelImport;
 import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
+import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter;
@@ -42,7 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DecisionService {
+public class DecisionService implements DecisionConstants {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionService.class);
 
@@ -78,41 +80,72 @@ public class DecisionService {
 		this.compilers = compilers;
 	}
 
-    public Map<String, String> execute(Decision d, Map<String, String> params)
+    public Map<String, Object> execute(Definitions dm, String decisionId,
+            Map<String, Object> vars) throws DecisionException {
+        String script = getScript(dm, decisionId);
+        return execute(script, vars);
+    }
+
+    public Map<String, Object> execute(Decision d, Map<String, Object> params)
             throws DecisionException {
         String script = getScript(d.getDecisionTable());
+        return execute(script, params);
+    }
 
-        for (Entry<String, String> o : params.entrySet()) {
+    protected Map<String, Object> execute(String script,
+            Map<String, Object> params) throws DecisionException {
+        for (Entry<String, Object> o : params.entrySet()) {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("JSON input in Java: " + o);
 			}
             jsEng.put(o.getKey(), o.getValue());
-            try {
-                Object r = jsEng.eval(script);
-				LOGGER.debug("  response: " + r);
-            } catch (ScriptException ex) {
-				LOGGER.error(ex.getMessage(), ex);
-				throw new DecisionException("Unable to evaluate decision", ex);
-            }
-            for (Entry<String, Object> o2 : jsEng.getBindings(
-                    ScriptContext.ENGINE_SCOPE).entrySet()) {
-                if (!EXCLUDED_OBJECTS.contains(o2.getKey())) {
-                    params.put(o2.getKey(), (String) o2.getValue());
-                }
+        }
+
+        try {
+            Object r = jsEng.eval(script);
+            LOGGER.debug("  response: " + r);
+        } catch (ScriptException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new DecisionException("Unable to evaluate decision", ex);
+        }
+
+        for (Entry<String, Object> o2 : jsEng.getBindings(
+                ScriptContext.ENGINE_SCOPE).entrySet()) {
+            if (!EXCLUDED_OBJECTS.contains(o2.getKey())) {
+                params.put(o2.getKey(), o2.getValue());
             }
         }
+
 		if (LOGGER.isInfoEnabled()) {
 			LOGGER.info("vars returned: " + params);
 		}
         return params;
     }
 
+    public String getScript(Definitions dm, String decisionId) {
+        StringBuilder sb = new StringBuilder("var System = java.lang.System;\n");
+        
+        for (DecisionModelImport import_ : dm.getImport()) {
+            if (EXPR_URI_JS.equals(import_.getImportType())) {
+                sb.append("load('" + import_.getLocationURI() + "');\n");
+            }
+        }
+        
+        return getScript(sb, dm.getDecisionById(decisionId).getDecisionTable());
+    }
+
     public String getScript(DecisionTable dt) throws DecisionException {
+        StringBuilder sb = new StringBuilder();
+        return getScript(sb, dt);
+    }
+
+    protected String getScript(StringBuilder sb, DecisionTable dt) {
         if (cache.containsKey(dt.getId())) {
             return cache.get(dt.getId());
         }
 
-        StringBuilder sb = new StringBuilder("var System = java.lang.System;\n");
+        // Rhino _and_ Nashorn compatible way to enable access to println
+        sb.append("var System = java.lang.System;\n");
         ExpressionAdapter adapter = new ExpressionAdapter();
 
         Set<String> varsToInit = new HashSet<String>();
@@ -120,7 +153,7 @@ public class DecisionService {
 			if (o.getInputExpression() != null
 					&& o.getInputExpression().getOnlyInputVariable() != null) {
                 varsToInit.add(o.getInputExpression().getOnlyInputVariable()
-                        .getName());
+                        .getId());
 			} else {
 				LOGGER.debug(String.format(
 						"clause %1$s does not have an input expression",

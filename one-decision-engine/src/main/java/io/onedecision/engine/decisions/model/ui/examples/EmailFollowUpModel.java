@@ -13,7 +13,8 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.model.ui.examples;
 
-import io.onedecision.engine.decisions.model.ui.DecisionExpression;
+import io.onedecision.engine.decisions.model.ui.DecisionConclusion;
+import io.onedecision.engine.decisions.model.ui.DecisionCondition;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 import io.onedecision.engine.decisions.model.ui.ExampleModel;
 
@@ -38,30 +39,30 @@ public class EmailFollowUpModel implements ExampleModel {
         DecisionModel model = new DecisionModel();
         model.setName("Personal Follow-Up");
 
-        List<DecisionExpression> conditions = new ArrayList<DecisionExpression>();
-        conditions.add(new DecisionExpression("Since last email", new String[] {
+        List<DecisionCondition> conditions = new ArrayList<DecisionCondition>();
+        conditions.add(new DecisionCondition("Since last email", new String[] {
                 "< 7d", ">= 7d", "", "", "", "", "", "", "", "" }));
-        conditions.add(new DecisionExpression("Since registration",
+        conditions.add(new DecisionCondition("Since registration",
                 new String[] { "", "", ">= 2w", ">= 6w", ">= 10 weeks",
                         ">= 52 weeks", "", "" }));
-        conditions.add(new DecisionExpression("Since login",
+        conditions.add(new DecisionCondition("Since login",
                 new String[] { "", "", "", "", "", "", ">= 4 weeks",
                         ">= 12 weeks", ">= 24 weeks" }));
-        conditions.add(new DecisionExpression("Not yet sent",
+        conditions.add(new DecisionCondition("Not yet sent",
                 new String[] { "discover", "intro-services",
                         "business-sale-ideas", "anniversary whats-on",
                         "is-there-progress", "need-a-hand", "" }));
-        // conditions.add(new DecisionExpression("Otherwise", new String[] { "",
+        // conditions.add(new DecisionCondition("Otherwise", new String[] { "",
         // "", "", "", "", "", "", "", "", "", "", "", "", "", "true" }));
         model.setConditions(conditions);
 
-        List<DecisionExpression> conclusions = new ArrayList<DecisionExpression>();
+        List<DecisionConclusion> conclusions = new ArrayList<DecisionConclusion>();
         conclusions
-                .add(new DecisionExpression("Template to use", new String[] {
+                .add(new DecisionConclusion("Template to use", new String[] {
                         "discover-firmgains", "intro-services",
                         "business-sale-ideas", "anniversary", "whats-on",
                         "is-there-progress", "need-a-hand" }));
-        conclusions.add(new DecisionExpression("Subject Line", new String[] {
+        conclusions.add(new DecisionConclusion("Subject Line", new String[] {
                 "Get Your Business Sale Plans into Action (not inaction!)",
                 "Are you Fully Equipped for Your Business Sale?",
                 "There’s More Under the Surface with Firm Gains",

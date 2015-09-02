@@ -13,6 +13,8 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.model.ui.examples;
 
+import io.onedecision.engine.decisions.model.ui.DecisionConclusion;
+import io.onedecision.engine.decisions.model.ui.DecisionCondition;
 import io.onedecision.engine.decisions.model.ui.DecisionExpression;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 import io.onedecision.engine.decisions.model.ui.ExampleModel;
@@ -38,19 +40,19 @@ public class ApplicationRiskRatingModel implements ExampleModel {
         DecisionModel model = new DecisionModel();
         model.setName("Applicant Risk Rating");
 
-        List<DecisionExpression> conditions = new ArrayList<DecisionExpression>();
-        conditions.add(new DecisionExpression("Applicant Age", new String[] {
+        List<DecisionCondition> conditions = new ArrayList<DecisionCondition>();
+        conditions.add(new DecisionCondition("Applicant Age", new String[] {
                 "<25", "<25", "[25..60]", ">60", ">60" }));
-        conditions.add(new DecisionExpression("Medical History", new String[] {
+        conditions.add(new DecisionCondition("Medical History", new String[] {
                 "good", "bad", "-", "good", "bad" }));
         model.setConditions(conditions);
 
-        List<DecisionExpression> conclusions = new ArrayList<DecisionExpression>();
-        conclusions.add(new DecisionExpression("Low", new String[] { "X", "-",
+        List<DecisionConclusion> conclusions = new ArrayList<DecisionConclusion>();
+        conclusions.add(new DecisionConclusion("Low", new String[] { "X", "-",
                 "-", "-", "-" }));
-        conclusions.add(new DecisionExpression("Medium", new String[] { "-",
+        conclusions.add(new DecisionConclusion("Medium", new String[] { "-",
                 "X", "X", "X", "-" }));
-        conclusions.add(new DecisionExpression("High", new String[] { "-", "-",
+        conclusions.add(new DecisionConclusion("High", new String[] { "-", "-",
                 "-", "-", "X" }));
         model.setConclusions(conclusions);
         model.setRules(new ArrayList<DecisionExpression>());

@@ -38,14 +38,15 @@ public class ExamplesSchemaValidTest {
 	private static SchemaValidator schemaValidator;
 
 	@BeforeClass
-	public static void setUpClasss() throws Exception {
+    public static void setUpClass() throws Exception {
 		schemaValidator = new SchemaValidator();
 	}
 
 	@Parameters
 	public static Collection<String[]> data() {
-		return Arrays
-				.asList(new String[][] { { ExamplesConstants.ARR_DMN_RESOURCE } });
+        return Arrays.asList(new String[][] {
+                { ExamplesConstants.ARR_DMN_RESOURCE },
+                { ExamplesConstants.EFU_DMN_RESOURCE } });
 	}
 
 	private String resourceName;
