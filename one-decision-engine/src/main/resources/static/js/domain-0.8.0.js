@@ -21,6 +21,7 @@ var ractive = new OneDecisionApp({
     csrfToken: getCookie(CSRF_COOKIE),
     //saveObserver:false,
     entityIdx:0,
+    tenant: { id: 'onedecision' },
     username: localStorage['username'],
     age: function(timeString) {
       return i18n.getAgeString(new Date(timeString))
