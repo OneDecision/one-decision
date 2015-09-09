@@ -16,7 +16,7 @@
     <div class="profile pull-right">
       <form name="logoutForm" action="/logout" method="POST">
         <span class="profile-img">Logged in as: {{username}}</span>
-        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()"></span>
+        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()" title="Logout"></span>
       </form>
     </div>
     <h1 class="title">
@@ -103,25 +103,22 @@
                 <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
               </th>
               <th class="expr-action">
-                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteCondition(i)"></span>
+                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteCondition(i)" title="Delete Condition"></span>
               </th>
               {{#each expressions:j}}
                 <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
               {{/each}}
             {{#if (i==0)}}
-              <td class="expr" rowspan="{{decision.conditions[0].expressions.length+decision.conclusions[0].expressions.length+2}}">
-                <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConditionExpr()"></span>
+              <td class="rule-add" rowspan="{{decision.conditions[0].expressions.length+decision.conclusions[0].expressions.length+2}}">
+                <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConditionExpr()" title="Add Rule"></span>
               </td>
             {{/if}}
             </tr>
           {{/each}}
           <tr class="newCondition">
             <th colspan="2">
-              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addCondition()"></span>
+              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addCondition()" title="Add Condition"></span>
             </th>
-            {{#each decision.conditions[0].expressions}}
-              <td>&nbsp;</td>
-            {{/each}}
           </tr>
           {{#each decision.conclusions:i}}
             <tr class="conclusion" data-conclusion="{{name}}">
@@ -132,7 +129,7 @@
                 <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
               </th>
               <th class="expr-action">
-                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteConclusion(i)"></span>
+                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteConclusion(i)" title="Delete Conclusion"></span>
               </th>
               {{#each expressions:j}}
                 <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
@@ -141,10 +138,16 @@
           {{/each}}
           <tr class="newConclusion">
             <th colspan="2">
-              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConclusion()"></span>
+              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConclusion()" title="Add Conclusion"></span>
             </th>
-            {{#each decision.conclusions[0].expressions}}
-              <td contenteditable>&nbsp;</td>
+          </tr>
+          <tr class="rule">
+            <th>&nbsp;</th>
+            <th class="hit-policy" colspan="2">
+              <input autocomplete="false" class="edit typeahead" placeholder="Click to set hit policy" title="{{hitPolicy}}" value="{{hitPolicy}}"/>
+            </th>
+            {{#each decision.conclusions[0].expressions:idx}}
+              <td contenteditable>{{idx+1}}</td>
             {{/each}}
           </tr>
         </tbody>

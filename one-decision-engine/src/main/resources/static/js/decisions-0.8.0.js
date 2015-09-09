@@ -26,6 +26,15 @@ var ractive = new OneDecisionApp({
     formatDate: function(timeString) {
       return new Date(timeString).toLocaleDateString(navigator.languages);
     },
+    hitPolicies: [
+      {"id":"U","name":"Unique"},
+      {"id":"A","name":"Any"},
+      {"id":"P","name":"Priority"},
+      {"id":"F","name":"First"},
+      {"id":"C","name":"Collect"},
+      {"id":"O","name":"Output order"},
+      {"id":"R","name":"Rule order"}
+    ],
     matchFilter: function(obj) {
       if (ractive.get('filter')==undefined) return true;
       else return ractive.get('filter').value.toLowerCase()==obj[ractive.get('filter').field].toLowerCase();
@@ -56,6 +65,9 @@ var ractive = new OneDecisionApp({
     console.log('addCondition...');
     var conds = ractive.get('decision.conditions')[0];
     var newCondition = { name: 'Select...', expressions: new Array(parseInt(conds == undefined ? '0' : conds.expressions.length)) };
+    $.each(newCondition.expressions, function(i,d) { 
+      newCondition.expressions[i] = '-'; 
+    });
     console.log('  '+JSON.stringify(newCondition));
     var idx = ractive.get('decision.conditions').push(newCondition);
     console.log('Adding typeahead to conditions: '+idx);
@@ -166,7 +178,11 @@ var ractive = new OneDecisionApp({
     console.log('initAutoComplete');
     $('.expr-name .typeahead').each(function(i,d) {
       console.log('binding entities to typeahead control: '+d.name);
-      $(d).typeahead({ minLength:0,source:ractive.get('entityAttrs')}); 
+      $(d).typeahead({ minLength:0,source:ractive.get('entityAttrs') }); 
+    });
+    $('.hit-policy .typeahead').each(function(i,d) {
+      console.log('binding hit policies to typeahead control: '+d.name);
+      $(d).typeahead({ minLength:0,showHintOnFocus:true,source:ractive.get('hitPolicies') }); 
     });
   },
   save: function (decision) {
@@ -189,7 +205,12 @@ var ractive = new OneDecisionApp({
         var location = jqXHR.getResponseHeader('Location');
         if (jqXHR.status == 201) { 
           //console.log('Created '+location);
-          ractive.get('decisions').push(data);
+          location = location.replace(ractive.get('tenant.id')+'/',''),
+          data._links={ self: {href:location} };
+          ractive.set('saveObserver',false);
+          ractive.set('currentIdx',ractive.get('decisions').push(data));
+          ractive.set('decision',data);
+          ractive.set('saveObserver',true);
         }
         if (jqXHR.status == 200) { 
           //console.log('Updated '+id);
