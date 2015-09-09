@@ -3,9 +3,11 @@ package io.onedecision.engine.decisions.model.ui;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "OL_UI_CONCLUSION")
 public class DecisionConclusion extends DecisionExpression {
 
     private static final long serialVersionUID = 3421337301816728913L;

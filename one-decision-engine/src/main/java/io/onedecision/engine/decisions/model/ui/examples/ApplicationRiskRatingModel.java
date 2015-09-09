@@ -15,7 +15,6 @@ package io.onedecision.engine.decisions.model.ui.examples;
 
 import io.onedecision.engine.decisions.model.ui.DecisionConclusion;
 import io.onedecision.engine.decisions.model.ui.DecisionCondition;
-import io.onedecision.engine.decisions.model.ui.DecisionExpression;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 import io.onedecision.engine.decisions.model.ui.ExampleModel;
 
@@ -55,7 +54,7 @@ public class ApplicationRiskRatingModel implements ExampleModel {
         conclusions.add(new DecisionConclusion("High", new String[] { "-", "-",
                 "-", "-", "X" }));
         model.setConclusions(conclusions);
-        model.setRules(new ArrayList<DecisionExpression>());
+        // model.setRules(new ArrayList<DecisionExpression>());
 
         LOGGER.debug("... returning risk rating model");
         return model;

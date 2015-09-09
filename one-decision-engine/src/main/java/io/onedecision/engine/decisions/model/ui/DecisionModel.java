@@ -14,6 +14,7 @@
 package io.onedecision.engine.decisions.model.ui;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,16 +75,12 @@ public class DecisionModel implements Serializable {
 	}
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "MODEL_ID")
+     @JoinColumn(name = "MODEL_ID")
     private List<DecisionCondition> conditions;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "MODEL_ID")
+     @JoinColumn(name = "MODEL_ID")
     private List<DecisionConclusion> conclusions;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "MODEL_ID")
-    private List<DecisionExpression> rules;
 
     @Temporal(TemporalType.TIMESTAMP)
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -161,6 +158,9 @@ public class DecisionModel implements Serializable {
 	}
 
     public List<DecisionCondition> getConditions() {
+        if (conditions == null) {
+            conditions = new ArrayList<DecisionCondition>();
+        }
 		return conditions;
 	}
 
@@ -169,20 +169,15 @@ public class DecisionModel implements Serializable {
 	}
 
     public List<DecisionConclusion> getConclusions() {
-		return conclusions;
-	}
+        if (conclusions == null) {
+            conclusions = new ArrayList<DecisionConclusion>();
+        }
+        return conclusions;
+    }
 
     public void setConclusions(List<DecisionConclusion> conclusions) {
-		this.conclusions = conclusions;
-	}
-
-	public List<DecisionExpression> getRules() {
-		return rules;
-	}
-
-	public void setRules(List<DecisionExpression> rules) {
-		this.rules = rules;
-	}
+        this.conclusions = conclusions;
+    }
 
 	public Date getCreated() {
 		return created;
@@ -212,8 +207,8 @@ public class DecisionModel implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((conclusions == null) ? 0 : conclusions.hashCode());
+        result = prime * result
+                + ((conclusions == null) ? 0 : conclusions.hashCode());
 		result = prime * result
 				+ ((conditions == null) ? 0 : conditions.hashCode());
 		result = prime * result + ((created == null) ? 0 : created.hashCode());
@@ -227,7 +222,6 @@ public class DecisionModel implements Serializable {
 				+ ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((outputs == null) ? 0 : outputs.hashCode());
-		result = prime * result + ((rules == null) ? 0 : rules.hashCode());
 		result = prime * result
 				+ ((tenantId == null) ? 0 : tenantId.hashCode());
 		return result;
@@ -242,11 +236,11 @@ public class DecisionModel implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		DecisionModel other = (DecisionModel) obj;
-		if (conclusions == null) {
-			if (other.conclusions != null)
-				return false;
-		} else if (!conclusions.equals(other.conclusions))
-			return false;
+        if (conclusions == null) {
+            if (other.conclusions != null)
+                return false;
+        } else if (!conclusions.equals(other.conclusions))
+            return false;
 		if (conditions == null) {
 			if (other.conditions != null)
 				return false;
@@ -291,11 +285,6 @@ public class DecisionModel implements Serializable {
 			if (other.outputs != null)
 				return false;
 		} else if (!outputs.equals(other.outputs))
-			return false;
-		if (rules == null) {
-			if (other.rules != null)
-				return false;
-		} else if (!rules.equals(other.rules))
 			return false;
 		if (tenantId == null) {
 			if (other.tenantId != null)
