@@ -246,6 +246,20 @@ h2 a.glyphicon:hover {
 }
 /* END BOOTSTRAP OVERRIDES */
 
+.beta {
+  border: solid 1px #ff6c06;
+  color: #ff6c06;
+  font-family: barmenoregular, sans-serif;
+  font-style: italic;
+  line-height: 1.1em;
+  opacity: 0.75;
+  padding: 0;
+  position: absolute;
+  left: 10px;
+  text-align: center;
+  top: 10px;
+  width: 40px;  
+}
 .clickable:hover {
 	cursor: pointer; 
 }
@@ -285,6 +299,26 @@ form#upload {
 }
 .form input.edit-field { 
   border-width: 1px;
+}
+.powered-by { 
+  float: left;
+  left: -1px;
+  opacity: 0.75;
+  position: absolute;
+  top: 220px;
+  transform: rotate(-90deg);
+  transform-origin: left top 0;
+}
+.powered-by h1 {
+  margin:0px;
+}
+.powered-by-text { 
+  color:#6f6f71;
+  font-size: 14px;
+	font-style: italic;
+	position: relative;
+  top: 8px;
+	vertical-align: top;
 }
 .profile { 
 	font-style: italic;

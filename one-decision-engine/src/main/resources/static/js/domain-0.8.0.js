@@ -18,14 +18,30 @@ var ractive = new OneDecisionApp({
   // partial templates
   // partials: { },
   data: {
-    csrfToken: getCookie(CSRF_COOKIE),
-    //saveObserver:false,
-    entityIdx:0,
-    tenant: { id: 'onedecision' },
-    username: localStorage['username'],
     age: function(timeString) {
       return i18n.getAgeString(new Date(timeString))
-    }
+    },
+    //saveObserver:false,
+    entityIdx:0,
+    newField: {},
+    searchTerm: undefined,
+    stdPartials: [
+      { "name": "domainSect", "url": "/partials/domain-sect.html"},
+      { "name": "poweredBy", "url": "/partials/powered-by.html"},
+      { "name": "profileArea", "url": "/partials/profile-area.html"},
+      { "name": "sidebar", "url": "/partials/sidebar.html"},
+      { "name": "titleArea", "url": "/partials/title-area.html"}
+    ],
+    tenant: { id: 'onedecision' },
+    title: "Domain Model",
+    username: localStorage['username']
+  },
+  partials: { 
+    "domainSect": "<h3>Loading...</h3>",
+    "poweredBy": "<h3>Loading...</h3>",
+    "profileArea": "<h3>Loading...</h3>",
+    "sidebar": "<h3>Loading...</h3>",
+    "titleArea": "<h3>Loading...</h3>"
   },
   addField: function(dataName) {
     console.log('addField...'+dataName);
@@ -52,7 +68,7 @@ var ractive = new OneDecisionApp({
     });
   },
   fetch: function () {
-    console.log('fetch...');
+    console.info('fetch...');
     ractive.set('saveObserver', false);
     $.getJSON(ractive.getServer()+'/'+ractive.get('tenant.id')+'/domain-model/?projection=complete',  function( data ) {
       console.log('loaded domain model...');
@@ -63,21 +79,27 @@ var ractive = new OneDecisionApp({
       $('.entity.active').fadeIn();
     });
   },
+  oninit: function() {
+    console.info('oninit');
+    this.ajaxSetup();
+    this.loadStandardPartials(this.get('stdPartials'));
+  },
   nextEntity: function() {
-    console.log('nextEntity');
+    console.info('nextEntity');
     $('.entity.active').fadeOut().removeClass('active');
     ractive.set('entityIdx', ractive.get('entityIdx')+1);
     $('#entity'+ractive.get('entityIdx')+'Sect').fadeIn().addClass('active');
   },
   previousEntity: function() {
-    console.log('previousEntity');
+    console.info('previousEntity');
     $('.entity.active').fadeOut().removeClass('active');
     ractive.set('entityIdx', ractive.get('entityIdx')-1);
     $('#entity'+ractive.get('entityIdx')+'Sect').fadeIn().addClass('active');
   },
   save: function () {
+    console.info('save');
     var domain = ractive.get('domain');
-    console.log('save...'+JSON.stringify(domain)+' ...');
+    //console.log('  domain:'+JSON.stringify(domain)+' ...');
     $.ajax({
       url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/domain-model/',
       type: 'PUT',

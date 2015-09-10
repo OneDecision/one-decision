@@ -16,8 +16,6 @@ var ractive = new OneDecisionApp({
   lazy: true,
   template: '#template',
   data: {
-    csrfToken: getCookie(CSRF_COOKIE),
-    content: 'test',
     decisionTemplate: { "name":"A new decision", "hitPolicy":null, "domainModelUri":null, "conditions":[],"conclusions":[] },
     decision: $(this.decisionTemplate).clone(),
     decisions: [],
@@ -39,8 +37,17 @@ var ractive = new OneDecisionApp({
       if (ractive.get('filter')==undefined) return true;
       else return ractive.get('filter').value.toLowerCase()==obj[ractive.get('filter').field].toLowerCase();
     },
-    tenant: { id: 'onedecision' },
+    stdPartials: [
+      { "name": "decisionTableSect", "url": "/partials/decision-table-sect.html"},
+      { "name": "poweredBy", "url": "/partials/powered-by.html"},
+      { "name": "profileArea", "url": "/partials/profile-area.html"},
+      { "name": "sidebar", "url": "/partials/sidebar.html"},
+      { "name": "titleArea", "url": "/partials/title-area.html"},
+      { "name": "uiListSect", "url": "/partials/ui-list-sect.html"}
+    ],
     //saveObserver:false,
+    tenant: { id: "onedecision" },
+    title: "Decision Table Definer",
     username: localStorage['username'],
     age: function(timeString) {
       return i18n.getAgeString(new Date(timeString))
@@ -185,6 +192,11 @@ var ractive = new OneDecisionApp({
       $(d).typeahead({ minLength:0,showHintOnFocus:true,source:ractive.get('hitPolicies') }); 
     });
   },
+  oninit: function() {
+    console.info('oninit');
+    this.ajaxSetup();
+    this.loadStandardPartials(this.get('stdPartials'));
+  },
   save: function (decision) {
     console.log('save '+JSON.stringify(decision)+' ...');
 
@@ -301,9 +313,9 @@ $(document).ready(function() {
   if (ractive.initCallbacks==undefined) ractive.initCallbacks = $.Callbacks();
   ractive.initCallbacks.add(function() {
     ractive.fetchDomain();
-    ractive.applyBranding();
+//    ractive.applyBranding();
     ractive.fetch();
-    ractive.initControls();
+//    ractive.initControls();
   });
 
   if (ractive.initCallbacks!=undefined) ractive.initCallbacks.fire();

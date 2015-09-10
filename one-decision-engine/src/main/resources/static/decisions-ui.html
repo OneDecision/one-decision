@@ -13,154 +13,18 @@
   <div class="clearfix" id="messages"></div>
   <div class="container" id="container"></div>
   <script id='template' type='text/ractive'>
-    <div class="profile pull-right">
-      <form name="logoutForm" action="/logout" method="POST">
-        <span class="profile-img">Logged in as: {{username}}</span>
-        <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()" title="Logout"></span>
-      </form>
-    </div>
-    <h1 class="title">
-      <a class="nav navbar-brand" href="http://onedecision.io">
-        <img src="images/one-decision-logo-120x55.png" alt="logo"/>
-      </a>
-      <span>Decision Tables</span>
-    </h1>
-    <div class="clearfix" id="messages"></div>
-
-    <section id="decisionsSect">
-      <h2>
-        <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the decision table"></a>
-        <span>Decisions</span>
-        <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new decision"></a>
-        <a class="clickable glyphicon glyphicon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
-        <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
-        <a class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching decisions"></a>
-      </h2>
-      <table id="decisionsTable" class="table table-striped">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Hit Policy</th>
-            <th>Created</th>
-            <th>Last Updated</th>
-            <th class="col-actions">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-        {{#each decisions:i}}
-          {{# (searchTerm!=undefined && matchFilter(this)) }}
-              <tr data-href="{{links[rel=='self'].href}}" on-click="select(i,this)">
-                <td>{{i+1}}</td>
-                <td>{{name}}</td>
-                <td>{{hitPolicy}}</td>
-                <td>{{formatDate(created)}}</td>
-                <td>{{formatDate(lastUpdated)}}</td>
-                <td class="col-actions">
-                  <a class="clickable glyphicon glyphicon-pencil" aria-hidden="true" onclick="ractive.select(this);ractive.toggleResults();" title="View or edit this decision"></a>
-                </td>
-              </tr>
-          {{/}}
-        {{/each}}
-        </tbody>
-        <tfoot>
-          {{# searchTerm!=undefined }}
-            <tr><th colspan="9">{{searchMatched == 0 ? 'No' : searchMatched}} matching decision{{searchMatched==1 ? '' : 's'}}</th></tr>
-          {{/}} 
-        </tfoot>
-      </table>
-    </section>
-
-    <section id="dtSect" class="entity-fields" style="display:none">
-      <h2>
-        <span>Define Decision</span>
-        <div class="pull-right">
-        <!--
-          <a id="save_as_image" href="#" download="{{decision.name}}.png" target="_blank">
-            <span class="glyphicon glyphicon-picture" aria-hidden="true" onclick="ractive.decision2Image();" title="Save image"></span>
-          </a>
-          <span class="glyphicon glyphicon-export" aria-hidden="true" onclick="ractive.publish(ractive.get('decision'))" title="Publish to Repository"></span>
-          -->
-          <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('decision'))" title="Delete"></span>
-          <!--<button class="btn" type="button">Validate</button>-->
-        </div>
-      </h2>
-      <table id="decisionTable" class="decision-table table table-striped">
-        <thead>
-          <tr>
-            <th class="decision-name" colspan="3">
-              <input title="{{decision.name}}" value="{{decision.name}}"/>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each decision.conditions:i}}
-            <tr class="condition" data-condition="{{name}}">
-              <th class="">
-                <span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="border:0px"></span>
-              </th>
-              <th class="expr-name">
-                <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
-              </th>
-              <th class="expr-action">
-                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteCondition(i)" title="Delete Condition"></span>
-              </th>
-              {{#each expressions:j}}
-                <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
-              {{/each}}
-            {{#if (i==0)}}
-              <td class="rule-add" rowspan="{{decision.conditions[0].expressions.length+decision.conclusions[0].expressions.length+2}}">
-                <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConditionExpr()" title="Add Rule"></span>
-              </td>
-            {{/if}}
-            </tr>
-          {{/each}}
-          <tr class="newCondition">
-            <th colspan="2">
-              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addCondition()" title="Add Condition"></span>
-            </th>
-          </tr>
-          {{#each decision.conclusions:i}}
-            <tr class="conclusion" data-conclusion="{{name}}">
-              <th class="">
-                <span class="glyphicon glyphicon-flash" aria-hidden="true" style="border:0px"></span>
-              </th>
-              <th class="expr-name">
-                <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
-              </th>
-              <th class="expr-action">
-                <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteConclusion(i)" title="Delete Conclusion"></span>
-              </th>
-              {{#each expressions:j}}
-                <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
-              {{/each}}
-            </tr>
-          {{/each}}
-          <tr class="newConclusion">
-            <th colspan="2">
-              <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConclusion()" title="Add Conclusion"></span>
-            </th>
-          </tr>
-          <tr class="rule">
-            <th>&nbsp;</th>
-            <th class="hit-policy" colspan="2">
-              <input autocomplete="false" class="edit typeahead" placeholder="Click to set hit policy" title="{{hitPolicy}}" value="{{hitPolicy}}"/>
-            </th>
-            {{#each decision.conclusions[0].expressions:idx}}
-              <td contenteditable>{{idx+1}}</td>
-            {{/each}}
-          </tr>
-        </tbody>
-      </table>
-
-    </section>
-
+    {{>profileArea}}
+    {{>titleArea}}
+    {{>uiListSect}}
+    {{>decisionTableSect}}
+    {{>poweredBy}}
+    {{>sidebar}}
   </script>
 
   <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
   <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
-  <script src="/webjars/ractive/0.7.1/ractive.min.js"></script>
+  <script src="/webjars/ractive/0.7.1/ractive.js"></script>
 
   <script src="js/md5.min.js"></script>
   <script src="js/canvas2image.js"></script>

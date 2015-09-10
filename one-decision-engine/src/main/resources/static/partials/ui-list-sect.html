@@ -1,0 +1,45 @@
+<section id="decisionsSect">
+  <h2>
+    <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the decision table"></a>
+    <span>Decisions</span>
+    <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new decision"></a>
+    <a class="clickable glyphicon glyphicon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
+    <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
+    <a class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching decisions"></a>
+  </h2>
+  <table id="decisionsTable" class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Hit Policy</th>
+        <th>Created</th>
+        <th>Last Updated</th>
+        <th class="col-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {{#each decisions:i}}
+      {{# (searchTerm!=undefined && matchFilter(this)) }}
+          <tr data-href="{{links[rel=='self'].href}}" on-click="select(i,this)">
+            <td>{{i+1}}</td>
+            <td>{{name}}</td>
+            <td>{{hitPolicy}}</td>
+            <td>{{formatDate(created)}}</td>
+            <td>{{formatDate(lastUpdated)}}</td>
+            <td class="col-actions">
+              <a class="clickable glyphicon glyphicon-pencil" aria-hidden="true" onclick="ractive.select(this);ractive.toggleResults();" title="View or edit this decision"></a>
+            </td>
+          </tr>
+      {{/}}
+    {{/each}}
+    </tbody>
+    <tfoot>
+      {{# searchTerm!=undefined }}
+        <tr><th colspan="9">{{searchMatched == 0 ? 'No' : searchMatched}} matching decision{{searchMatched==1 ? '' : 's'}}</th></tr>
+      {{/}} 
+    </tfoot>
+  </table>
+</section>
+
+

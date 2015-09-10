@@ -11,7 +11,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-var CSRF_COOKIE = 'XSRF-TOKEN';
 var EASING_DURATION = 500;
 fadeOutMessages = true;
 var newLineRegEx = /\n/g;
@@ -35,31 +34,26 @@ var OneDecisionApp = Ractive.extend({
     });
   },
   applyBranding: function() {
-      // ajax loader 
-      $('body').append('<div id="ajax-loader"><img class="ajax-loader" src="images/one-decision-ajax-loader.gif" alt="Loading..."/></div>');
-      $( document ).ajaxStart(function() {
-        $( "#ajax-loader" ).show();
-      });
-      $( document ).ajaxStop(function() {
-        $( "#ajax-loader" ).hide();
-      });
-      ractive.initContentEditable();// required here for the tennt switcher
-  },
-  getCookie: function(name) {
-    //console.log('getCookie: '+name)
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
+    // ajax loader 
+    $( "#ajax-loader" ).remove();
+    $('body').append('<div id="ajax-loader"><img class="ajax-loader" src="images/one-decision-ajax-loader.gif" alt="Loading..."/></div>');
+    $( document ).ajaxStart(function() {
+      $( "#ajax-loader" ).show();
+    });
+    $( document ).ajaxStop(function() {
+      $( "#ajax-loader" ).hide();
+    });
+    ractive.initContentEditable();// required here for the tenant switcher
   },
   handleError: function(jqXHR, textStatus, errorThrown) {
     switch (jqXHR.status) {
-    case 400:  
+    case 400:
       var msg = jqXHR.responseJSON == null ? textStatus+': '+errorThrown : errorThrown+': '+jqXHR.responseJSON.message;
       ractive.showError(msg);
       break; 
     case 401:
     case 403: 
-    case 405:  
+    case 405:
       ractive.showError("Session expired, please login again");
       window.location.href='/login';
       break; 
@@ -185,14 +179,6 @@ var OneDecisionApp = Ractive.extend({
     })
   }
 });
-
-// TODO remove the redundancy of having this in Ractive  extension and here
-function getCookie(name) {
-  //console.log('getCookie: '+name)
-  var value = "; " + document.cookie;
-  var parts = value.split("; " + name + "=");
-  if (parts.length == 2) return parts.pop().split(";").shift();
-}
 
 function selectElementContents(el) {
   var range = document.createRange();

@@ -19,10 +19,9 @@ var ractive = new OneDecisionApp({
   lazy: true,
   template: '#template',
   data: {
-    csrfToken: getCookie(CSRF_COOKIE),
-    content: 'test',
-    decisionTemplate: { "name":"A new decision", "hitPolicy":null, "domainModelUri":null, "inputs":null, "outputs":null, "conditions":[{ "name":"a new condition","expressions":["-"],"label":"a new condition"}],"conclusions":[{ "name":"a new conclusion","expressions":["-"],"label":"a new conclusion"}] },
-    decision: $(this.decisionTemplate).clone(),
+    age: function(timeString) {
+      return i18n.getAgeString(new Date(timeString))
+    },
     decisions: [],
     entities: [],
     filter: undefined,
@@ -37,11 +36,17 @@ var ractive = new OneDecisionApp({
       else return ractive.get('filter').value.toLowerCase()==obj[ractive.get('filter').field].toLowerCase();
     },
     //saveObserver:false,
+    stdPartials: [
+      { "name": "dmnCurrentSect", "url": "/partials/dmn-current-sect.html"},
+      { "name": "dmnListSect", "url": "/partials/dmn-list-sect.html"},
+      { "name": "poweredBy", "url": "/partials/powered-by.html"},
+      { "name": "profileArea", "url": "/partials/profile-area.html"},
+      { "name": "sidebar", "url": "/partials/sidebar.html"},
+      { "name": "titleArea", "url": "/partials/title-area.html"}
+    ],
     tenant: { id: 'onedecision' },
-    username: localStorage['username'],
-    age: function(timeString) {
-      return i18n.getAgeString(new Date(timeString))
-    }
+    title: "Decision Model Repository",
+    username: localStorage['username']
   },
   add: function () {
     console.log('add...');
@@ -49,7 +54,6 @@ var ractive = new OneDecisionApp({
   },
   addDeploymentResource: function () {
     console.log('add...');
-    //$('#upload fieldset').append($('#resourceControl').html());
     $("#file").click();
   },
   collapseAdd: function () {
@@ -88,6 +92,11 @@ var ractive = new OneDecisionApp({
         ractive.set('searchMatched',$('#decisionsTable tbody tr:visible').length);
       }
     });
+  },
+  oninit: function() {
+    console.info('oninit');
+    this.ajaxSetup();
+    this.loadStandardPartials(this.get('stdPartials'));
   },
   select: function(decision) {
     console.log('select...'+decision);

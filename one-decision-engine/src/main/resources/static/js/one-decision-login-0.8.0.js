@@ -23,7 +23,6 @@ var ractive = new OneDecisionApp({
 
   // Initialize some data
   data: {
-    csrfToken: getCookie(CSRF_COOKIE),
     contacts: [],
     //saveObserver:false,
     username: localStorage['username'],
