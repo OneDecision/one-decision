@@ -23,7 +23,7 @@
 		</ns2:InformationItem>
 	</ns2:BusinessKnowledgeModel>
 	<ns2:Decision id="DetermineEmailToSend" name="Determine Email Follow Up">
-		<ns2:DecisionTable hitPolicy="UNIQUE">
+		<ns2:DecisionTable hitPolicy="UNIQUE" id="DetermineEmailToSend_dt">
 			<ns2:description>DT to determine Email Follow Up</ns2:description>
 			<ns2:clause name="timeSinceLogin">
 			  <ns2:inputExpression id="dt0_c0_ie" ol:type="LiteralExpression">

@@ -21,6 +21,7 @@ import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.Expression;
+import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter.AdaptedExpression;
@@ -174,7 +175,12 @@ public class DecisionService implements DecisionConstants {
             sb.append("if (typeof " + var + " == 'string') var " + var
                     + " = JSON.parse(" + var + ");\n");
         }
+        sb.append(dt.getId()).append("();\n\n");
+        
+        sb.append("function ").append(dt.getId()).append("() {\n");
+        int ruleIdx = 0;
         for (DecisionRule rule : dt.getRule()) {
+            ruleIdx++;
             List<Expression> conditions = rule.getConditions();
             for (int i = 0; i < conditions.size(); i++) {
                 if (i == 0) {
@@ -182,7 +188,6 @@ public class DecisionService implements DecisionConstants {
                 } else {
                     sb.append(" && ");
                 }
-
                 Expression ex = conditions.get(i);
 
                 if (ex instanceof LiteralExpression) {
@@ -198,7 +203,12 @@ public class DecisionService implements DecisionConstants {
             }
             sb.append(") { \n");
             List<Expression> conclusions = rule.getConclusions();
+
             for (int i = 0; i < conclusions.size(); i++) {
+                if (i == 0) {
+                    sb.append("  System.out.println('  match on rule \""
+                            + ruleIdx + "\"');\n");
+                }
                 Expression ex = conclusions.get(i);
                 if (ex instanceof LiteralExpression) {
                     sb.append("  ");
@@ -216,8 +226,15 @@ public class DecisionService implements DecisionConstants {
                             "Only LiteralExpressions handled at this time");
                 }
             }
-            sb.append("}\n");
+            if (dt.getHitPolicy() == HitPolicy.FIRST) {
+                sb.append("  return;\n");
+            }
+            sb.append("} else { System.out.println('  no match on rule \""
+                    + ruleIdx
+                    + "\"'); }\n");
         }
+        sb.append("}");
+
         for (String var : varsToInit) {
             sb.append("if (typeof " + var + " == 'object')  " + var
                     + " = JSON.stringify(" + var + ");\n");
