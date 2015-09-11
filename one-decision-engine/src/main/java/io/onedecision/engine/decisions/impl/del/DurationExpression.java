@@ -16,13 +16,8 @@ package io.onedecision.engine.decisions.impl.del;
 import io.onedecision.engine.decisions.api.DecisionException;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,30 +36,81 @@ public class DurationExpression implements DelExpression {
             // Note: 1st capturing group discards all but the duration string
             String inputDuration = matcher.group(1);
 			try {
-				Duration newDuration = DatatypeFactory.newInstance()
-                        .newDuration(convertWeeks(inputDuration));
-				String s = script
-						.replace(inputDuration, String.valueOf(newDuration
-								.getTimeInMillis(new Date())));
-                LOGGER.debug("converted script to " + s);
-                return compile(s);
-			} catch (DatatypeConfigurationException e) {
-                throw new DecisionException(e.getMessage(), e);
-            } catch (IllegalArgumentException e) {
                 if ("P".equals(inputDuration)) {
                     // this is a flaw in the regex and ok to ignore
                     return script;
-                } else {
-                    throw new DecisionException("Cannot parse inputDuration");
                 }
+
+                // org.joda.time.Duration only parses secs and millis, see
+                // http://www.joda.org/joda-time/apidocs/org/joda/time/base/AbstractDuration.html#toString()
+
+                // javax.xml.datatype.Duration only works up to Int.MAX millis,
+                // see
+                // http://docs.oracle.com/javase/7/docs/api/javax/xml/datatype/Duration.html#addTo(java.util.Calendar)
+
+                long years = toMillis(getPart(inputDuration, 'Y'), 'Y');
+                // TODO could rely on 365/12 as an approximation but will not
+                // currently distinguish months from minutes
+                // long months = toMillis(getPart(inputDuration, 'M'),'M');
+                long weeks = toMillis(getPart(inputDuration, 'W'), 'W');
+                long days = toMillis(getPart(inputDuration, 'D'), 'D');
+                long hours = toMillis(getPart(inputDuration, 'H'), 'H');
+                long minutes = toMillis(getPart(inputDuration, 'M'), 'M');
+                long secs = toMillis(getPart(inputDuration, 'S'), 'S');
+                String s = script.replace(inputDuration,
+                        String.valueOf(years + weeks + days + hours + minutes
+                                + secs));
+                LOGGER.debug("converted script to " + s);
+                return compile(s);
+            } catch (IllegalArgumentException e) {
+                throw new DecisionException("Cannot parse inputDuration");
 			}
         } else {
             return script;
         }
 	}
 
+    private long toMillis(double val, char part) {
+        switch (part) {
+        case 'Y':
+            return Math.round(val * 1000 * 60 * 60 * 24 * 365);
+            // case 'M':
+            // return Math.round(val * 1000 * 60 * 60);
+        case 'W':
+            return Math.round(val * 1000 * 60 * 60 * 24 * 7);
+        case 'D':
+            return Math.round(val * 1000 * 60 * 60 * 24);
+        case 'H':
+            return Math.round(val * 1000 * 60 * 60);
+        case 'M':
+            return Math.round(val * 1000 * 60);
+        case 'S':
+            return Math.round(val * 1000);
+        default:
+            return Math.round(val);
+        }
+    }
+
+    private double getPart(String inputDuration, char part) {
+        int end = inputDuration.indexOf(part);
+        String s = null;
+        if (end != -1) {
+            StringBuffer sb = new StringBuffer(inputDuration.substring(0, end))
+                    .reverse();
+            for (int i = 0; i < sb.length(); i++) {
+                if (Character.isDigit(sb.charAt(i))) {
+                    continue;
+                } else {
+                    s = inputDuration.substring(end - i, end);
+                    break;
+                }
+            }
+        }
+        return s == null ? 0 : Double.parseDouble(s);
+    }
+
     // Although ISO 8601 includes PxW to specify a number of weeks this
-    // is apparently not supported by Duration class.
+    // is apparently not supported by javax.xml.datatype.Duration class.
     private String convertWeeks(String inputDuration) {
         if (inputDuration.endsWith("W")) {
             BigDecimal weeks = new BigDecimal(inputDuration.substring(1,

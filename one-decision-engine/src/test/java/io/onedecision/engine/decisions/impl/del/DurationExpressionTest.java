@@ -13,7 +13,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class DurationExpressionTest {
-    private static final long ONE_HOUR = 60 * 60 * 1000;
+    private static final long ONE_MIN = 60 * 1000;
+    private static final long ONE_HOUR = 60 * ONE_MIN;
     private static final long ONE_DAY = 24 * ONE_HOUR;
     
     @BeforeClass
@@ -24,8 +25,16 @@ public class DurationExpressionTest {
     public static Collection<String[]> data() {
         return Arrays.asList(new String[][] {
                 { "PT1H", String.valueOf(ONE_HOUR) },
+                { "PT1M", String.valueOf(ONE_MIN) },
                 { "P1D", String.valueOf(ONE_DAY) },
                 { "P1W", String.valueOf(ONE_DAY * 7) },
+                { "P10W", String.valueOf(ONE_DAY * 70) },
+                { "P52W", String.valueOf(ONE_DAY * 7 * 52) },
+                { "P1Y", String.valueOf(ONE_DAY * 365) },
+                {
+                        "contact.timeSinceBusinessPlanDownload &gt;= P1W",
+                        "contact.timeSinceBusinessPlanDownload &gt;= "
+                                + (ONE_DAY * 7) },
                 {
                         "foo == P1W && bar == PT1H",
                         "foo == " + String.valueOf(ONE_DAY * 7) + " && bar == "
