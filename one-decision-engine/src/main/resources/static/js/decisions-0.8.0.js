@@ -22,6 +22,7 @@ var ractive = new OneDecisionApp({
     entities: [],
     filter: undefined,
     formatDate: function(timeString) {
+      if (timeString==undefined) return 'n/a';
       return new Date(timeString).toLocaleDateString(navigator.languages);
     },
     hitPolicies: [

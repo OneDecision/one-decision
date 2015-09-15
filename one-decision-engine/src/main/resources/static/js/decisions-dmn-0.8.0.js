@@ -29,6 +29,7 @@ var ractive = new OneDecisionApp({
       return new Date(timeString).toLocaleDateString(navigator.languages);
     },
     formatDateTime: function(timeString) {
+      if (timeString==undefined) return 'n/a';
       return new Date(timeString).toLocaleString(navigator.languages);
     },
     matchFilter: function(obj) {
