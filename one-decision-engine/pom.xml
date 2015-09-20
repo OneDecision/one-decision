@@ -16,7 +16,7 @@
   <parent>
     <groupId>io.onedecision</groupId>
     <artifactId>onedecision-root</artifactId>
-    <version>0.8.3</version>
+    <version>0.9.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
