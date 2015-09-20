@@ -15,7 +15,7 @@ package io.onedecision.engine.decisions.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import io.onedecision.engine.Application;
+import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
@@ -39,7 +39,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
  * @author Tim Stephenson
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = TestApplication.class)
 @WebAppConfiguration
 public class DmnLifecycleTest implements ExamplesConstants {
 

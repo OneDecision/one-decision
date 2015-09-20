@@ -200,6 +200,17 @@ public class Definitions extends DmnElement {
         return this.drgElement;
     }
 
+    public List<InformationItem> getInformationItems() {
+        List<InformationItem> informationItems = new ArrayList<InformationItem>();
+        for (Object o : getAny()) {
+            JAXBElement<?> el = (JAXBElement<?>) o;
+            if (el.getValue() instanceof InformationItem) {
+                informationItems.add((InformationItem) el.getValue());
+            }
+        }
+        return informationItems;
+    }
+
     /**
      * Find the contained Business Knowledge Model if one exists.
      * 

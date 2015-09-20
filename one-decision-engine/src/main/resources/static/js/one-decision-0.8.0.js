@@ -43,7 +43,6 @@ var OneDecisionApp = Ractive.extend({
     $( document ).ajaxStop(function() {
       $( "#ajax-loader" ).hide();
     });
-    ractive.initContentEditable();// required here for the tenant switcher
   },
   handleError: function(jqXHR, textStatus, errorThrown) {
     switch (jqXHR.status) {
@@ -164,19 +163,6 @@ var OneDecisionApp = Ractive.extend({
       $('#messages').fadeOut();
     }, EASING_DURATION*10);
     else $('#messages').append('<span class="text-danger pull-right glyphicon glyphicon-remove" onclick="ractive.hideMessage()"></span>');
-  },
-  switchToTenant: function(tenant) {
-    if (tenant==undefined || typeof tenant != 'string') {
-      return false;
-    }
-    console.log('switchToTenant: '+tenant);
-    $.ajax({
-      method: 'PUT',
-      url: "/admin/tenant/"+ractive.get('username')+'/'+tenant,
-      success: function() {
-        window.location.reload();
-      }
-    })
   }
 });
 

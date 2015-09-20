@@ -12,16 +12,16 @@
 	<ns2:ItemDefinition id="emailDef" name="Email Definition">
 		<ns2:description>Define email to send as follow up</ns2:description>
 	</ns2:ItemDefinition>
-	<ns2:BusinessKnowledgeModel>
-		<ns2:InformationItem id="contact" name="contact">
-			<ns2:description>The customer contact record to pass to the decision</ns2:description>
-			<ns2:itemDefinition>contactDef</ns2:itemDefinition>
-		</ns2:InformationItem>
-		<ns2:InformationItem id="email" name="email">
-			<ns2:description>The email to be selected by the decision</ns2:description>
-			<ns2:itemDefinition>emailDef</ns2:itemDefinition>
-		</ns2:InformationItem>
-	</ns2:BusinessKnowledgeModel>
+	
+	<ns2:InformationItem id="contact" name="contact">
+		<ns2:description>The customer contact record to pass to the decision</ns2:description>
+		<ns2:itemDefinition>contactDef</ns2:itemDefinition>
+	</ns2:InformationItem>
+	<ns2:InformationItem id="email" name="email">
+		<ns2:description>The email to be selected by the decision</ns2:description>
+		<ns2:itemDefinition>emailDef</ns2:itemDefinition>
+	</ns2:InformationItem>
+	
 	<ns2:Decision id="DetermineEmailToSend" name="Determine Email Follow Up">
 		<ns2:DecisionTable hitPolicy="UNIQUE" id="DetermineEmailToSend_dt">
 			<ns2:description>DT to determine Email Follow Up</ns2:description>

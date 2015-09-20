@@ -17,13 +17,13 @@ import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.DecisionModelFactory;
 import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.DecisionService;
-import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Handle decision execution requests as well as discovery of what decisions
@@ -58,6 +60,9 @@ public class DecisionController {
     @Autowired
     protected DecisionService decisionService;
 
+    @Autowired
+    protected ObjectMapper objectMapper;
+
     /**
      * Executes the decision in the specified definitions bundle.
      * 
@@ -71,7 +76,7 @@ public class DecisionController {
      *            specified decision. Values are expected to be JSON serialized.
      * @return JSON serialised output from the specified decision.
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/{definitionId}/{decisionId}", headers = "Accept=application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/{definitionId}/{decisionId}", headers = "Accept=application/json")
     @ResponseBody
     public final String executeDecision(
             @PathVariable("tenantId") String tenantId,
@@ -90,12 +95,33 @@ public class DecisionController {
         }
 		Definitions definitions = decisionModelFactory.load(dmnModel
 				.getDefinitionXml());
-        Decision d = definitions.getDecisionById(decisionId);
-        String jsonOut = (String) decisionService.execute(d, params).get(
-                "conclusion");
+        Map<String, Object> results = decisionService.execute(definitions,
+                decisionId, params);
 
-        LOGGER.info(String.format("decision conclusion: %1$s", jsonOut));
+        LOGGER.info(String.format("decision conclusion: %1$s", results));
+        return toJson(results);
+    }
 
-        return jsonOut;
+    private String toJson(Map<String, Object> results) throws IOException {
+        StringBuffer sb = new StringBuffer("{");
+        for (Entry<String, Object> entry : results.entrySet()) {
+            sb.append("\"").append(entry.getKey()).append("\":");
+            Object val = entry.getValue();
+            if (val instanceof String && val.equals("{}")) {
+                sb.append(val);
+            } else {
+                val = objectMapper.writeValueAsString(val);
+                if (val instanceof String && ((String) val).startsWith("\"{")) {
+                    val = ((String) val).substring(1,
+                            ((String) val).length() - 1);
+                }
+                sb.append(((String) val).replaceAll("\\\\", ""));
+            }
+            sb.append(",");
+        }
+        if (sb.lastIndexOf(",") != -1) {
+            sb.deleteCharAt(sb.lastIndexOf(",")).append("}");
+        }
+        return sb.toString();
     }
 }

@@ -108,12 +108,9 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
         assertNotNull("Definitions element was null", dm);
         assertEquals(2, dm.getItemDefinition().size());
         assertEquals(1, dm.getDecisions().size());
-        assertEquals("Applicant Model", dm.getBusinessKnowledgeModel()
-                .getName());
-        assertEquals(1, dm.getBusinessKnowledgeModel().getInformationItem()
-                .size());
-        assertEquals("applicant", dm.getBusinessKnowledgeModel()
-                .getInformationItem().get(0).getId());
+        assertEquals(2, dm.getInformationItems().size());
+        assertEquals("applicant", dm.getInformationItems().get(0).getId());
+        assertEquals("conclusion", dm.getInformationItems().get(1).getId());
         // TODO What about this:
         // <LiteralExpression expressionLanguage="http://tempuri.org"
         // id="idvalue2" name="conclusion">...

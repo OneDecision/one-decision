@@ -48,13 +48,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableJpaRepositories({ "io.onedecision.engine.domain.repositories",
 		"io.onedecision.engine.decisions.repositories" })
 @EnableSwagger2
-public class Application extends WebMvcConfigurerAdapter {
+public class TestApplication extends WebMvcConfigurerAdapter {
 
 	protected static final Logger LOGGER = LoggerFactory
-			.getLogger(Application.class);
+			.getLogger(TestApplication.class);
 
     public static void main(String[] args) {
-        ApplicationContext ctx = SpringApplication.run(Application.class, args);
+        ApplicationContext ctx = SpringApplication.run(TestApplication.class, args);
 
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.info("Beans registered:");

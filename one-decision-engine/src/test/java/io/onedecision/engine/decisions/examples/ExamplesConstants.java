@@ -28,4 +28,5 @@ public interface ExamplesConstants {
     static final String EFU_DMN_RESOURCE = "/decisions/examples/EmailFollowUp.dmn";
     static final String EFU_DEFINITION_ID = "EmailFollowUp";
     static final String EFU_DECISION_ID = "DetermineEmailToSend";
+
 }

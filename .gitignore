@@ -1,9 +1,11 @@
-/target/
-/.settings/
-/.classpath
-/.project
-/.springBeans
+target/
+.settings/
+.classpath
+.project
+.springBeans
+*.bak
 *.class
+*dis
 
 # Mac 
 .DS_Store

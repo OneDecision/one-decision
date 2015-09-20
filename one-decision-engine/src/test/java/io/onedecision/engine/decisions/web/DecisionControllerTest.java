@@ -13,9 +13,9 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import io.onedecision.engine.Application;
+import static org.junit.Assert.assertTrue;
+import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
@@ -40,7 +40,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
  * @author Tim Stephenson
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = TestApplication.class)
 @WebAppConfiguration
 public class DecisionControllerTest implements ExamplesConstants {
 
@@ -69,10 +69,12 @@ public class DecisionControllerTest implements ExamplesConstants {
     public void testDecisionViaController() throws IOException,
             DecisionException {
         Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("applicant", "{\"age\":18,\"health\":\"Good\"}");
+        String applicantVal = "{\"age\":18,\"health\":\"Good\"}";
+        vars.put("applicant", applicantVal);
         String conclusion = decisionController.executeDecision(TENANT_ID,
                 ARR_DEFINITION_ID, ARR_DECISION_ID, vars);
         assertNotNull(conclusion);
-        assertEquals("{\"riskRating\":\"Low\"}", conclusion);
+        StringBuffer sb = new StringBuffer(conclusion);
+        assertTrue(conclusion.contains("{\"riskRating\":\"Low\"}"));
     }
 }

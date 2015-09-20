@@ -7,32 +7,22 @@
   expressionLanguage="http://foo.com/application/javascript"
   name="Application Risk Decisions">
   
-   <ItemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
-     <description>Domain model definition for a single applicant.</description>
-   </ItemDefinition>
-   <ItemDefinition id="conclusionDef" isCollection="false" name="conclusion" typeLanguage="http://tempuri.org">
-     <description>Domain model definition for a single conclusion (policy).</description>
-   </ItemDefinition>
-   
-   <BusinessKnowledgeModel id="bkm0" name="Applicant Model">
-     <description>Business Knowledge Model describing the Applicants for the Health Insurance domain</description>
-     <InformationItem id="applicant" name="applicant">
-       <description>An applicant for health insurance</description>
-       <itemDefinition>applicantDef</itemDefinition>
-     </InformationItem>
-     <LiteralExpression expressionLanguage="http://tempuri.org" id="idvalue2" name="conclusion">
-       <description>The conclusion being created for the applicant</description>
-       <itemDefinition>conclusionDef</itemDefinition>
-       <text/>
-     </LiteralExpression>
-     <!-- <knowledgeRequirement>
-       <requiredKnowledge>QName</requiredKnowledge>
-     </knowledgeRequirement>
-     <authorityRequirement>
-       <requiredDecision>QName</requiredDecision>
-     </authorityRequirement> -->
-  </BusinessKnowledgeModel>
-       
+  <ItemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
+    <description>Domain model definition for a single applicant.</description>
+  </ItemDefinition>
+  <ItemDefinition id="conclusionDef" isCollection="false" name="conclusion" typeLanguage="http://tempuri.org">
+    <description>Domain model definition for a single conclusion (policy).</description>
+  </ItemDefinition>
+  
+  <InformationItem id="applicant" name="applicant">
+    <description>An applicant for health insurance</description>
+    <itemDefinition>applicantDef</itemDefinition>
+  </InformationItem>
+  <InformationItem id="conclusion" name="conclusion">
+    <description>The conclusion being created for the applicant</description>
+    <itemDefinition>conclusionDef</itemDefinition>
+  </InformationItem>
+      
   <Decision id="1_d" name="Determine applicant's risk rating">
     <description>Determines health insurance applicant's risk rating</description>
     <question>What is the risk rating for the specified health insurance applicant?</question>

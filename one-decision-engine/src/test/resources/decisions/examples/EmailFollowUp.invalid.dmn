@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Definitions id="EmailFollowUp"
+	xmlns:ns2="http://www.omg.org/spec/DMN/20130901"
+	xmlns:ol="http://omny.link/decisions">
+	<ns2:description>A decision model to choose how to follow up a customer
+		lead</ns2:description>
+	<ns2:ItemDefinition id="contactDef" name="Contact Definition">
+		<ns2:description>A contact (person) to follow up</ns2:description>
+	</ns2:ItemDefinition>
+	<ns2:ItemDefinition id="emailDef" name="Email Definition">
+		<ns2:description>Define email to send as follow up</ns2:description>
+	</ns2:ItemDefinition>
+	<BusinessKnowledgeModel>
+		<ns2:InformationItem id="contact" name="Contact">
+			<ns2:description>The customer contact record to pass to the decision</ns2:description>
+		</ns2:InformationItem>
+		<ns2:InformationItem id="email" name="Email">
+			<ns2:description>The email to be selected by the decision</ns2:description>
+		</ns2:InformationItem>
+	</BusinessKnowledgeModel>
+	<ns2:Decision id="DetermineEmailToSend" name="Determine Email Follow Up">
+		<ns2:DecisionTable hitPolicy="UNIQUE">
+			<ns2:description>DT to determine Email Follow Up</ns2:description>
+			<ns2:clause name="timeSinceLogin">
+			  <ns2:inputExpression id="dt0_c0_ie" ol:type="LiteralExpression">
+          <ns2:description>The customer contact object</ns2:description>
+          <ns2:inputVariable>contact</ns2:inputVariable>
+        </ns2:inputExpression>
+				<ns2:inputEntry id="timeSinceLoginLT14Days">
+					<ns2:description>Time since login is less than 14 days
+					</ns2:description>
+					<ns2:text>contact.timeSinceLogin &gt; P14D</ns2:text>
+				</ns2:inputEntry>
+				<ns2:inputEntry id="timeSinceLoginGE14Days">
+					<ns2:description>Time since login is at least 14 days
+					</ns2:description>
+					<ns2:text>contact.timeSinceLogin &gt;= P14D</ns2:text>
+				</ns2:inputEntry>
+			</ns2:clause>
+			<ns2:clause name="timeSinceEmail">
+        <ns2:inputExpression id="dt0_c1_ie" ol:type="LiteralExpression">
+          <ns2:description>The customer contact object</ns2:description>
+          <ns2:inputVariable>contact</ns2:inputVariable>
+        </ns2:inputExpression>
+ 				<ns2:inputEntry id="timeSinceEmailLT7Days">
+					<ns2:description>Time since email is less than 7 days
+					</ns2:description>
+					<ns2:text>contact.timeSinceEmail &lt; P7D</ns2:text>
+				</ns2:inputEntry>
+				<ns2:inputEntry id="timeSinceEmailGE7Days">
+					<ns2:description>Time since email is at least 7 days
+					</ns2:description>
+					<ns2:text>contact.timeSinceEmail &lt; P7D</ns2:text>
+				</ns2:inputEntry>
+			</ns2:clause>
+			<ns2:clause name="template">
+				<ns2:outputDefinition id="dt0_c2_od" ol:type="LiteralExpression">
+          <ns2:description>The email object</ns2:description>
+          <ns2:inputVariable>email</ns2:inputVariable>
+        </ns2:outputDefinition>
+				<ns2:inputEntry id="templateNone">
+					<ns2:description>Email template to use is 'MissedYou'
+					</ns2:description>
+					<ns2:text>email.template = 'None'</ns2:text>
+				</ns2:inputEntry>
+				<ns2:inputEntry id="templateMissedYou">
+					<ns2:description>Email template to use is 'MissedYou'
+					</ns2:description>
+					<ns2:text>email.template = 'MissedYou'</ns2:text>
+				</ns2:inputEntry>
+			</ns2:clause>
+			<ns2:rule >
+        <ns2:condition>timeSinceLoginLT14Days</ns2:condition>
+        <ns2:condition></ns2:condition>
+        <ns2:conclusion></ns2:conclusion>
+      </ns2:rule>
+      <ns2:rule >
+        <ns2:condition>timeSinceLoginGE14Days</ns2:condition>
+        <ns2:condition>timeSinceEmailLT7Days</ns2:condition>
+        <ns2:conclusion></ns2:conclusion>
+      </ns2:rule>
+      <ns2:rule >
+        <ns2:condition>timeSinceLoginGE14Days</ns2:condition>
+        <ns2:condition>timeSinceEmailGE7Days</ns2:condition>
+        <ns2:conclusion>templateMissedYou</ns2:conclusion>
+			</ns2:rule>
+		</ns2:DecisionTable>
+	</ns2:Decision>
+</ns2:Definitions>

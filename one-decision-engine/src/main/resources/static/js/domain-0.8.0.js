@@ -139,9 +139,9 @@ $(document).ready(function() {
   if (ractive.initCallbacks==undefined) ractive.initCallbacks = $.Callbacks();
   ractive.initCallbacks.add(function() {
     console.info('initialization handler');
-    ractive.applyBranding();
-    ractive.fetch();
-    ractive.initControls();
+    //ractive.applyBranding();
+    //ractive.fetch();
+    //ractive.initControls();
   });
   
   var s = getSearchParameters()['s'];

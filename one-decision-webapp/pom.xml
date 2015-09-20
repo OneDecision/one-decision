@@ -1,21 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
-  <artifactId>onedecision-engine</artifactId>
-  
-  <name>One Decision engine</name>
+  <artifactId>onedecision-webapp</artifactId>
+  <name>One Decision web application</name>
   <inceptionYear>2014</inceptionYear>
-  <description>Decision Management microservices</description>
-  
+    
   <properties>
     <java.version>1.7</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <activiti.version>5.17.0</activiti.version>
+    <start-class>io.onedecision.webapp.Application</start-class>
   </properties>
-  
+
   <parent>
-    <groupId>io.onedecision</groupId>
-    <artifactId>onedecision-root</artifactId>
+	  <groupId>io.onedecision</groupId>
+	  <artifactId>onedecision-root</artifactId>
     <version>0.8.3-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
@@ -28,64 +27,18 @@
         <url>https://jcenter.bintray.com/</url>
       </repository>
   </repositories>
-
   
   <dependencies>
-    <!-- Spring Boot --> 
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>spring-boot-starter-logging</artifactId>
-          <groupId>org.springframework.boot</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-freemarker</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
+        <groupId>io.onedecision</groupId>
+        <artifactId>onedecision-engine</artifactId>
+        <version>0.8.2-SNAPSHOT</version>
     </dependency>
     <!-- Override scope so we can provide test helpers  -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-  		<groupId>org.glassfish</groupId>
-  		<artifactId>javax.json</artifactId>
-  		<version>1.0.4</version>
-  	</dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.module</groupId>
-      <artifactId>jackson-module-jaxb-annotations</artifactId>
-      <version>2.4.4</version>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
     </dependency>
     <!-- Generates REST documentation -->
     <dependency>
@@ -120,22 +73,21 @@
       <version>3.1.1</version>
     </dependency>
     <dependency>
-		  <groupId>org.webjars</groupId>
-		  <artifactId>ractive</artifactId>
-		  <version>0.7.1</version>
-		</dependency>
-    <!-- TEST dependencies -->
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
+      <groupId>org.webjars</groupId>
+        <artifactId>ractive</artifactId>
+        <version>0.7.1</version>
     </dependency>
+    <!-- TEST dependencies -->
     <dependency>
       <groupId>org.toxos.activiti</groupId>
       <artifactId>process-assertions</artifactId>
       <version>0.5.0</version>
       <scope>test</scope>
     </dependency>
-    
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
@@ -161,6 +113,32 @@
           </dependency>
         </dependencies>
       </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/${project.artifactId}-${project.version}.jar.original</file>
+                  <type>jar</type>
+                  <classifier>library</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>  
     </plugins>
   </build>
 

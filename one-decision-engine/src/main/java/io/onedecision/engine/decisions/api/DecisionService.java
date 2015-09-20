@@ -22,6 +22,7 @@ import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
+import io.onedecision.engine.decisions.model.dmn.InformationItem;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter.AdaptedExpression;
@@ -42,9 +43,7 @@ import javax.script.ScriptException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DecisionService implements DecisionConstants {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionService.class);
@@ -84,17 +83,25 @@ public class DecisionService implements DecisionConstants {
     public Map<String, Object> execute(Definitions dm, String decisionId,
             Map<String, Object> vars) throws DecisionException {
         String script = getScript(dm, decisionId);
-        return execute(script, vars);
+        Map<String, Object> results = execute(dm.getDecisionById(decisionId),
+                script, vars);
+
+        Map<String, Object> limitedResults = new HashMap<String, Object>();
+        for (InformationItem item : dm.getInformationItems()) {
+            limitedResults.put(item.getId(), results.get(item.getId()));
+        }
+
+        return limitedResults;
     }
 
     public Map<String, Object> execute(Decision d, Map<String, Object> params)
             throws DecisionException {
         String script = getScript(d.getDecisionTable());
-        return execute(script, params);
+        return execute(d, script, params);
     }
 
-    protected Map<String, Object> execute(String script,
-            Map<String, Object> params) throws DecisionException {
+    protected Map<String, Object> execute(Decision d,
+            String script, Map<String, Object> params) throws DecisionException {
         for (Entry<String, Object> o : params.entrySet()) {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("JSON input in Java: " + o);
@@ -110,6 +117,8 @@ public class DecisionService implements DecisionConstants {
             throw new DecisionException("Unable to evaluate decision", ex);
         }
 
+        // TODO should be able to limit return to decision's own information
+        // items
         for (Entry<String, Object> o2 : jsEng.getBindings(
                 ScriptContext.ENGINE_SCOPE).entrySet()) {
             if (!EXCLUDED_OBJECTS.contains(o2.getKey())) {
@@ -246,7 +255,7 @@ public class DecisionService implements DecisionConstants {
 		Object expr = ex.getText().getContent().get(0);
 		// Casting ought to be pretty safe, but who knows what will happen in
 		// the future
-		if (!(expr  instanceof String)) { 
+        if (!(expr instanceof String)) {
 			throw new DecisionException(
 					String.format(
 							"LiteralExpression is expected to be a String but was %1$s",
