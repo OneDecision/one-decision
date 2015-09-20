@@ -7,7 +7,7 @@
   <groupId>io.onedecision</groupId>
   <artifactId>onedecision-root</artifactId>
   <packaging>pom</packaging>
-  <version>0.8.3</version>
+  <version>0.9.0-SNAPSHOT</version>
   
   <organization>
     <name>OneDecision.io</name>
@@ -22,7 +22,9 @@
   </parent>
 
   <properties>
+    <activiti.version>5.18.0-SNAPSHOT</activiti.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>1.7</java.version>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
     <spring.security.version>3.2.3.RELEASE</spring.security.version>
   </properties>

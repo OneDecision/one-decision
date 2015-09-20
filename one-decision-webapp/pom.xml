@@ -5,17 +5,10 @@
   <name>One Decision web application</name>
   <inceptionYear>2014</inceptionYear>
     
-  <properties>
-    <java.version>1.7</java.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <activiti.version>5.17.0</activiti.version>
-    <start-class>io.onedecision.webapp.Application</start-class>
-  </properties>
-
   <parent>
     <groupId>io.onedecision</groupId>
     <artifactId>onedecision-root</artifactId>
-    <version>0.8.3</version>
+    <version>0.9.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
