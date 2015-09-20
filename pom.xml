@@ -7,7 +7,7 @@
   <groupId>io.onedecision</groupId>
   <artifactId>onedecision-root</artifactId>
   <packaging>pom</packaging>
-  <version>0.8.3-SNAPSHOT</version>
+  <version>0.8.3</version>
   
   <organization>
     <name>OneDecision.io</name>
