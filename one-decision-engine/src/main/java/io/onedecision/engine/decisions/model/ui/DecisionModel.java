@@ -88,7 +88,6 @@ public class DecisionModel implements Serializable {
     private Date created;
 
     @Temporal(TemporalType.TIMESTAMP)
-	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @JsonProperty
     private Date lastUpdated;
 
