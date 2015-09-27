@@ -45,17 +45,17 @@
         <inputEntry id="over60" od:type="LiteralExpression">
           <description>Is the applicant over 60?</description>
           <inputVariable>applicant</inputVariable>
-          <text>applicant.age > 60</text>
+          <text>age > 60</text>
         </inputEntry>
         <inputEntry id="between25And60" od:type="LiteralExpression">
           <description>Is the applicant between 25 and 60?</description>
           <inputVariable>applicant</inputVariable>
-          <text>applicant.age >=25 &amp;&amp; applicant.age &lt;= 60</text>
+          <text>age >=25 &amp;&amp; applicant.age &lt;= 60</text>
           </inputEntry>
         <inputEntry id="under25" od:type="LiteralExpression">
            <description>Is the applicant under 25?</description>
            <inputVariable>applicant</inputVariable>
-           <text>applicant.age &lt; 25</text>
+           <text>age &lt; 25</text>
         </inputEntry>
       </clause>
       <clause>

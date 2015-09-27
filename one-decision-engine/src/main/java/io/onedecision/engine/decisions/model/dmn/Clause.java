@@ -21,6 +21,7 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter;
 
 import java.util.ArrayList;
@@ -83,6 +84,8 @@ public class Clause {
     protected List<Expression> inputEntry;
     protected QName outputDefinition;
     protected List<Expression> outputEntry;
+    @XmlAttribute(name = "id")
+    protected String id;
     @XmlAttribute(name = "name")
     protected String name;
     @XmlAttribute(name = "isOrdered")
@@ -208,12 +211,31 @@ public class Clause {
     }
 
     /**
+     * Gets the value of the id property.
+     * 
+     * @return possible object is {@link String }
+     * 
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *            allowed object is {@link String }
+     * 
+     */
+    public void setId(String value) {
+        this.id = value;
+    }
+
+    /**
      * Gets the value of the name property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * @return possible object is {@link String }
+     * 
      */
     public String getName() {
         return name;
@@ -267,6 +289,24 @@ public class Clause {
     public Clause addOutputEntry(Expression expr) {
         getOutputEntry().add(expr);
         return this;
+    }
+
+    public String getInputExpressionId() {
+        if (getInputExpression() == null) {
+            // TODO
+            throw new DecisionException(
+                    "Cannot handle the case where there is no input expression");
+        } else if (getInputExpression().getItemDefinition() != null) {
+            return getInputExpression().getItemDefinition().getLocalPart();
+        } else if (getInputExpression().getInputVariable().size() > 0) {
+            return ((InformationItem) getInputExpression().getInputVariable()
+                    .get(0).getValue()).getId();
+        } else {
+            throw new DecisionException(String.format(
+                    "Unable to determine input of clause (id name): %1$s %2$s",
+                    getId(), getName()));
+        }
+
     }
 
 }

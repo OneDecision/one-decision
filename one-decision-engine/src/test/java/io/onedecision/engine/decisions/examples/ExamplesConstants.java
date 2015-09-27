@@ -29,4 +29,8 @@ public interface ExamplesConstants {
     static final String EFU_DEFINITION_ID = "EmailFollowUp";
     static final String EFU_DECISION_ID = "DetermineEmailToSend";
 
+    // Calculate Discount example
+    static final String CD_DMN_RESOURCE = "/decisions/examples/calculate_discount.dmn.xml";
+    static final String CD_DEFINITION_ID = "27002";
+    static final String CD_DECISION_ID = "calcDiscount1";
 }

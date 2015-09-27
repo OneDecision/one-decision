@@ -21,6 +21,8 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
+import io.onedecision.engine.decisions.api.DecisionException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,6 +141,31 @@ public class DecisionTable extends Expression {
             clause = new ArrayList<Clause>();
         }
         return this.clause;
+    }
+
+    // NOTE: id is not part of 1.0 XSD (an oversight one would think)
+    public Clause findClause(String id) {
+        for (Clause clause : getClause()) {
+            System.out
+                    .println("  match?: " + id + " = " + clause.getId());
+            if (id.equals(clause.getId())) {
+                return clause;
+            }
+        }
+        throw new DecisionException("Cannot find clause for " + id);
+    }
+
+    public Clause findClauseFromInputEntry(Expression entry) {
+        for (Clause clause : getClause()) {
+            for (Expression ex : clause.getInputEntry()) {
+                System.out.println("  match?: " + entry.getId() + " = "
+                        + ex.getId());
+                if (entry.getId().equals(ex.getId())) {
+                    return clause;
+                }
+            }
+        }
+        throw new DecisionException("Cannot find clause for " + entry.getId());
     }
 
     /**

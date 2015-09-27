@@ -18,7 +18,6 @@
 // Generated on: 2014.12.02 at 12:08:24 PM GMT 
 //
 
-
 package io.onedecision.engine.decisions.model.dmn;
 
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter;
@@ -38,11 +37,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
 
-
 /**
- * <p>Java class for tExpression complex type.
+ * <p>
+ * Java class for tExpression complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tExpression">
@@ -62,17 +63,11 @@ import javax.xml.namespace.QName;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "Decision")
-@XmlType(name = "tExpression", propOrder = {
-    "inputVariable",
- "itemDefinition"
+@XmlType(name = "tExpression", propOrder = { "inputVariable", "itemDefinition"
 // ,
 // "text", "_import"
 })
-@XmlSeeAlso({
-    LiteralExpression.class,
-    Invocation.class,
-    DecisionTable.class
-})
+@XmlSeeAlso({ LiteralExpression.class, Invocation.class, DecisionTable.class })
 @XmlJavaTypeAdapter(ExpressionAdapter.class)
 public class Expression extends DmnElement {
 
@@ -92,15 +87,16 @@ public class Expression extends DmnElement {
      * Gets the value of the inputVariable property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the inputVariable property.
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the inputVariable property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getInputVariable().add(newItem);
+     * getInputVariable().add(newItem);
      * </pre>
      * 
      * 
@@ -129,10 +125,8 @@ public class Expression extends DmnElement {
     /**
      * Gets the value of the itemDefinition property.
      * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     * @return possible object is {@link QName }
+     * 
      */
     public QName getItemDefinition() {
         return itemDefinition;
@@ -142,9 +136,8 @@ public class Expression extends DmnElement {
      * Sets the value of the itemDefinition property.
      * 
      * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *            allowed object is {@link QName }
+     * 
      */
     public Expression setItemDefinition(QName value) {
         this.itemDefinition = value;
@@ -153,13 +146,13 @@ public class Expression extends DmnElement {
 
     public InformationItem getOnlyInputVariable() {
         if (getInputVariable().size() != 1) {
-            throw new IllegalStateException(
-                    "Expected 1 input variable but found "
-                            + getInputVariable().size());
+            throw new IllegalStateException(String.format(
+                    "Requested exactly one input variable but there are %1$s",
+                    getInputVariable().size()));
         }
-        JAXBElement<Object> jaxbElement = (JAXBElement<Object>) getInputVariable().get(
-                0);
-		return (InformationItem) jaxbElement.getValue();
+        JAXBElement<Object> jaxbElement = (JAXBElement<Object>) getInputVariable()
+                .get(0);
+        return (InformationItem) jaxbElement.getValue();
     }
 
     // public InformationItem addInputVariable(String name) {

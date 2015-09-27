@@ -272,17 +272,6 @@ public class DecisionModelConverter implements
 
 	}
 
-    private Clause findCondition(DecisionTable dt, String string) {
-        for (Clause clause : dt.getClause()) {
-            System.out
-                    .println("  match?: " + string + " = " + clause.getName());
-            if (string.equals(clause.getName())) {
-                return clause;
-            }
-        }
-        throw new DecisionException("Cannot find input for " + string);
-    }
-
     private Expression findConditionEntry(DecisionTable dt, String string) {
         for (Clause clause : dt.getClause()) {
             for (Expression entry : clause.getInputEntry()) {

@@ -142,7 +142,7 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
                             case 0:
                                 assertTrue(inEntry instanceof LiteralExpression);
                                 LiteralExpression le = (LiteralExpression) inEntry;
-                                assertEquals("applicant.age > 60",
+                                assertEquals("age > 60",
                                         le.getText().getContent().get(0));
                                 break;
                             }

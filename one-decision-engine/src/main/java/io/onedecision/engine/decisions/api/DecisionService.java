@@ -133,7 +133,7 @@ public class DecisionService implements DecisionConstants {
     }
 
     public String getScript(Definitions dm, String decisionId) {
-        StringBuilder sb = new StringBuilder("var System = java.lang.System;\n");
+        StringBuilder sb = new StringBuilder();
         
         for (DecisionModelImport import_ : dm.getImport()) {
             if (EXPR_URI_JS.equals(import_.getImportType())) {
@@ -161,7 +161,7 @@ public class DecisionService implements DecisionConstants {
         Set<String> varsToInit = new HashSet<String>();
         for (Clause o : dt.getClause()) {
 			if (o.getInputExpression() != null
-					&& o.getInputExpression().getOnlyInputVariable() != null) {
+                    && !o.getInputExpression().getInputVariable().isEmpty()) {
                 varsToInit.add(o.getInputExpression().getOnlyInputVariable()
                         .getId());
 			} else {
@@ -184,9 +184,10 @@ public class DecisionService implements DecisionConstants {
             sb.append("if (typeof " + var + " == 'string') var " + var
                     + " = JSON.parse(" + var + ");\n");
         }
-        sb.append(dt.getId()).append("();\n\n");
+        sb.append(createFunctionName(dt.getId())).append("();\n\n");
         
-        sb.append("function ").append(dt.getId()).append("() {\n");
+        sb.append("function ").append(createFunctionName(dt.getId()))
+                .append("() {\n");
         int ruleIdx = 0;
         for (DecisionRule rule : dt.getRule()) {
             ruleIdx++;
@@ -198,13 +199,15 @@ public class DecisionService implements DecisionConstants {
                     sb.append(" && ");
                 }
                 Expression ex = conditions.get(i);
-
+                Clause clause = dt.findClauseFromInputEntry(ex);
+                
                 if (ex instanceof LiteralExpression) {
-					sb.append(compile((LiteralExpression) ex));
+                    sb.append(compile(clause.getInputExpressionId(),
+                            (LiteralExpression) ex));
                 } else if (ex instanceof AdaptedExpression) {
                     LiteralExpression le = (LiteralExpression) adapter
                             .unmarshal((AdaptedExpression) ex);
-					sb.append(compile(le));
+                    sb.append(compile(clause.getInputExpressionId(), le));
                 } else {
                     throw new IllegalStateException(
                             "Only LiteralExpressions handled at this time");
@@ -248,10 +251,25 @@ public class DecisionService implements DecisionConstants {
             sb.append("if (typeof " + var + " == 'object')  " + var
                     + " = JSON.stringify(" + var + ");\n");
         }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(sb.toString());
+        }
         return sb.toString();
     }
 
-	protected String compile(LiteralExpression ex) {
+    protected String createFunctionName(String id) {
+        if (Character.isDigit(id.charAt(0))) {
+            return "_" + id;
+        } else {
+            return id;
+        }
+    }
+
+    protected String compile(LiteralExpression ex) {
+        return compile("", ex);
+    }
+
+    protected String compile(String input, LiteralExpression ex) {
 		Object expr = ex.getText().getContent().get(0);
 		// Casting ought to be pretty safe, but who knows what will happen in
 		// the future
@@ -261,13 +279,16 @@ public class DecisionService implements DecisionConstants {
 							"LiteralExpression is expected to be a String but was %1$s",
 							expr.getClass().getName()));
 		}
-		return compile((String) expr);
+        return compile(input, (String) expr);
 	}
 	
-	protected String compile(String expr) {
+    protected String compile(String input, String expr) {
 		String rtn = expr;
-		for (DelExpression compiler : getDelExpressions()) {
-			rtn = compiler.compile(expr);
+		if (!expr.startsWith(input)) {
+             rtn = input + "." + expr;
+        }
+        for (DelExpression compiler : getDelExpressions()) {
+            rtn = compiler.compile(rtn);
 		}
 		return rtn;
 	}
