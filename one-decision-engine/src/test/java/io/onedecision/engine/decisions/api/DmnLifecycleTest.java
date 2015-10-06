@@ -65,9 +65,9 @@ public class DmnLifecycleTest implements ExamplesConstants {
         Definitions model = fac.loadFromClassPath(ARR_DMN_RESOURCE);
 
         // Create
-        DmnModel dmnModel = svc.createModelForTenant(TENANT_ID,
-                ARR_DMN_RESOURCE.substring(ARR_DMN_RESOURCE.lastIndexOf('/')),
-                "A test deployment of " + ARR_DMN_RESOURCE, model);
+        DmnModel dmnModel = svc.createModelForTenant(model,
+                "A test deployment of " + ARR_DMN_RESOURCE,
+                TENANT_ID);
 
         // Retrieve
         List<DmnModel> models = svc.listForTenant(TENANT_ID);

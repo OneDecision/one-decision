@@ -15,14 +15,18 @@
   </parent>
 
   <repositories>
-      <!-- Provides Swagger dependencies -->
-      <repository>
-        <id>jcenter-snapshots</id>
-        <name>jcenter</name>
-        <url>https://jcenter.bintray.com/</url>
-      </repository>
+    <!-- Provides Swagger dependencies - ->
+    <repository>
+      <id>jcenter-snapshots</id>
+      <name>jcenter</name>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>-->
+    <!-- Provides JAXB Builder dependencies -->
+	  <repository>
+	    <id>sonatype-releases</id>
+	    <url>https://oss.sonatype.org/content/repositories/releases/</url>
+	  </repository>
   </repositories>
-
   
   <dependencies>
     <!-- Spring Boot --> 
@@ -80,6 +84,22 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
+    </dependency>
+    <!-- Provides builder pattern for models -->
+    <!-- <dependency>
+      <groupId>uk.org.retep.tools</groupId>
+	    <artifactId>builder</artifactId>
+	    <version>10.5.1</version>
+	  </dependency>-->
+	  <dependency>
+		  <groupId>com.sun.xml.bind</groupId>
+		  <artifactId>jaxb-xjc</artifactId>
+		  <version>2.2.11</version>
+		</dependency>
+	  <dependency>
+	    <groupId>org.jvnet.jaxb2_commons</groupId>
+			<artifactId>jaxb2-fluent-api</artifactId>
+			<version>3.0</version>
     </dependency>
     <!-- Generates REST documentation -->
     <dependency>
@@ -155,6 +175,45 @@
           </dependency>
         </dependencies>
       </plugin>
+      <plugin>
+			  <groupId>org.jvnet.jaxb2.maven2</groupId>
+			  <artifactId>maven-jaxb2-plugin</artifactId>
+			  <version>0.13.0</version>
+			  <configuration>
+		        <extension>true</extension>
+		        <args>
+		            <arg>-Xfluent-api</arg>
+		        </args>
+		        <schemaDirectory>src/main/resources/schema</schemaDirectory>
+		        <plugins>
+		            <plugin>
+		                <groupId>net.java.dev.jaxb2-commons</groupId>
+		                <artifactId>jaxb-fluent-api</artifactId>
+		                <version>2.1.8</version>
+		            </plugin>
+		        </plugins>
+		    </configuration>
+			  <executions>
+			    <execution>
+			      <goals>
+			        <goal>generate</goal>
+			      </goals>
+			    </execution>
+			  </executions>
+			  <!-- configuration>
+			    <extension>true</extension>
+			    <args>
+			      <arg>-retepTools</arg>
+			    </args>
+			  </configuration>
+			  <dependencies>
+			    <dependency>
+			      <groupId>uk.org.retep.tools</groupId>
+			      <artifactId>jaxb</artifactId>
+			      <version>10.5.1</version>
+			    </dependency>
+			  </dependencies>-->
+			</plugin>
     </plugins>
   </build>
 

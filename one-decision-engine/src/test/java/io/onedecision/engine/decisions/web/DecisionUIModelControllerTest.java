@@ -47,7 +47,7 @@ public class DecisionUIModelControllerTest implements ExamplesConstants {
                 new DecisionConclusion("subjectLine", "Subject line",
                         new String[] { "foo", "bar" }));
 
-        model = controller.createModelForTenant(TENANT_ID, model);
+        model = controller.createModelForTenant(model, TENANT_ID);
         assertNotNull(model);
         assertNotNull(model.getId());
 

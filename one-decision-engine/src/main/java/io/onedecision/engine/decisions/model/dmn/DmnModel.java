@@ -93,12 +93,35 @@ public class DmnModel  implements Serializable {
     @JsonProperty
     private Date lastUpdated;
 
-    public DmnModel(Definitions model, String xmlString) {
+    private Definitions definitions;
+
+    /**
+     * @deprecated
+     */
+    public DmnModel(Definitions model, String dmnXml) {
         this();
         setName(model.getName());
         setDefinitionId(model.getId());
         setTenantId(tenantId);
-        setDefinitionXml(xmlString);
+        setDefinitionXml(dmnXml);
+    }
+
+    public DmnModel(Definitions model, String deploymentMessage, String tenantId) {
+        this();
+        setName(model.getName());
+        setDefinitionId(model.getId());
+        setDefinitions(model);
+        setTenantId(tenantId);
+    }
+
+    public DmnModel(Definitions model, String deploymentMessage, byte[] image,
+            String tenantId) {
+        this();
+        setName(model.getName());
+        setDefinitionId(model.getId());
+        setDefinitions(model);
+        setImage(image);
+        setTenantId(tenantId);
     }
     
     public DmnModel() {
@@ -160,6 +183,14 @@ public class DmnModel  implements Serializable {
 	public void setDefinitionXml(String definitionXml) {
 		this.definitionXml = definitionXml;
 	}
+
+    public Definitions getDefinitions() {
+        return definitions;
+    }
+
+    public void setDefinitions(Definitions tDef) {
+        this.definitions = tDef;
+    }
 
 	public byte[] getImage() {
 		return image;
@@ -269,4 +300,5 @@ public class DmnModel  implements Serializable {
             return false;
         return true;
     }
+
 }

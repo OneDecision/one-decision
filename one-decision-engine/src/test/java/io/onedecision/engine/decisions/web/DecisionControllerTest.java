@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.api.DecisionException;
+import io.onedecision.engine.decisions.api.RuntimeService;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.test.MockMultipartFileUtil;
@@ -48,7 +49,7 @@ public class DecisionControllerTest implements ExamplesConstants {
     protected DecisionDmnModelController svc;
 
     @Autowired
-    protected DecisionController decisionController;
+    protected RuntimeService decisionController;
 
     protected DmnModel dmnModel;
 
@@ -71,8 +72,8 @@ public class DecisionControllerTest implements ExamplesConstants {
         Map<String, Object> vars = new HashMap<String, Object>();
         String applicantVal = "{\"age\":18,\"health\":\"Good\"}";
         vars.put("applicant", applicantVal);
-        String conclusion = decisionController.executeDecision(TENANT_ID,
-                ARR_DEFINITION_ID, ARR_DECISION_ID, vars);
+        String conclusion = decisionController.executeDecision(ARR_DEFINITION_ID,
+                ARR_DECISION_ID, vars, TENANT_ID);
         assertNotNull(conclusion);
         StringBuffer sb = new StringBuffer(conclusion);
         assertTrue(conclusion.contains("{\"riskRating\":\"Low\"}"));

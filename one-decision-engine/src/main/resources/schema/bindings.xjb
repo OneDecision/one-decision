@@ -1,0 +1,132 @@
+<jaxb:bindings version="2.0" 
+    xmlns:dmn="http://www.omg.org/spec/DMN/20130901"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:retep="http://retep.org/xml/ns/retepTools" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    schemaLocation = "dmn.xsd">
+    
+  <jaxb:bindings>
+    <!-- 
+      choiceContentProperty: false providers accessors for all options in xsd:choice
+      generateValueClass: false creates interfaces in addition to impl sub-package
+    -->
+    <jaxb:globalBindings 
+        choiceContentProperty="false"
+        generateElementProperty="false"
+        generateValueClass="true">
+      <!-- <jaxb:javaType name="Definitions" xmlType="dmn:tDefinitions" hasNsContext = "true"/>-->
+        
+    </jaxb:globalBindings>
+  </jaxb:bindings>
+    
+	<jaxb:schemaBindings>
+	  <jaxb:package name = "io.onedecision.engine.decisions.model.dmn" />
+	</jaxb:schemaBindings>
+
+  <jaxb:bindings node="//xs:complexType[@name='tDMNElement']">
+    <jaxb:class name="DmnElement"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDMNElementReference']">
+    <jaxb:class name="DmnElementReference"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDefinitions']">
+    <jaxb:class name="Definitions"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tImport']">
+    <jaxb:class name="Import"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tElementCollection']">
+    <jaxb:class name="ElementCollection"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDRGElement']">
+    <jaxb:class name="DrgElement"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDecision']">
+    <jaxb:class name="Decision"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tBusinessContextElement']">
+    <jaxb:class name="BusinessContextElement"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tPerformanceIndicator']">
+    <jaxb:class name="PerformanceIndicator"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tOrganizationUnit']">
+    <jaxb:class name="OrganizationUnit"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tBusinessKnowledgeModel']">
+    <jaxb:class name="BusinessKnowledgeModel"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInputData']">
+    <jaxb:class name="InputData"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tKnowledgeSource']">
+    <jaxb:class name="KnowledgeSource"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInformationRequirement']">
+    <jaxb:class name="InformationRequirement"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tKnowledgeRequirement']">
+    <jaxb:class name="KnowledgeRequirement"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tAuthorityRequirement']">
+    <jaxb:class name="AuthorityRequirement"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tExpression']">
+    <jaxb:class name="Expression"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tItemDefinition']">
+    <jaxb:class name="ItemDefinition"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tItemComponent']">
+    <jaxb:class name="ItemComponent"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tLiteralExpression']">
+    <jaxb:class name="LiteralExpression"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInvocation']">
+    <jaxb:class name="Invocation"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tBinding']">
+    <jaxb:class name="Binding"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInformationItem']">
+    <jaxb:class name="InformationItem"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDecisionTable']">
+    <jaxb:class name="DecisionTable"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tClause']">
+    <jaxb:class name="Clause"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDecisionRule']">
+    <jaxb:class name="DecisionRule"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tImportedValues']">
+    <jaxb:class name="ImportedValues"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDTOutput']">
+    <jaxb:class name="DtOutput"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDTInput']">
+    <jaxb:class name="DtInput"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tContext']">
+    <jaxb:class name="Context"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tContextEntry']">
+    <jaxb:class name="ContextEntry"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tFunctionDefinition']">
+    <jaxb:class name="FunctionDefinition"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tRelation']">
+    <jaxb:class name="Relation"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tList']">
+    <jaxb:class name="List"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tNamedElement']">
+    <jaxb:class name="NamedElement"/>
+  </jaxb:bindings>
+  
+</jaxb:bindings>

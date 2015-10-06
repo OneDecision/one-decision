@@ -14,9 +14,10 @@
 package io.onedecision.engine.decisions.web;
 
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.api.DecisionModelFactory;
 import io.onedecision.engine.decisions.api.DecisionNotFoundException;
-import io.onedecision.engine.decisions.api.DecisionService;
+import io.onedecision.engine.decisions.api.RuntimeService;
+import io.onedecision.engine.decisions.impl.DecisionModelFactory;
+import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
@@ -46,7 +47,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Controller
 @RequestMapping("/{tenantId}/onedecision")
-public class DecisionController {
+public class DecisionController implements RuntimeService {
 
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionController.class);
@@ -63,26 +64,17 @@ public class DecisionController {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    /**
-     * Executes the decision in the specified definitions bundle.
-     * 
-     * @param definitionId
-     *            Id for the decision bundle or package. This is the id of the
-     *            DMN file's root definitions element.
-     * @param decisionId
-     *            Id of a particular decision in the bundle.
-     * @param params
-     *            <code>Map</code> of parameters expected as input to the
-     *            specified decision. Values are expected to be JSON serialized.
-     * @return JSON serialised output from the specified decision.
+    /* (non-Javadoc)
+     * @see io.onedecision.engine.decisions.web.RuntimeService#executeDecision(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
      */
+    @Override
     @RequestMapping(method = RequestMethod.POST, value = "/{definitionId}/{decisionId}", headers = "Accept=application/json")
     @ResponseBody
     public final String executeDecision(
-            @PathVariable("tenantId") String tenantId,
             @PathVariable("definitionId") String definitionId,
             @PathVariable("decisionId") String decisionId,
-            @RequestParam Map<String, Object> params) throws IOException,
+            @RequestParam Map<String, Object> params,
+            @PathVariable("tenantId") String tenantId) throws IOException,
             DecisionException {
         LOGGER.info(String.format(
                 "handling request to decision: %1$s.%2$s, with params: %3$s",

@@ -13,15 +13,20 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
-import io.onedecision.engine.decisions.api.DecisionModelFactory;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
-import io.onedecision.engine.decisions.converter.DefinitionsDmnModelConverter;
+import io.onedecision.engine.decisions.api.RepositoryService;
+import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 @RequestMapping(value = "/{tenantId}/decision-models")
-public class DecisionDmnModelController {
+public class DecisionDmnModelController implements RepositoryService {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionDmnModelController.class);
 
@@ -52,16 +57,10 @@ public class DecisionDmnModelController {
     @Autowired
     private DecisionModelFactory decisionModelFactory;
 
-    @Autowired
-    private DefinitionsDmnModelConverter converter;
-
     /**
-     * Return just the decision models for a specific tenant.
-     * 
-     * @param tenantId
-     *            .
-     * @return decision models for tenantId.
+     * @see io.onedecision.engine.decisions.web.RepositoryService#listForTenant(java.lang.String)
      */
+    @Override
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public @ResponseBody List<DmnModel> listForTenant(
             @PathVariable("tenantId") String tenantId) {
@@ -74,6 +73,11 @@ public class DecisionDmnModelController {
         return list;
     }
 
+    /**
+     * @see io.onedecision.engine.decisions.web.RepositoryService#getModelForTenant(java.lang.Long,
+     *      java.lang.String)
+     */
+    @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json" })
     public @ResponseBody DmnModel getModelForTenant(
             @PathVariable("tenantId") String tenantId,
@@ -87,6 +91,11 @@ public class DecisionDmnModelController {
         return model;
     }
 
+    /**
+     * @see io.onedecision.engine.decisions.web.RepositoryService#getDmnForTenant(java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
     @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "application/xml" })
     public @ResponseBody String getDmnForTenant(
             @PathVariable("tenantId") String tenantId,
@@ -101,6 +110,11 @@ public class DecisionDmnModelController {
         return model.getDefinitionXml();
     }
 
+    /**
+     * @see io.onedecision.engine.decisions.web.RepositoryService#getImageForTenant(java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
     @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "image/png" })
     public @ResponseBody byte[] getImageForTenant(
             @PathVariable("tenantId") String tenantId,
@@ -165,63 +179,51 @@ public class DecisionDmnModelController {
             throw new NoDmnFileInUploadException();
         }
 
-        return createModelForTenant(tenantId, dmnFileName,
-                deploymentMessage,
-                decisionModelFactory.load(dmnContent), image);
+        return createModelForTenant(decisionModelFactory.load(dmnContent), deploymentMessage,
+                image,
+                tenantId);
     }
 
     /**
-     * Model updates are typically additive but for the time being at least this
-     * is not enforced.
-     * 
-     * @param tenantId
-     *            The tenant to create the model for.
-     * @param model
-     *            The new model.
-     * @return
-     * @throws IOException
+     * @see io.onedecision.engine.decisions.web.RepositoryService#createModelForTenant(io.onedecision.engine.decisions.model.dmn.Definitions,
+     *      java.lang.String, byte[],
+     *      java.lang.String)
      */
-    public DmnModel createModelForTenant(String tenantId,
-            String originalFileName, String deploymentMessage,
-            Definitions model, byte[] image) {
-        DmnModel dmnModel = createModelForTenant(tenantId, originalFileName,
-                deploymentMessage, model);
-        dmnModel.setImage(image);
-        return dmnModel;
-    }
-
-    public DmnModel createModelForTenant(String tenantId,
-            String originalFileName, String deploymentMessage, Definitions model) {
-        LOGGER.info(String.format("Creating decision model for tenant %1$s",
-                tenantId));
-
-        // TODO perform checks that the model changes are not destructive.
-
-        DmnModel dmnModel = converter.convert(model);
-        dmnModel.setOriginalFileName(originalFileName);
-        dmnModel.setDeploymentMessage(deploymentMessage);
-        return createModelForTenant(tenantId, dmnModel);
+    @Override
+    public DmnModel createModelForTenant(Definitions model,
+            String deploymentMessage, byte[] image,
+            String tenantId) {
+        DmnModel dmnModel = new DmnModel(model, deploymentMessage, image,
+                tenantId);
+        return createModelForTenant(dmnModel);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public @ResponseBody DmnModel createModelForTenant(
             @PathVariable("tenantId") String tenantId,
             @RequestBody DmnModel model) {
+        // ensure no discrepancy between tenant in URL and in model
         model.setTenantId(tenantId);
+        return createModelForTenant(model);
+    }
+
+    /**
+     * @see io.onedecision.engine.decisions.web.RepositoryService#createModelForTenant(io.onedecision.engine.decisions.model.dmn.DmnModel)
+     */
+    @Override
+    public DmnModel createModelForTenant(DmnModel model) {
+        LOGGER.info(String.format("Creating decision model for tenant %1$s",
+                model.getTenantId()));
+
         return repo.save(model);
     }
 
     /**
-     * Model updates are typically additive but for the time being at least this
-     * is not enforced.
-     * 
-     * @param tenantId
-     *            The tenant whose model is to be updated.
-     * @param definitionId
-     *            The id of the DMN root element.
-     * @param model
-     *            The updated model.
+     * @see io.onedecision.engine.decisions.web.RepositoryService#updateModelForTenant(java.lang.String,
+     *      io.onedecision.engine.decisions.model.dmn.DmnModel,
+     *      java.lang.String)
      */
+    @Override
     @RequestMapping(value = "/{definitionId}", method = RequestMethod.PUT)
     public @ResponseBody void updateModelForTenant(
             @PathVariable("tenantId") String tenantId,
@@ -241,14 +243,10 @@ public class DecisionDmnModelController {
     }
 
     /**
-     * Delete the specified model for the tenant.
-     * 
-     * @param tenantId
-     *            The tenant whose model is to be removed.
-     * @param id
-     *            Id of a particular decision (allocated by the repository not
-     *            any id from within the DMN).
+     * @see io.onedecision.engine.decisions.web.RepositoryService#deleteModelForTenant(java.lang.Long,
+     *      java.lang.String)
      */
+    @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody void deleteModelForTenant(
             @PathVariable("tenantId") String tenantId,
@@ -257,5 +255,17 @@ public class DecisionDmnModelController {
                 "Deleting decision model %1$s for tenant %2$s", id, tenantId));
 
         repo.delete(id);
+    }
+
+    @Override
+    public void write(Definitions dm, Writer out) throws IOException {
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(Definitions.class);
+            Marshaller m = context.createMarshaller();
+            m.marshal(dm, out);
+        } catch (JAXBException e) {
+            throw new IOException(e.getMessage(), e);
+        }
     }
 }

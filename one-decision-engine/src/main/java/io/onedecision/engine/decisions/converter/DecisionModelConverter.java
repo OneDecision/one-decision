@@ -14,20 +14,18 @@
 package io.onedecision.engine.decisions.converter;
 
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.model.dmn.BusinessKnowledgeModel;
-import io.onedecision.engine.decisions.model.dmn.Clause;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.DecisionTableOrientation;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
+import io.onedecision.engine.decisions.model.dmn.DtInput;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.InformationItem;
 import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
-import io.onedecision.engine.decisions.model.dmn.Text;
 import io.onedecision.engine.decisions.model.ui.DecisionExpression;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 import io.onedecision.engine.domain.api.DomainModelFactory;
@@ -43,10 +41,8 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,20 +67,20 @@ public class DecisionModelConverter implements
 	protected ObjectFactory objFact = new ObjectFactory();
 
 	public Definitions convert(DecisionModel source) {
-		Definitions target = objFact.createTDefinitions();
+        Definitions target = objFact.createDefinitions();
 		target.setId(createId(source));
 		target.setName(source.getName() + " Model");
 		target.setExpressionLanguage(URI_JAVASCRIPT_5);
 		target.setNamespace("http://onedecision.io/" + source.getTenantId());
 		target.setTypeLanguage(URI_JSON);
 
-		BusinessKnowledgeModel bkm = objFact.createTBusinessKnowledgeModel();
-		target.getDrgElement().add(objFact.createBusinessKnowledgeModel(bkm));
+        // BusinessKnowledgeModel bkm = objFact.createTBusinessKnowledgeModel();
+        // target.getDrgElement().add(objFact.createBusinessKnowledgeModel(bkm));
 
 		List<InformationItem> informationItems = new ArrayList<InformationItem>();
 		for (DomainEntity type : getDomainModel(source.getDomainModelUri())
 				.getEntities()) {
-			ItemDefinition itemDef = objFact.createTItemDefinition();
+            ItemDefinition itemDef = objFact.createItemDefinition();
 			itemDef.setId(createTypeDef(type));
 			itemDef.setName(type.getName() + " Definition");
 			itemDef.setDescription(type.getDescription());
@@ -92,24 +88,28 @@ public class DecisionModelConverter implements
 			target.getItemDefinition().add(itemDef);
 
 			// More indirection - yay!!
-			InformationItem informationItem = objFact.createTInformationItem();
+            InformationItem informationItem = objFact.createInformationItem();
 			informationItem.setId(toCamelCase(type.getName()));
 			// TODO these should have own namespace (corresponding to domain)
-			informationItem.setItemDefinition(new QName(itemDef.getId()));
-			informationItems.add(informationItem);
-			bkm.getInformationItem().add(informationItem);
+
+            // TODO dmn11
+            // informationItem.setItemDefinition(new QName(itemDef.getId()));
+            // informationItems.add(informationItem);
+            // bkm.getInformationItem().add(informationItem);
 		}
 
-		Decision decision = objFact.createTDecision();
+        Decision decision = objFact.createDecision();
 		decision.setId(source.getId() == null ? UUID.randomUUID() + "_d"
 				: source.getId().toString() + "_d");
 		decision.setName(source.getName() + " Decision");
-		target.getDrgElement().add(objFact.createDecision(decision));
+        // TODO dmn11
+        // target.getDrgElement().add(objFact.createDecision(decision));
 
-		DecisionTable dt = objFact.createTDecisionTable();
+        DecisionTable dt = objFact.createDecisionTable();
 		dt.setId(source.getId() == null ? UUID.randomUUID() + "_dt"
 				: source.getId().toString() + "_dt");
-		dt.setName(source.getName());
+        // TODO DMN11
+        // dt.setName(source.getName());
 		if (source.getHitPolicy() == null) {
 			dt.setHitPolicy(HitPolicy.UNIQUE);
 		} else {
@@ -121,74 +121,78 @@ public class DecisionModelConverter implements
 		for (DecisionExpression condition : source.getConditions()) {
             List<String> added = new ArrayList<String>();
             String inputVarName = inferVarName(condition.getName());
-			InformationItem inputVar = findInformationItem(target, inputVarName);
-			JAXBElement<Object> inputExpr = objFact
-					.createTExpressionInputVariable(inputVar);
-
-			List<Expression> entries = new ArrayList<Expression>();
-			for (String expr : condition.getExpressions()) {
-                if (!added.contains(expr)) {
-                    added.add(expr);
-
-                    LiteralExpression le = objFact.createTLiteralExpression();
-                    le.setId(createId(dt, source, source.getConditions(),
-                            condition, expr));
-                    // le.setName(condition.getName());
-                    le.getInputVariable().add(inputExpr);
-
-                    Text txt = objFact.createTLiteralExpressionText();
-                    txt.getContent().add(expr);
-                    le.setText(txt);
-                    entries.add(le);
-                }
-			}
-			Clause clause = objFact.createTClause();
-            clause.setName(getLeaf(condition.getName()));
-			clause.getInputEntry().addAll(entries);
-
-			Expression inExpr = objFact.createTLiteralExpression();
-			clause.setInputExpression(inExpr);
-			inExpr.setId(createId(dt, source, condition));
-			inExpr.setName(condition.getName());
-			inExpr.setDescription(condition.getLabel());
-			inExpr.getInputVariable().add(
-					objFact.createTExpressionInputVariable(inputVar));
-
-			dt.getClause().add(clause);
-		}
-
-		for (DecisionExpression conclusion : source.getConclusions()) {
-            List<String> added = new ArrayList<String>();
-			Clause clause = objFact.createTClause();
-            clause.setName(getLeaf(conclusion.getName()));
-			// TODO customer namespace?
-			clause.setOutputDefinition(new QName(inferVarName(conclusion
-					.getName())));
-
-			for (String expr : conclusion.getExpressions()) {
-                if (!added.contains(expr)) {
-                    added.add(expr);
-                    LiteralExpression le = objFact.createTLiteralExpression();
-                    le.setId(createId(dt, source, source.getConclusions(),
-                            conclusion, expr));
-                    le.setDescription(conclusion.getLabel());
-                    // TODO appear unable to set output definition as expected
-                    // by DecisionService.getScript
-                    le.setItemDefinition(new QName(inferVarName(conclusion
-                            .getName())));
-                    Text txt = objFact.createTLiteralExpressionText();
-                    txt.getContent().add(conclusion.getName() + " = " + expr);
-                    le.setText(txt);
-                    clause.getOutputEntry().add(le);
-                }
-			}
-
-			dt.getClause().add(clause);
-		}
-
-        inferRules(source, dt);
-
-		return target;
+            // TODO dmn11
+            // InformationItem inputVar = findInformationItem(target,
+            // inputVarName);
+            // JAXBElement<Object> inputExpr = objFact
+            // .createTExpressionInputVariable(inputVar);
+            //
+            // List<Expression> entries = new ArrayList<Expression>();
+            // for (String expr : condition.getExpressions()) {
+            // if (!added.contains(expr)) {
+            // added.add(expr);
+            //
+            // LiteralExpression le = objFact.createTLiteralExpression();
+            // le.setId(createId(dt, source, source.getConditions(),
+            // condition, expr));
+            // // le.setName(condition.getName());
+            // le.getInputVariable().add(inputExpr);
+            //
+            // Text txt = objFact.createTLiteralExpressionText();
+            // txt.getContent().add(expr);
+            // le.setText(txt);
+            // entries.add(le);
+            // }
+            // }
+            // TClause clause = objFact.createTClause();
+            // clause.setName(getLeaf(condition.getName()));
+            // clause.getInputEntry().addAll(entries);
+            //
+            // TLiteralExpression inExpr = objFact.createTLiteralExpression();
+            // clause.setInputExpression(inExpr);
+            // inExpr.setId(createId(dt, source, condition));
+            // inExpr.setName(condition.getName());
+            // inExpr.setDescription(condition.getLabel());
+            // inExpr.getInputVariable().add(
+            // objFact.createTExpressionInputVariable(inputVar));
+            //
+            // dt.getClause().add(clause);
+//		}
+        }
+//
+//		for (DecisionExpression conclusion : source.getConclusions()) {
+//            List<String> added = new ArrayList<String>();
+//			Clause clause = objFact.createTClause();
+//            clause.setName(getLeaf(conclusion.getName()));
+//			// TODO customer namespace?
+//			clause.setOutputDefinition(new QName(inferVarName(conclusion
+//					.getName())));
+//
+//			for (String expr : conclusion.getExpressions()) {
+//                if (!added.contains(expr)) {
+//                    added.add(expr);
+//                    LiteralExpression le = objFact.createTLiteralExpression();
+//                    le.setId(createId(dt, source, source.getConclusions(),
+//                            conclusion, expr));
+//                    le.setDescription(conclusion.getLabel());
+//                    // TODO appear unable to set output definition as expected
+//                    // by DecisionService.getScript
+//                    le.setItemDefinition(new QName(inferVarName(conclusion
+//                            .getName())));
+//                    Text txt = objFact.createTLiteralExpressionText();
+//                    txt.getContent().add(conclusion.getName() + " = " + expr);
+//                    le.setText(txt);
+//                    clause.getOutputEntry().add(le);
+//                }
+//			}
+//
+//			dt.getClause().add(clause);
+//		}
+//
+//        inferRules(source, dt);
+//
+//		return target;
+            throw new RuntimeException("Not yet implemented");
 	}
 
     private String getLeaf(String name) {
@@ -200,21 +204,22 @@ public class DecisionModelConverter implements
 
     private InformationItem findInformationItem(Definitions definitions,
 			String varName) {
-		for (InformationItem item : definitions.getBusinessKnowledgeModel()
-				.getInformationItem()) {
-            System.out.println(String.format("comparing %1$s (%2$s) to %3$s",
-                    item.getId(), item.getName(), varName));
-            if (item.getId().equals(varName)) {
-				return item;
-			}
-		}
+        // TODO dmn11
+        // for (InformationItem item : definitions.getInformationItems()
+        // .getInformationItem()) {
+        // System.out.println(String.format("comparing %1$s (%2$s) to %3$s",
+        // item.getId(), item.getName(), varName));
+        // if (item.getId().equals(varName)) {
+        // return item;
+        // }
+        // }
 		return null;
 	}
 
 	private void inferRules(DecisionModel source, DecisionTable dt) {
 		for (int i = 0; i < source.getConditions().get(0).getExpressions().length; i++) {
 			System.out.println("expression  " + i);
-			DecisionRule dmRule = objFact.createTDecisionRule();
+            DecisionRule dmRule = objFact.createDecisionRule();
 
 			for (DecisionExpression condExpr : source.getConditions()) {
                 LOGGER.debug(String.format("  condition: %1$s (%2$s): %3$s",
@@ -233,9 +238,10 @@ public class DecisionModelConverter implements
                     // entry.setName(condExpr.getName());
                     l.add(entry);
 				}
-                JAXBElement<List<Expression>> ruleCond = objFact
-                        .createTDecisionRuleCondition(l);
-				dmRule.getCondition().add(ruleCond);
+                // TDOO dmn11
+                // JAXBElement<List<Expression>> ruleCond = objFact
+                // .createTDecisionRuleCondition(l);
+                // dmRule.getCondition().add(ruleCond);
 			}
 			for (DecisionExpression concExpr : source.getConclusions()) {
                 LOGGER.debug(String.format("  conclusion: %1$s %2$s: %3$s",
@@ -253,9 +259,10 @@ public class DecisionModelConverter implements
                     // // entry.setName(condExpr.getName());
                     // l.add(entry);
 				}
-                JAXBElement<List<Expression>> ruleCond = objFact
-                        .createTDecisionRuleConclusion(l);
-				dmRule.getCondition().add(ruleCond);
+                // TODO dmn11
+                // JAXBElement<List<Expression>> ruleCond = objFact
+                // .createTDecisionRuleConclusion(l);
+                // dmRule.getCondition().add(ruleCond);
 
                 try {
                     StringWriter writer = new StringWriter();
@@ -267,23 +274,23 @@ public class DecisionModelConverter implements
                 }
 
 			}
-			dt.getRule().add(dmRule);
+            // TODO dmn11
+            // dt.getRule().add(dmRule);
 		}
 
 	}
 
     private Expression findConditionEntry(DecisionTable dt, String string) {
-        for (Clause clause : dt.getClause()) {
-            for (Expression entry : clause.getInputEntry()) {
-                if (entry instanceof LiteralExpression) {
-                    String val = (String) ((LiteralExpression) entry).getText()
-                            .getContent().get(0);
-                    System.out.println("  match?: " + string + " = " + val);
-                    if (string.equals(val)) {
-                        return entry;
-                    }
-                }
-            }
+        for (DtInput input : dt.getInput()) {
+            // TODO DMN11
+            // input.
+            // if (input instanceof LiteralExpression) {
+            // String val = ((LiteralExpression) input).getText();
+            // System.out.println("  match?: " + string + " = " + val);
+            // if (string.equals(val)) {
+            // return input;
+            // }
+            // }
         }
         throw new DecisionException("Cannot find input for " + string);
     }

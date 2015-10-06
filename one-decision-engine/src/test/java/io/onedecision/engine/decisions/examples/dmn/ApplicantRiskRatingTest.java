@@ -18,8 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import io.onedecision.engine.decisions.api.DecisionModelFactory;
-import io.onedecision.engine.decisions.api.DecisionService;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
+import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 

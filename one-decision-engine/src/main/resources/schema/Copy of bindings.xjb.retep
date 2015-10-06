@@ -1,0 +1,164 @@
+<jaxb:bindings version="2.0" 
+    xmlns:dmn="http://www.omg.org/spec/DMN/20130901"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+    xmlns:retep="http://retep.org/xml/ns/retepTools" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    schemaLocation = "dmn.xsd">
+    
+  <jaxb:bindings>
+    <!-- 
+      choiceContentProperty: false providers accessors for all options in xsd:choice
+      generateValueClass: false creates interfaces in addition to impl sub-package
+    -->
+    <jaxb:globalBindings 
+        choiceContentProperty="false"
+        generateElementProperty="false"
+        generateValueClass="true">
+      <!-- <jaxb:javaType name="Definitions" xmlType="dmn:tDefinitions" hasNsContext = "true"/>-->
+        
+    </jaxb:globalBindings>
+  </jaxb:bindings>
+  
+
+  <jaxb:bindings node="//xs:complexType[@name='tDMNElement']">
+    <jaxb:class name="DmnElement"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDMNElementReference']">
+    <jaxb:class name="DmnElementReference"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDefinitions']">
+    <jaxb:class name="Definitions"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tImport']">
+    <jaxb:class name="Import"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tElementCollection']">
+    <jaxb:class name="ElementCollection"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDRGElement']">
+    <jaxb:class name="DrgElement"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDecision']">
+    <jaxb:class name="Decision"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tBusinessContextElement']">
+    <jaxb:class name="BusinessContextElement"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tPerformanceIndicator']">
+    <jaxb:class name="PerformanceIndicator"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tOrganizationUnit']">
+    <jaxb:class name="OrganizationUnit"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tBusinessKnowledgeModel']">
+    <jaxb:class name="BusinessKnowledgeModel"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInputData']">
+    <jaxb:class name="InputData"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tKnowledgeSource']">
+    <jaxb:class name="KnowledgeSource"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInformationRequirement']">
+    <jaxb:class name="InformationRequirement"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tKnowledgeRequirement']">
+    <jaxb:class name="KnowledgeRequirement"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tAuthorityRequirement']">
+    <jaxb:class name="AuthorityRequirement"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tExpression']">
+    <jaxb:class name="Expression"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tItemDefinition']">
+    <jaxb:class name="ItemDefinition"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tItemComponent']">
+    <jaxb:class name="ItemComponent"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tLiteralExpression']">
+    <jaxb:class name="LiteralExpression"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInvocation']">
+    <jaxb:class name="Invocation"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tBinding']">
+    <jaxb:class name="Binding"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tInformationItem']">
+    <jaxb:class name="InformationItem"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDecisionTable']">
+    <jaxb:class name="DecisionTable"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tClause']">
+    <jaxb:class name="Clause"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDecisionRule']">
+    <jaxb:class name="DecisionRule"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tImportedValues']">
+    <jaxb:class name="ImportedValues"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDTOutput']">
+    <jaxb:class name="DtOutput"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tDTInput']">
+    <jaxb:class name="DtInput"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tContext']">
+    <jaxb:class name="Context"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tContextEntry']">
+    <jaxb:class name="ContextEntry"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tFunctionDefinition']">
+    <jaxb:class name="FunctionDefinition"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tRelation']">
+    <jaxb:class name="Relation"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tList']">
+    <jaxb:class name="List"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tNamedElement']">
+    <jaxb:class name="NamedElement"/>
+    <retep:builder/>
+  </jaxb:bindings>
+  
+</jaxb:bindings>

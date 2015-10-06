@@ -1,0 +1,14 @@
+<project name="bindings">
+
+ <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+    <classpath>
+       <pathelement path="/Users/tstephen/.m2/repository/com/sun/xml/bind/jaxb-core/2.2.11/jaxb-core-2.2.11.jar"/>
+       <pathelement path="/Users/tstephen/.m2/repository/com/sun/xml/bind/jaxb-xjc/2.2.11/jaxb-xjc-2.2.11.jar"/>
+       <pathelement path="/Users/tstephen/.m2/repository/org/jvnet/jaxb2_commons/jaxb2-fluent-api/3.0/jaxb-fluent-api-2.2.jar" />
+    </classpath>
+ </taskdef> 
+ <xjc>
+    <arg value="-Xfluent-api" />
+ </xjc>
+
+</project>

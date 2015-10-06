@@ -1,6 +1,6 @@
 package io.onedecision.engine;
 
-import io.onedecision.engine.decisions.api.DecisionService;
+import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.impl.del.DelExpression;
 import io.onedecision.engine.decisions.impl.del.DurationExpression;
 
