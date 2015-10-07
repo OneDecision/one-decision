@@ -1,7 +1,8 @@
 <jaxb:bindings version="2.0" 
     xmlns:dmn="http://www.omg.org/spec/DMN/20130901"
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-    xmlns:retep="http://retep.org/xml/ns/retepTools" 
+    xmlns:retep="http://retep.org/xml/ns/retepTools"
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     schemaLocation = "dmn.xsd">
     
@@ -15,7 +16,9 @@
         generateElementProperty="false"
         generateValueClass="true">
       <!-- <jaxb:javaType name="Definitions" xmlType="dmn:tDefinitions" hasNsContext = "true"/>-->
-        
+        <jaxb:serializable />
+        <!-- This is not enough to overcome the lack of @XmlRootElement 
+        <xjc:simple/>-->
     </jaxb:globalBindings>
   </jaxb:bindings>
     

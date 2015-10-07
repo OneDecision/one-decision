@@ -16,6 +16,7 @@ package io.onedecision.engine.decisions.web;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
+import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
@@ -25,8 +26,10 @@ import java.io.Writer;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -263,7 +266,28 @@ public class DecisionDmnModelController implements RepositoryService {
         try {
             context = JAXBContext.newInstance(Definitions.class);
             Marshaller m = context.createMarshaller();
-            m.marshal(dm, out);
+            // Since no @XmlRootElement generated for Definitions need to create
+            // element wrapper here. See
+            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
+            m.marshal(new JAXBElement(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "Definitions"),
+                    Definitions.class, dm), out);
+        } catch (JAXBException e) {
+            throw new IOException(e.getMessage(), e);
+        }
+    }
+
+    public void write(Decision d, Writer out) throws IOException {
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(Definitions.class);
+            Marshaller m = context.createMarshaller();
+            // Since no @XmlRootElement generated for Definitions need to create
+            // element wrapper here. See
+            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
+            m.marshal(new JAXBElement(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "Decision"),
+                    Decision.class, d), out);
         } catch (JAXBException e) {
             throw new IOException(e.getMessage(), e);
         }
