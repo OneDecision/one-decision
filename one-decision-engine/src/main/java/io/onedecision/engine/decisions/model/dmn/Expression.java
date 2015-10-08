@@ -10,10 +10,12 @@ package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -45,11 +47,7 @@ import org.w3c.dom.Element;
     Relation.class,
     List.class
 })
-public class Expression
-    extends DmnElement
-    implements Serializable
-{
-
+public class Expression extends DmnElement implements Serializable {
 
     @Override
     public Expression withDescription(String value) {
@@ -58,19 +56,19 @@ public class Expression
     }
 
     @Override
-    public Expression withAnies(Element... values) {
+    public Expression withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public Expression withAnies(Collection<Element> values) {
+    public Expression withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

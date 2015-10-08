@@ -18,7 +18,7 @@ public interface RepositoryService {
      */
     List<DmnModel> listForTenant(String tenantId);
 
-    DmnModel getModelForTenant(String tenantId, Long id);
+    DmnModel getModelForTenant(String definitionId, String tenantId);
 
     String getDmnForTenant(String tenantId, String id);
 
@@ -48,27 +48,25 @@ public interface RepositoryService {
     /**
      * Model updates are typically additive but for the time being at least this
      * is not enforced.
-     * 
-     * @param tenantId
-     *            The tenant whose model is to be updated.
      * @param definitionId
      *            The id of the DMN root element.
      * @param model
      *            The updated model.
+     * @param tenantId
+     *            The tenant whose model is to be updated.
      */
-    void updateModelForTenant(String tenantId, String definitionId,
-            DmnModel model);
+    void updateModelForTenant(String definitionId, DmnModel model,
+            String tenantId);
 
     /**
      * Delete the specified model for the tenant.
-     * 
-     * @param tenantId
-     *            The tenant whose model is to be removed.
      * @param id
      *            Id of a particular decision (allocated by the repository not
      *            any id from within the DMN).
+     * @param tenantId
+     *            The tenant whose model is to be removed.
      */
-    void deleteModelForTenant(String tenantId, Long id);
+    void deleteModelForTenant(Long id, String tenantId);
 
     void write(Definitions dm, Writer out) throws IOException;
 

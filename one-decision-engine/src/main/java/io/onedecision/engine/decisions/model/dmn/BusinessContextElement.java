@@ -10,12 +10,14 @@ package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -43,11 +45,10 @@ import org.w3c.dom.Element;
     PerformanceIndicator.class,
     OrganizationUnit.class
 })
-public class BusinessContextElement
-    extends NamedElement
-    implements Serializable
-{
+public class BusinessContextElement extends NamedElement implements
+        Serializable {
 
+    private static final long serialVersionUID = 6559257144891159140L;
     @XmlAttribute(name = "URI")
     @XmlSchemaType(name = "anyURI")
     protected String uri;
@@ -94,19 +95,19 @@ public class BusinessContextElement
     }
 
     @Override
-    public BusinessContextElement withAnies(Element... values) {
+    public BusinessContextElement withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public BusinessContextElement withAnies(Collection<Element> values) {
+    public BusinessContextElement withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

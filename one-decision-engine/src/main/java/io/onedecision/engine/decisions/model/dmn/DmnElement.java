@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
@@ -26,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import javax.xml.namespace.QName;
+
 import org.w3c.dom.Element;
 
 
@@ -54,18 +56,18 @@ import org.w3c.dom.Element;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDMNElement", propOrder = {
     "description",
-    "anies"
+    "any"
 })
 @XmlSeeAlso({
     NamedElement.class,
     Expression.class
 })
-public class DmnElement implements Serializable
-{
+public class DmnElement implements Serializable {
 
+    private static final long serialVersionUID = -7139950575176133148L;
     protected String description;
     @XmlAnyElement
-    protected List<Element> anies;
+    protected List<Element> anys;
     @XmlAttribute(name = "id", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
@@ -99,32 +101,32 @@ public class DmnElement implements Serializable
     }
 
     /**
-     * Gets the value of the anies property.
+     * Gets the value of the anys property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the anies property.
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the anys property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getAnies().add(newItem);
+     * getAnys().add(newItem);
      * </pre>
      * 
      * 
      * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Element }
+     * Objects of the following type(s) are allowed in the list {@link Element }
      * 
      * 
      */
-    public List<Element> getAnies() {
-        if (anies == null) {
-            anies = new ArrayList<Element>();
+    public List<Element> getAnys() {
+        if (anys == null) {
+            anys = new ArrayList<Element>();
         }
-        return this.anies;
+        return this.anys;
     }
 
     /**
@@ -174,18 +176,18 @@ public class DmnElement implements Serializable
         return this;
     }
 
-    public DmnElement withAnies(Element... values) {
+    public DmnElement withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
-    public DmnElement withAnies(Collection<Element> values) {
+    public DmnElement withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

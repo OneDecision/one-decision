@@ -18,7 +18,7 @@ public interface RuntimeService {
      *            specified decision. Values are expected to be JSON serialized.
      * @return JSON serialised output from the specified decision.
      */
-    String executeDecision(String definitionId,
+    Map<String, Object> executeDecision(String definitionId,
             String decisionId, Map<String, Object> params, String tenantId)
             throws IOException, DecisionException;
 

@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -41,10 +42,9 @@ import javax.xml.bind.annotation.XmlType;
     "requiredInput",
     "requiredDecision"
 })
-public class AuthorityRequirement
-    implements Serializable
-{
+public class AuthorityRequirement implements Serializable {
 
+    private static final long serialVersionUID = 2759485412604012666L;
     protected DmnElementReference requiredAuthority;
     protected DmnElementReference requiredInput;
     protected DmnElementReference requiredDecision;

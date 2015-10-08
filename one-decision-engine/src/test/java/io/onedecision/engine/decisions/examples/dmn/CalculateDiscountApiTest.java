@@ -3,16 +3,16 @@ package io.onedecision.engine.decisions.examples.dmn;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
-import io.onedecision.engine.decisions.impl.DecisionEngineImpl;
+import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
+import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
-import io.onedecision.engine.decisions.web.DecisionDmnModelController;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,11 +20,13 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,46 +45,65 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
 
     private static DecisionEngine de;
 
-    private String contactInstance;
-    private String emailInstance;
+    private String customerCategory;
+    private Number orderSize;
     private DmnModel dm;
     private Map<String, Object> vars = new HashMap<String, Object>();
 
     @Parameters
     public static Collection<String[]> data() {
-        return Arrays
-                .asList(new String[][] { {
-                        "{\"timeSinceLogin\":\"P15D\",\"timeSinceEmail\":\"P8D\", \"doNotEmail\": false}",
-                        "{\"template\":\"MissedYou\", \"subject\":\"We've missed you\"}" } });
+        return Arrays.asList(new String[][] { { "silver", "100" } });
     }
 
     @BeforeClass
     public static void setUpClass() {
         objFact = new ObjectFactory();
 
-        de = new DecisionEngineImpl()
-                .setRepositoryService(new DecisionDmnModelController());
+        de = new InMemoryDecisionEngineImpl();
     }
 
-    public CalculateDiscountApiTest(String contact, String email) {
-        this.contactInstance = contact;
-        this.emailInstance = email;
+    public CalculateDiscountApiTest(String customerCategory, String orderSize) {
+        this.customerCategory = customerCategory;
+        this.orderSize = new BigDecimal(orderSize);
+    }
+
+    @Test
+    public void testReadDecision() throws Exception {
+
     }
 
     @Test
     public void testCalculateDiscount() throws Exception {
-        de.getRepositoryService().createModelForTenant(getDecision());
+        de.getRepositoryService().createModelForTenant(getDmnModel());
 
         vars.clear();
-        // vars.put("contact", contactInstance);
-        // de.getRuntimeService().executeDecision(CD_DEFINITION_ID,
-        // CD_DECISION_ID, vars, TENANT_ID);
-        // assertEquals(emailInstance, vars.get("conclusion"));
+        vars.put("customerCategory", customerCategory);
+        vars.put("orderSize", orderSize);
+        de.getRuntimeService().executeDecision(CD_DEFINITION_ID,
+                CD_DECISION_ID, vars, TENANT_ID);
+        Assert.assertNotNull(vars.get("totalOrderSum"));
+        Assert.assertNotNull(vars.get("amountDueDate"));
     }
 
     // demonstrate Java API for defining decision.
-    private DmnModel getDecision() throws Exception {
+    private DmnModel getDmnModel() throws Exception {
         if (dm == null) {
+            // build item definitions
+            ItemDefinition customerCategoryDef = objFact.createItemDefinition()
+                    .withId("customerCategory")
+                    .withName("Customer Category")
+                    .withTypeDefinition("string");
+            ItemDefinition orderSizeDef = objFact.createItemDefinition()
+                    .withId("orderSize")
+                    .withName("Order Size")
+                    .withTypeDefinition("number");
+            ItemDefinition totalPriceDef = objFact.createItemDefinition()
+                    .withId("totalOrderSum")
+                    .withTypeDefinition("number");
+            ItemDefinition amountDueDateDef = objFact.createItemDefinition()
+                    .withId("amountDueDate")
+                    .withTypeDefinition("date");
+            
             // build definitions container
             Definitions def = objFact
                     .createDefinitions()
@@ -90,20 +111,10 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                     .withDescription(
                             "Calculates discount for a given customer.")
                     .withItemDefinitions(
-                            objFact.createItemDefinition()
-                                    .withId("customerCategory")
-                                    .withName("Customer Category")
-                                    .withTypeDefinition("string"),
-                            objFact.createItemDefinition()
-                                    .withId("orderSize")
-                                    .withName("Order Size")
-                                    .withTypeDefinition("number"),
-                            objFact.createItemDefinition()
-                                    .withId("totalOrderSum")
-                                    .withTypeDefinition("number"),
-                            objFact.createItemDefinition()
-                                    .withId("amountDueDate")
-                                    .withTypeDefinition("date")                                    
+                            customerCategoryDef,
+                            orderSizeDef,
+                            totalPriceDef,
+                            amountDueDateDef                          
                     );
 
             // build expressions
@@ -147,7 +158,8 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                     .withInputExpression(
                                             objFact.createLiteralExpression()
                                                     .withId("27002_dt_i1_ie")
-                                                    .withDescription("Customer Category"))
+                                                    .withDescription(
+                                                            "Customer Category"))
                                     .withInputValues(
                                             customerCategoryOther,
                                             customerCategoryGold
@@ -166,40 +178,45 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                     .withOutputs(
                             objFact.createDtOutput()
                                     .withId("27002_dt_o1")
-                            // .withOutputDefinition(
-                            // objFact.createLiteralExpression()
-                            // .withId("27002_dt_o1_od"))
+                                    .withOutputDefinition(
+                                            objFact.createDmnElementReference()
+                                                .withHref("#"+totalPriceDef.getId()))
                                     .withOutputValues(
                                             totalPrice,
                                             totalPriceDiscounted
                             ),
                             objFact.createDtOutput()
                                     .withId("27002_dt_o2")
-                            // .withOutputDefinition(
-                            // objFact.createLiteralExpression()
-                            // .withId("27002_dt_o2_od"))
-                                    .withOutputValues(
-                                            dueDate,
-                                            dueDateExtended))
+                                    .withOutputDefinition(
+                                            objFact.createDmnElementReference()
+                                                .withHref("#"+amountDueDateDef.getId()))
+                                    .withOutputValues(dueDate, dueDateExtended))
                     .withRules(
-                            objFact.createDecisionRule().withInputEntries(
-                                    customerCategoryOther, totalPrice, dueDate));
-
-            //
-            // DecisionRule rule1 = objFact.createTDecisionRule();
-            // rule1.getConditions().add(input1);
-            // rule1.getConditions().add(input3);
-            // rule1.getConclusions().add(output1);
-            // dt.getRule().add(rule1);
-            //
-            // DecisionRule rule2 = objFact.createTDecisionRule();
-            // rule2.getConditions().add(input2);
-            // rule2.getConditions().add(input4);
-            // rule2.getConclusions().add(output2);
-            // dt.getRule().add(rule2);
-            // assertEquals(2, dt.getRule().size());
-
-            // d.setDecisionTable(dt);
+                            objFact.createDecisionRule()
+                                    .withCondition(
+                                            objFact.createDecisionRuleCondition(customerCategoryOther))
+                                    .withConclusion(
+                                            objFact.createDecisionRuleConclusion(totalPrice))
+                                    .withConclusion(
+                                            objFact.createDecisionRuleConclusion(dueDate)),
+                            objFact.createDecisionRule()
+                                    .withCondition(
+                                            objFact.createDecisionRuleCondition(customerCategoryGold))
+                                    .withCondition(
+                                            objFact.createDecisionRuleCondition(orderSizeSmall))
+                                    .withConclusion(
+                                            objFact.createDecisionRuleConclusion(totalPriceDiscounted))
+                                    .withConclusion(
+                                            objFact.createDecisionRuleConclusion(dueDate)),
+                            objFact.createDecisionRule()
+                                    .withCondition(
+                                            objFact.createDecisionRuleCondition(customerCategoryGold))
+                                    .withCondition(
+                                            objFact.createDecisionRuleCondition(orderSizeLarge))
+                                    .withConclusion(
+                                            objFact.createDecisionRuleConclusion(totalPriceDiscounted))
+                                    .withConclusion(
+                                            objFact.createDecisionRuleConclusion(dueDateExtended)));
 
             Decision d = objFact.createDecision()
                     .withId(CD_DECISION_ID)
@@ -226,7 +243,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
 
     private void assertSerializationProduced(Definitions dm)
             throws IOException, FileNotFoundException {
-        assertNotNull("Definitions produced must not be null", dm);
+        Assert.assertNotNull("Definitions produced must not be null", dm);
 
         File dmnFile = new File("target", CD_DEFINITION_ID + ".dmn");
         FileWriter out = new FileWriter(dmnFile);
@@ -251,11 +268,6 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                 ;
             }
         }
-    }
-
-    private void assertNotNull(String string, Definitions dm2) {
-        // TODO Auto-generated method stub
-
     }
 
 }

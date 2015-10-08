@@ -5,7 +5,7 @@ import io.onedecision.engine.decisions.api.ModelingService;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.api.RuntimeService;
 
-public class DecisionEngineImpl implements DecisionEngine {
+public abstract class AbstractDecisionEngineImpl implements DecisionEngine {
 
     protected ModelingService modelingService;
 

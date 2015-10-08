@@ -12,10 +12,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -43,10 +45,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "tContext", propOrder = {
     "contextEntries"
 })
-public class Context
-    extends Expression
-    implements Serializable
-{
+public class Context extends Expression implements Serializable {
 
     @XmlElement(name = "contextEntry")
     protected List<ContextEntry> contextEntries;
@@ -103,19 +102,19 @@ public class Context
     }
 
     @Override
-    public Context withAnies(Element... values) {
+    public Context withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public Context withAnies(Collection<Element> values) {
+    public Context withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

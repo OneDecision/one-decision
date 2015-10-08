@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -41,10 +42,9 @@ import javax.xml.bind.annotation.XmlType;
     DtOutput.class,
     DtInput.class
 })
-public class Clause
-    implements Serializable
-{
+public class Clause implements Serializable {
 
+    private static final long serialVersionUID = -9053769383648321760L;
     @XmlAttribute(name = "id")
     @XmlSchemaType(name = "anySimpleType")
     protected String id;

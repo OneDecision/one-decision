@@ -306,19 +306,19 @@ public class DecisionTable
     }
 
     @Override
-    public DecisionTable withAnies(Element... values) {
+    public DecisionTable withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public DecisionTable withAnies(Collection<Element> values) {
+    public DecisionTable withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

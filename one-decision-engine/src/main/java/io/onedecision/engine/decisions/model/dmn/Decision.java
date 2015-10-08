@@ -8,6 +8,8 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
+import io.onedecision.engine.decisions.api.DecisionException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -453,6 +455,16 @@ public class Decision
         return expression;
     }
 
+    public DecisionTable getDecisionTable() {
+        if (expression == null) { 
+            return null; 
+        } else if (expression.getValue() instanceof DecisionTable) {
+            return (DecisionTable) expression.getValue(); 
+        } else { 
+            throw new DecisionException("Expression is not a decision table"); 
+        }
+    }
+
     /**
      * Sets the value of the expression property.
      * 
@@ -656,19 +668,19 @@ public class Decision
     }
 
     @Override
-    public Decision withAnies(Element... values) {
+    public Decision withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public Decision withAnies(Collection<Element> values) {
+    public Decision withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

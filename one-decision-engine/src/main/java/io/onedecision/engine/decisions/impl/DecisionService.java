@@ -14,29 +14,29 @@
 package io.onedecision.engine.decisions.impl;
 
 import io.onedecision.engine.decisions.api.DecisionConstants;
+import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
+import io.onedecision.engine.decisions.api.RuntimeService;
 import io.onedecision.engine.decisions.impl.del.DelExpression;
 import io.onedecision.engine.decisions.model.dmn.Clause;
 import io.onedecision.engine.decisions.model.dmn.Decision;
-import io.onedecision.engine.decisions.model.dmn.DecisionModelImport;
 import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
+import io.onedecision.engine.decisions.model.dmn.DmnModel;
+import io.onedecision.engine.decisions.model.dmn.DtInput;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
+import io.onedecision.engine.decisions.model.dmn.Import;
 import io.onedecision.engine.decisions.model.dmn.InformationItem;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
-import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter;
-import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter.AdaptedExpression;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -46,12 +46,14 @@ import javax.script.ScriptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DecisionService implements DecisionConstants {
+public class DecisionService implements DecisionConstants, RuntimeService {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionService.class);
 
 	private static final List<String> EXCLUDED_OBJECTS = newArrayList(
             "context", "print", "println", "System");
+
+    public DecisionEngine de;
 
 	protected List<DelExpression> compilers;
 
@@ -71,6 +73,10 @@ public class DecisionService implements DecisionConstants {
         jsEng = sem.getEngineByName("JavaScript");
     }
 
+    public void setDecisionEngine(DecisionEngine de) {
+        this.de = de;
+    }
+
 	public List<DelExpression> getDelExpressions() {
 		if (compilers == null) {
 			compilers = new ArrayList<DelExpression>();
@@ -82,10 +88,20 @@ public class DecisionService implements DecisionConstants {
 		this.compilers = compilers;
 	}
 
+    @Override
+    public Map<String, Object> executeDecision(String definitionId,
+            String decisionId, Map<String, Object> params, String tenantId)
+            throws DecisionException,
+            DecisionException {
+        DmnModel model = de.getRepositoryService().getModelForTenant(
+                definitionId, tenantId);
+        return execute(model.getDefinitions(), decisionId, params);
+    }
+
     public Map<String, Object> execute(Definitions dm, String decisionId,
             Map<String, Object> vars) throws DecisionException {
         String script = getScript(dm, decisionId);
-        Map<String, Object> results = execute(dm.getDecisionById(decisionId),
+        Map<String, Object> results = execute(dm.getDecision(decisionId),
                 script, vars);
 
         Map<String, Object> limitedResults = new HashMap<String, Object>();
@@ -137,15 +153,20 @@ public class DecisionService implements DecisionConstants {
     public String getScript(Definitions dm, String decisionId) {
         StringBuilder sb = new StringBuilder();
         
-        for (DecisionModelImport import_ : dm.getImport()) {
+        for (Import import_ : dm.getImports()) {
             if (EXPR_URI_JS.equals(import_.getImportType())) {
                 sb.append("load('" + import_.getLocationURI() + "');\n");
             }
         }
         
-        return getScript(sb, dm.getDecisionById(decisionId).getDecisionTable());
+        // TODO init vars needed here?
+
+        return getScript(sb, dm.getDecision(decisionId).getDecisionTable());
     }
 
+    /**
+     * @deprecated
+     */
     public String getScript(DecisionTable dt) throws DecisionException {
         StringBuilder sb = new StringBuilder();
         return getScript(sb, dt);
@@ -158,40 +179,47 @@ public class DecisionService implements DecisionConstants {
 
         // Rhino _and_ Nashorn compatible way to enable access to println
         sb.append("var System = java.lang.System;\n");
-        ExpressionAdapter adapter = new ExpressionAdapter();
 
-        Set<String> varsToInit = new HashSet<String>();
-        for (Clause o : dt.getClause()) {
-			if (o.getInputExpression() != null
-                    && !o.getInputExpression().getInputVariable().isEmpty()) {
-                varsToInit.add(o.getInputExpression().getOnlyInputVariable()
-                        .getId());
-			} else {
-				LOGGER.debug(String.format(
-						"clause %1$s does not have an input expression",
-						o.getName()));
-            }
-
-            if (o.getOutputDefinition() != null) {
-                varsToInit.add(o.getOutputDefinition().getLocalPart());
-			} else {
-				LOGGER.debug(String.format(
-						"clause %1$s does not have an output definition",
-						o.getName()));
-            }
-        }
-        for (String var : varsToInit) {
-            sb.append("if (" + var + " == undefined) " + var + " = {};\n");
-            // sb.append("println(" + var + ");\n");
-            sb.append("if (typeof " + var + " == 'string') var " + var
-                    + " = JSON.parse(" + var + ");\n");
-        }
+        // TODO if needed do this in method above where have Definitions object
+        // Set<String> varsToInit = new HashSet<String>();
+        // for (DtInput o : dt.getInputs()) {
+        // if (o.getInputExpression() != null
+        // && !o.getInputExpression().getText().isEmpty()) {
+        // // TODO dmn11
+        // // varsToInit.add(o.getInputExpression().getText()
+        // // .getId());
+        // } else {
+        // // TODO Now an error after separation of input and output
+        // // clauses in DMN11?
+        // LOGGER.debug(String.format(
+        // "clause %1$s does not have an input expression",
+        // o.getName()));
+        // }
+        // }
+        //
+        // for (DtOutput o : dt.getOutputs()) {
+        // if (o.getOutputDefinition() != null) {
+        // // substring to remove leading #
+        // varsToInit.add(o.getOutputDefinition().getHref().substring(1));
+        // } else {
+        // // TODO not needed in DMN 1.1?
+        // LOGGER.debug(String.format(
+        // "clause %1$s does not have an output definition",
+        // o.getName()));
+        // }
+        // }
+        // for (String var : varsToInit) {
+        // sb.append("if (" + var + " == undefined) " + var + " = {};\n");
+        // // sb.append("println(" + var + ");\n");
+        // sb.append("if (typeof " + var + " == 'string') var " + var
+        // + " = JSON.parse(" + var + ");\n");
+        // }
         sb.append(createFunctionName(dt.getId())).append("();\n\n");
         
         sb.append("function ").append(createFunctionName(dt.getId()))
                 .append("() {\n");
         int ruleIdx = 0;
-        for (DecisionRule rule : dt.getRule()) {
+        for (DecisionRule rule : dt.getRules()) {
             ruleIdx++;
             List<Expression> conditions = rule.getConditions();
             for (int i = 0; i < conditions.size(); i++) {
@@ -201,19 +229,22 @@ public class DecisionService implements DecisionConstants {
                     sb.append(" && ");
                 }
                 Expression ex = conditions.get(i);
-                Clause clause = dt.findClauseFromInputEntry(ex);
                 
-                if (ex instanceof LiteralExpression) {
-                    sb.append(compile(clause.getInputExpressionId(),
-                            (LiteralExpression) ex));
-                } else if (ex instanceof AdaptedExpression) {
-                    LiteralExpression le = (LiteralExpression) adapter
-                            .unmarshal((AdaptedExpression) ex);
-                    sb.append(compile(clause.getInputExpressionId(), le));
-                } else {
-                    throw new IllegalStateException(
-                            "Only LiteralExpressions handled at this time");
-                }
+                // TODO dmn11
+                Clause clause = findClauseFromInputEntry(dt, ex);
+                // sb.append(compile(clause.getInputExpressionId(), ex));
+
+                // if (ex instanceof LiteralExpression) {
+                // sb.append(compile(clause.getInputExpressionId(),
+                // (LiteralExpression) ex));
+                // } else if (ex instanceof AdaptedExpression) {
+                // LiteralExpression le = (LiteralExpression) adapter
+                // .unmarshal((AdaptedExpression) ex);
+                // sb.append(compile(clause.getInputExpressionId(), le));
+                // } else {
+                // throw new IllegalStateException(
+                // "Only LiteralExpressions handled at this time");
+                // }
             }
             sb.append(") { \n");
             List<Expression> conclusions = rule.getConclusions();
@@ -223,22 +254,23 @@ public class DecisionService implements DecisionConstants {
                     sb.append("  System.out.println('  match on rule \""
                             + ruleIdx + "\"');\n");
                 }
-                Expression ex = conclusions.get(i);
-                if (ex instanceof LiteralExpression) {
-                    sb.append("  ");
-					sb.append(compile((LiteralExpression) ex));
-                    sb.append(";\n");
-                } else if (ex instanceof AdaptedExpression) {
-                    sb.append("  ");
-                    LiteralExpression le = (LiteralExpression) adapter
-                            .unmarshal((AdaptedExpression) ex);
-                    sb.append(le.getText().getContent().get(0));
-                    sb.append(";\n");
-                } else {
-                    // TODO
-                    throw new IllegalStateException(
-                            "Only LiteralExpressions handled at this time");
-                }
+                // TODO dmn11
+                // Expression ex = conclusions.get(i);
+                // if (ex instanceof LiteralExpression) {
+                // sb.append("  ");
+                // sb.append(compile((LiteralExpression) ex));
+                // sb.append(";\n");
+                // } else if (ex instanceof AdaptedExpression) {
+                // sb.append("  ");
+                // LiteralExpression le = (LiteralExpression) adapter
+                // .unmarshal((AdaptedExpression) ex);
+                // sb.append(le.getText().getContent().get(0));
+                // sb.append(";\n");
+                // } else {
+                // // TODO
+                // throw new IllegalStateException(
+                // "Only LiteralExpressions handled at this time");
+                // }
             }
             if (dt.getHitPolicy() == HitPolicy.FIRST) {
                 sb.append("  return;\n");
@@ -249,14 +281,24 @@ public class DecisionService implements DecisionConstants {
         }
         sb.append("}");
 
-        for (String var : varsToInit) {
-            sb.append("if (typeof " + var + " == 'object')  " + var
-                    + " = JSON.stringify(" + var + ");\n");
-        }
+        // for (String var : varsToInit) {
+        // sb.append("if (typeof " + var + " == 'object')  " + var
+        // + " = JSON.stringify(" + var + ");\n");
+        // }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(sb.toString());
         }
         return sb.toString();
+    }
+
+    private Clause findClauseFromInputEntry(DecisionTable dt, Expression ex) {
+        for (DtInput input : dt.getInputs()) {
+            if (ex.getId().equals(input.getId())) {
+                return input;
+            }
+        }
+
+        return null;
     }
 
     protected String createFunctionName(String id) {
@@ -272,7 +314,7 @@ public class DecisionService implements DecisionConstants {
     }
 
     protected String compile(String input, LiteralExpression ex) {
-		Object expr = ex.getText().getContent().get(0);
+        Object expr = ex.getText();
 		// Casting ought to be pretty safe, but who knows what will happen in
 		// the future
         if (!(expr instanceof String)) {
@@ -294,4 +336,5 @@ public class DecisionService implements DecisionConstants {
 		}
 		return rtn;
 	}
+
 }

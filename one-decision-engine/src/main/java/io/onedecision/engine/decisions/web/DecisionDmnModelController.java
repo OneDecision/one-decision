@@ -16,20 +16,12 @@ package io.onedecision.engine.decisions.web;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
-import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +42,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Controller
 @RequestMapping(value = "/{tenantId}/decision-models")
-public class DecisionDmnModelController implements RepositoryService {
+public class DecisionDmnModelController extends DecisionModelFactory implements
+        RepositoryService {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionDmnModelController.class);
 
@@ -77,8 +70,8 @@ public class DecisionDmnModelController implements RepositoryService {
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#getModelForTenant(java.lang.Long,
-     *      java.lang.String)
+     * @see io.onedecision.engine.decisions.web.RepositoryService#getModelForTenant(java.lang.String,
+     *      java.lang.Long)
      */
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json" })
@@ -222,16 +215,16 @@ public class DecisionDmnModelController implements RepositoryService {
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#updateModelForTenant(java.lang.String,
-     *      io.onedecision.engine.decisions.model.dmn.DmnModel,
+     * @see io.onedecision.engine.decisions.web.RepositoryService#updateModelForTenant(io.onedecision.engine.decisions.model.dmn.DmnModel,
+     *      java.lang.String,
      *      java.lang.String)
      */
     @Override
     @RequestMapping(value = "/{definitionId}", method = RequestMethod.PUT)
     public @ResponseBody void updateModelForTenant(
-            @PathVariable("tenantId") String tenantId,
             @PathVariable("definitionId") String definitionId,
-            @RequestBody DmnModel model) {
+            @RequestBody DmnModel model,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Updating decision model %2$s for tenant %1$s", tenantId,
                 definitionId));
@@ -246,50 +239,18 @@ public class DecisionDmnModelController implements RepositoryService {
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#deleteModelForTenant(java.lang.Long,
-     *      java.lang.String)
+     * @see io.onedecision.engine.decisions.web.RepositoryService#deleteModelForTenant(java.lang.String,
+     *      java.lang.Long)
      */
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody void deleteModelForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") Long id) {
+            @PathVariable("id") Long id,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Deleting decision model %1$s for tenant %2$s", id, tenantId));
 
         repo.delete(id);
     }
 
-    @Override
-    public void write(Definitions dm, Writer out) throws IOException {
-        JAXBContext context;
-        try {
-            context = JAXBContext.newInstance(Definitions.class);
-            Marshaller m = context.createMarshaller();
-            // Since no @XmlRootElement generated for Definitions need to create
-            // element wrapper here. See
-            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
-            m.marshal(new JAXBElement(new QName(
-                    "http://www.omg.org/spec/DMN/20130901", "Definitions"),
-                    Definitions.class, dm), out);
-        } catch (JAXBException e) {
-            throw new IOException(e.getMessage(), e);
-        }
-    }
-
-    public void write(Decision d, Writer out) throws IOException {
-        JAXBContext context;
-        try {
-            context = JAXBContext.newInstance(Definitions.class);
-            Marshaller m = context.createMarshaller();
-            // Since no @XmlRootElement generated for Definitions need to create
-            // element wrapper here. See
-            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
-            m.marshal(new JAXBElement(new QName(
-                    "http://www.omg.org/spec/DMN/20130901", "Decision"),
-                    Decision.class, d), out);
-        } catch (JAXBException e) {
-            throw new IOException(e.getMessage(), e);
-        }
-    }
 }

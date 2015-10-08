@@ -12,10 +12,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -43,11 +45,10 @@ import org.w3c.dom.Element;
 @XmlType(name = "tPerformanceIndicator", propOrder = {
     "impactingDecisions"
 })
-public class PerformanceIndicator
-    extends BusinessContextElement
-    implements Serializable
-{
+public class PerformanceIndicator extends BusinessContextElement implements
+        Serializable {
 
+    private static final long serialVersionUID = 7288503056626823428L;
     @XmlElement(name = "impactingDecision")
     protected List<DmnElementReference> impactingDecisions;
 
@@ -115,19 +116,19 @@ public class PerformanceIndicator
     }
 
     @Override
-    public PerformanceIndicator withAnies(Element... values) {
+    public PerformanceIndicator withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public PerformanceIndicator withAnies(Collection<Element> values) {
+    public PerformanceIndicator withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

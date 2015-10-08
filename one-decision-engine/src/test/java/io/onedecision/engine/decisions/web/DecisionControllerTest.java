@@ -16,8 +16,8 @@ package io.onedecision.engine.decisions.web;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.TestApplication;
+import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.api.RuntimeService;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.test.MockMultipartFileUtil;
@@ -27,10 +27,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -46,23 +47,29 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class DecisionControllerTest implements ExamplesConstants {
 
     @Autowired
-    protected DecisionDmnModelController svc;
+    @Qualifier("")
+    private static DecisionEngine de;
 
-    @Autowired
-    protected RuntimeService decisionController;
+    protected static DmnModel dmnModel;
 
-    protected DmnModel dmnModel;
+    private static DecisionDmnModelController repoSvc;
 
-    @Before
-    public void setUp() throws IOException {
-        dmnModel = svc.handleFileUpload(TENANT_ID,
+    private static DecisionController runtimeSvc;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        repoSvc = (DecisionDmnModelController) de.getRepositoryService();
+        dmnModel = repoSvc.handleFileUpload(TENANT_ID,
                 null/* no deployment message */,
                 MockMultipartFileUtil.newInstance(ARR_DMN_RESOURCE));
+
+        runtimeSvc = (DecisionController) de.getRuntimeService();
     }
+
 
     @After
     public void tearDown() {
-        svc.deleteModelForTenant(TENANT_ID, dmnModel.getId());
+        repoSvc.deleteModelForTenant(dmnModel.getId(), TENANT_ID);
     }
 
 
@@ -72,10 +79,9 @@ public class DecisionControllerTest implements ExamplesConstants {
         Map<String, Object> vars = new HashMap<String, Object>();
         String applicantVal = "{\"age\":18,\"health\":\"Good\"}";
         vars.put("applicant", applicantVal);
-        String conclusion = decisionController.executeDecision(ARR_DEFINITION_ID,
+        String conclusion = runtimeSvc.execute(ARR_DEFINITION_ID,
                 ARR_DECISION_ID, vars, TENANT_ID);
         assertNotNull(conclusion);
-        StringBuffer sb = new StringBuffer(conclusion);
         assertTrue(conclusion.contains("{\"riskRating\":\"Low\"}"));
     }
 }

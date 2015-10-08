@@ -10,11 +10,13 @@ package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -45,10 +47,7 @@ import org.w3c.dom.Element;
     "importedValues",
     "text"
 })
-public class LiteralExpression
-    extends Expression
-    implements Serializable
-{
+public class LiteralExpression extends Expression implements Serializable {
 
     protected ImportedValues importedValues;
     protected String text;
@@ -150,19 +149,19 @@ public class LiteralExpression
     }
 
     @Override
-    public LiteralExpression withAnies(Element... values) {
+    public LiteralExpression withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public LiteralExpression withAnies(Collection<Element> values) {
+    public LiteralExpression withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

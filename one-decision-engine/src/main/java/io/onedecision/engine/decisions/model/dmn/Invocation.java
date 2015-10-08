@@ -12,10 +12,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -43,10 +45,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "tInvocation", propOrder = {
     "bindings"
 })
-public class Invocation
-    extends Expression
-    implements Serializable
-{
+public class Invocation extends Expression implements Serializable {
 
     @XmlElement(name = "binding")
     protected List<Binding> bindings;
@@ -103,19 +102,19 @@ public class Invocation
     }
 
     @Override
-    public Invocation withAnies(Element... values) {
+    public Invocation withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public Invocation withAnies(Collection<Element> values) {
+    public Invocation withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

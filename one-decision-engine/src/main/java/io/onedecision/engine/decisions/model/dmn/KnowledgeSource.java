@@ -12,12 +12,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -50,10 +52,7 @@ import org.w3c.dom.Element;
     "type",
     "owner"
 })
-public class KnowledgeSource
-    extends DrgElement
-    implements Serializable
-{
+public class KnowledgeSource extends DrgElement implements Serializable {
 
     @XmlElement(name = "authorityRequirement")
     protected List<AuthorityRequirement> authorityRequirements;
@@ -208,19 +207,19 @@ public class KnowledgeSource
     }
 
     @Override
-    public KnowledgeSource withAnies(Element... values) {
+    public KnowledgeSource withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public KnowledgeSource withAnies(Collection<Element> values) {
+    public KnowledgeSource withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

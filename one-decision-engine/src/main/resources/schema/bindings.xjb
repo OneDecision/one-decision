@@ -9,6 +9,7 @@
   <jaxb:bindings>
     <!-- 
       choiceContentProperty: false providers accessors for all options in xsd:choice
+      generateElementProperty: false avoids _most_ JAXBElement wrappers
       generateValueClass: false creates interfaces in addition to impl sub-package
     -->
     <jaxb:globalBindings 

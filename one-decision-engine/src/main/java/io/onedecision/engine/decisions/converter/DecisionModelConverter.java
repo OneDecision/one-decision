@@ -19,7 +19,6 @@ import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.DecisionTableOrientation;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
-import io.onedecision.engine.decisions.model.dmn.DtInput;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.InformationItem;
@@ -85,7 +84,8 @@ public class DecisionModelConverter implements
 			itemDef.setName(type.getName() + " Definition");
 			itemDef.setDescription(type.getDescription());
 
-			target.getItemDefinition().add(itemDef);
+            // TODO dmn11
+            // target.getItemDefinition().add(itemDef);
 
 			// More indirection - yay!!
             InformationItem informationItem = objFact.createInformationItem();
@@ -281,8 +281,8 @@ public class DecisionModelConverter implements
 	}
 
     private Expression findConditionEntry(DecisionTable dt, String string) {
-        for (DtInput input : dt.getInput()) {
-            // TODO DMN11
+        // TODO dmn11
+        // for (DtInput input : dt.getInput()) {
             // input.
             // if (input instanceof LiteralExpression) {
             // String val = ((LiteralExpression) input).getText();
@@ -291,7 +291,7 @@ public class DecisionModelConverter implements
             // return input;
             // }
             // }
-        }
+        // }
         throw new DecisionException("Cannot find input for " + string);
     }
 

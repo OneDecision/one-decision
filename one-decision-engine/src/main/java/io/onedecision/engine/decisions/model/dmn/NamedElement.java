@@ -10,11 +10,13 @@ package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
 import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -46,10 +48,7 @@ import org.w3c.dom.Element;
     ItemDefinition.class,
     InformationItem.class
 })
-public class NamedElement
-    extends DmnElement
-    implements Serializable
-{
+public class NamedElement extends DmnElement implements Serializable {
 
     @XmlAttribute(name = "name", required = true)
     protected String name;
@@ -90,19 +89,19 @@ public class NamedElement
     }
 
     @Override
-    public NamedElement withAnies(Element... values) {
+    public NamedElement withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public NamedElement withAnies(Collection<Element> values) {
+    public NamedElement withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

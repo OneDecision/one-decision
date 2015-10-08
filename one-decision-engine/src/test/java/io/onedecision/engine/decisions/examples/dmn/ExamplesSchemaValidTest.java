@@ -13,11 +13,13 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.examples.dmn;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 import io.onedecision.engine.decisions.model.dmn.validators.SchemaValidator;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -46,7 +48,8 @@ public class ExamplesSchemaValidTest {
 	public static Collection<String[]> data() {
         return Arrays.asList(new String[][] {
                 { ExamplesConstants.ARR_DMN_RESOURCE },
-                { ExamplesConstants.EFU_DMN_RESOURCE } });
+                { ExamplesConstants.EFU_DMN_RESOURCE },
+                { ExamplesConstants.CD_DMN_RESOURCE } });
 	}
 
 	private String resourceName;
@@ -58,9 +61,20 @@ public class ExamplesSchemaValidTest {
 	@Test
 	public void testSchemaValid() {
 		DmnValidationErrors errors = new DmnValidationErrors();
-		schemaValidator.validate(getClass().getResourceAsStream(resourceName),
-				errors);
-		assertTrue(!errors.hasErrors());
+        InputStream is = null;
+        try {
+            is = getClass().getResourceAsStream(resourceName);
+            assertNotNull(String.format(
+                    "Unable to find resource %1$s to validate", resourceName),
+                    is);
+            schemaValidator.validate(is, errors);
+            assertTrue(!errors.hasErrors());
+        } finally {
+            try {
+                is.close();
+            } catch (Exception e) {
+            }
+        }
 	}
 
 }

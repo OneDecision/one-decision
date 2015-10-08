@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,10 +43,9 @@ import javax.xml.bind.annotation.XmlType;
     "expression",
     "parameter"
 })
-public class Binding
-    implements Serializable
-{
+public class Binding implements Serializable {
 
+    private static final long serialVersionUID = 3905688655734306369L;
     @XmlElementRef(name = "Expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
     protected JAXBElement<? extends Expression> expression;
     @XmlElement(required = true)

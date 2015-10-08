@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions id="27002" xmlns="http://www.omg.org/spec/DMN/20130901">
+  <description>Calculates discount for a given customer.</description>
+  <ItemDefinition name="Customer Category" id="customerCategory">
+    <typeDefinition>string</typeDefinition>
+  </ItemDefinition>
+  <ItemDefinition name="Order Size" id="orderSize">
+    <typeDefinition>number</typeDefinition>
+  </ItemDefinition>
+  <ItemDefinition id="totalOrderSum">
+    <typeDefinition>number</typeDefinition>
+  </ItemDefinition>
+  <ItemDefinition id="amountDueDate">
+    <typeDefinition>date</typeDefinition>
+  </ItemDefinition>
+  <Decision name="Determine Customer Discount" id="calcDiscount1">
+    <DecisionTable hitPolicy="FIRST" id="27002_dt">
+      <input id="27002_dt_i1">
+        <inputExpression id="27002_dt_i1_ie">
+          <description>Customer Category</description>
+          <typeDefinition href=""/>
+        </inputExpression>
+        <inputValue id="27002_dt_i1_ie_1">
+          <text>&lt;![CDATA[!= "gold"]]&gt;</text>
+        </inputValue>
+        <inputValue id="27002_dt_i1_ie_2">
+          <text>&lt;![CDATA[== "gold"]]&gt;</text>
+        </inputValue>
+      </input>
+      <input id="27002_dt_i2">
+        <inputExpression id="27002_dt_i2_ie">
+          <description>Order Size</description>
+        </inputExpression>
+        <inputValue id="27002_dt_i2_ie_1">
+          <text>&lt;![CDATA[&lt; 500]]&gt;</text>
+        </inputValue>
+        <inputValue id="27002_dt_i2_ie_2">
+          <text>&lt;![CDATA[&gt;= 500]]&gt;</text>
+        </inputValue>
+      </input>
+      <output id="27002_dt_o1">
+        <outputDefinition href="#totalOrderSum" />
+        <outputValue id="27002_dt_o1_od_1">
+          <text>ordersize * price</text>
+        </outputValue>
+        <outputValue id="27002_dt_o1_od_2">
+          <text>(ordersize * price) * 0.9</text>
+        </outputValue>
+      </output>
+      <output id="27002_dt_o2">
+        <outputDefinition href="#amountDueDate" />
+        <outputValue id="27002_dt_o2_od_1">
+          <text>amountDueDate</text>
+        </outputValue>
+        <outputValue id="27002_dt_o2_od_2">
+          <text>addDate(amountDueDate,0,1,0)</text>
+        </outputValue>
+      </output>
+      <rule>
+        <inputEntry>
+	          <text>&lt;![CDATA[!= "gold"]]&gt;</text>
+	      </inputEntry>
+        <!-- <condition>27002_dt_i1_ie_1</condition>-->
+        <conclusion>27002_dt_o1_od_1</conclusion>
+        <conclusion>27002_dt_o2_od_1</conclusion>
+      </rule>
+      <rule>
+        <inputEntry>
+            <text>&lt;![CDATA[!= "gold"]]&gt;</text>
+        </inputEntry>
+        <!-- <condition>27002_dt_i1_ie_2</condition>-->
+        <condition>27002_dt_i2_ie_1</condition>
+        <conclusion>27002_dt_o1_od_2</conclusion>
+        <conclusion>27002_dt_o2_od_1</conclusion>
+      </rule>
+      <rule>
+        <condition>27002_dt_i1_ie_2</condition>
+        <condition>27002_dt_i2_ie_2</condition>
+        <conclusion>27002_dt_o1_od_2</conclusion>
+        <conclusion>27002_dt_o2_od_2</conclusion>
+      </rule>
+    </DecisionTable>
+  </Decision>
+</Definitions>

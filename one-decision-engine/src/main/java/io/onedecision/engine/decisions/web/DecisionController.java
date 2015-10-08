@@ -16,9 +16,7 @@ package io.onedecision.engine.decisions.web;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.RuntimeService;
-import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.impl.DecisionService;
-import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
@@ -47,7 +45,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Controller
 @RequestMapping("/{tenantId}/onedecision")
-public class DecisionController implements RuntimeService {
+public class DecisionController extends DecisionService implements
+        RuntimeService {
 
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionController.class);
@@ -56,26 +55,18 @@ public class DecisionController implements RuntimeService {
 	protected DecisionDmnModelRepository repo;
 
     @Autowired
-    protected DecisionModelFactory decisionModelFactory;
-
-    @Autowired
-    protected DecisionService decisionService;
-
-    @Autowired
     protected ObjectMapper objectMapper;
 
-    /* (non-Javadoc)
-     * @see io.onedecision.engine.decisions.web.RuntimeService#executeDecision(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+    /**
+     * @see io.onedecision.engine.decisions.web.RuntimeService#executeDecision(java.lang.String,
+     *      java.lang.String, java.lang.String, java.util.Map)
      */
     @Override
-    @RequestMapping(method = RequestMethod.POST, value = "/{definitionId}/{decisionId}", headers = "Accept=application/json")
-    @ResponseBody
-    public final String executeDecision(
+    public final Map<String, Object> executeDecision(
             @PathVariable("definitionId") String definitionId,
             @PathVariable("decisionId") String decisionId,
             @RequestParam Map<String, Object> params,
-            @PathVariable("tenantId") String tenantId) throws IOException,
-            DecisionException {
+            @PathVariable("tenantId") String tenantId) throws DecisionException {
         LOGGER.info(String.format(
                 "handling request to decision: %1$s.%2$s, with params: %3$s",
                 definitionId, decisionId, params));
@@ -85,10 +76,23 @@ public class DecisionController implements RuntimeService {
             throw new DecisionNotFoundException(tenantId, definitionId,
                     decisionId);
         }
-		Definitions definitions = decisionModelFactory.load(dmnModel
-				.getDefinitionXml());
-        Map<String, Object> results = decisionService.execute(definitions,
-                decisionId, params);
+        return super.execute(dmnModel.getDefinitions(), decisionId, params);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/{definitionId}/{decisionId}", headers = "Accept=application/json")
+    @ResponseBody
+    public final String execute(
+            @PathVariable("definitionId") String definitionId,
+            @PathVariable("decisionId") String decisionId,
+            @RequestParam Map<String, Object> params,
+            @PathVariable("tenantId") String tenantId) throws IOException,
+            DecisionException {
+        LOGGER.info(String.format(
+                "handling request to decision: %1$s.%2$s, with params: %3$s",
+                definitionId, decisionId, params));
+
+        Map<String, Object> results = executeDecision(definitionId, decisionId,
+                params, tenantId);
 
         LOGGER.info(String.format("decision conclusion: %1$s", results));
         return toJson(results);

@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,10 +46,7 @@ import javax.xml.bind.annotation.XmlType;
     "outputValues",
     "defaultOutputEntry"
 })
-public class DtOutput
-    extends Clause
-    implements Serializable
-{
+public class DtOutput extends Clause implements Serializable {
 
     protected DmnElementReference outputDefinition;
     @XmlElement(name = "outputValue")

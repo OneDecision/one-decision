@@ -11,8 +11,11 @@ package io.onedecision.engine.decisions.model.dmn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
+
 
 
 /**
@@ -176,11 +180,42 @@ public class Definitions
      * 
      * 
      */
-    public List<JAXBElement<? extends DrgElement>> getDRGElements() {
+    public List<JAXBElement<? extends DrgElement>> getDrgElements() {
         if (drgElements == null) {
             drgElements = new ArrayList<JAXBElement<? extends DrgElement>>();
         }
         return this.drgElements;
+    }
+
+    public Set<Decision> getDecisions() {
+        HashSet<Decision> decisions = new HashSet<Decision>();
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null && el.getValue() instanceof Decision) {
+                decisions.add((Decision) el.getValue());
+            }
+        }
+        return decisions;
+    }
+
+    public Decision getDecision(@NotNull String decisionId) {
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null && el.getValue() instanceof Decision
+                    && decisionId.equals(el.getValue().getId())) {
+                return (Decision) el.getValue();
+            }
+        }
+        return null;
+    }
+
+    public List<InformationItem> getInformationItems() {
+        List<InformationItem> informationItems = new ArrayList<InformationItem>();
+        for (Object o : getAnys()) {
+            JAXBElement<?> el = (JAXBElement<?>) o;
+            if (el.getValue() instanceof InformationItem) {
+                informationItems.add((InformationItem) el.getValue());
+            }
+        }
+        return informationItems;
     }
 
     /**
@@ -406,7 +441,7 @@ public class Definitions
     public Definitions withDRGElements(JAXBElement<? extends DrgElement> ... values) {
         if (values!= null) {
             for (JAXBElement<? extends DrgElement> value: values) {
-                getDRGElements().add(value);
+                getDrgElements().add(value);
             }
         }
         return this;
@@ -414,7 +449,7 @@ public class Definitions
 
     public Definitions withDRGElements(Collection<JAXBElement<? extends DrgElement>> values) {
         if (values!= null) {
-            getDRGElements().addAll(values);
+            getDrgElements().addAll(values);
         }
         return this;
     }
@@ -497,19 +532,19 @@ public class Definitions
     }
 
     @Override
-    public Definitions withAnies(Element... values) {
+    public Definitions withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public Definitions withAnies(Collection<Element> values) {
+    public Definitions withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

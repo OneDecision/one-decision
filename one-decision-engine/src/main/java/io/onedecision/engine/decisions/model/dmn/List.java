@@ -11,11 +11,13 @@ package io.onedecision.engine.decisions.model.dmn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -43,10 +45,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "tList", propOrder = {
     "expressions"
 })
-public class List
-    extends Expression
-    implements Serializable
-{
+public class List extends Expression implements Serializable {
 
     @XmlElementRef(name = "Expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
     protected java.util.List<JAXBElement<? extends Expression>> expressions;
@@ -110,19 +109,19 @@ public class List
     }
 
     @Override
-    public List withAnies(Element... values) {
+    public List withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public List withAnies(Collection<Element> values) {
+    public List withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

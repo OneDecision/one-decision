@@ -13,16 +13,18 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.impl;
 
+import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.InvalidDmnException;
+import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
+import io.onedecision.engine.decisions.model.dmn.DmnModel;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -31,113 +33,59 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-
 @Component
-public class DecisionModelFactory {
+public class DecisionModelFactory implements RepositoryService {
 
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionModelFactory.class);
 
-    private com.fasterxml.jackson.databind.ObjectMapper mapper;
+    protected List<DmnModel> repo;
 
     public DecisionModelFactory() {
+        repo = new ArrayList<DmnModel>();
     }
 
-    /**
-     * @deprecated
-     */
-    public void write(String mediaType, Definitions dm, File f)
-            throws IOException {
-        FileWriter out = new FileWriter(f);
-        switch (mediaType) {
-        case "application/json":
-            writeAsJson(dm, out);
-            break;
-        default:
-            writeAsXml(dm, out);
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    public void write(String mediaType, Definitions dm, Writer out)
-            throws IOException {
-        switch (mediaType) {
-        case "application/json":
-            writeAsJson(dm, out);
-            break;
-        default:
-            writeAsXml(dm, out);
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    public void write(String mediaType, List<Decision> list, Writer out)
-            throws IOException {
-        switch (mediaType) {
-        case "application/json":
-            getObjectMapper().writeValue(out, list);
-            break;
-        default:
-            writeAsXml(list, out);
-        }
-    }
-
-    private void writeAsJson(Definitions dm, Writer writer) throws IOException {
-        getObjectMapper().writeValue(writer, dm);
-    }
-
-    private ObjectMapper getObjectMapper() throws IOException {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-            AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
-            // make deserializer use JAXB annotations (only)
-            mapper.getDeserializationConfig()
-                    .withAppendedAnnotationIntrospector(
-                    introspector);
-            // make serializer use JAXB annotations (only)
-            mapper.getSerializationConfig().withAppendedAnnotationIntrospector(
-                    introspector);
-            // TODO omit null values, but not like this
-        }
-        return mapper;
-    }
-
-    private void writeAsXml(Definitions dm, Writer writer) throws IOException {
+    @Override
+    public void write(Definitions dm, Writer out) throws IOException {
         JAXBContext context;
         try {
             context = JAXBContext.newInstance(Definitions.class);
             Marshaller m = context.createMarshaller();
-            m.marshal(dm, writer);
+            // Since no @XmlRootElement generated for Definitions need to create
+            // element wrapper here. See
+            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
+            m.marshal(new JAXBElement<Definitions>(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "Definitions"),
+                    Definitions.class, dm), out);
         } catch (JAXBException e) {
             throw new IOException(e.getMessage(), e);
         }
     }
 
-    private void writeAsXml(List<Decision> list, Writer writer)
-            throws IOException {
+    protected void write(Decision d, Writer out) throws IOException {
         JAXBContext context;
         try {
-            context = JAXBContext.newInstance(Decision.class);
+            context = JAXBContext.newInstance(Definitions.class);
             Marshaller m = context.createMarshaller();
-            m.marshal(list, writer);
+            // Since no @XmlRootElement generated for Definitions need to create
+            // element wrapper here. See
+            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
+            m.marshal(new JAXBElement<Decision>(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "Decision"),
+                    Decision.class, d), out);
         } catch (JAXBException e) {
             throw new IOException(e.getMessage(), e);
         }
     }
-    
-    public Definitions loadFromClassPath(String resourceName) throws IOException {
+
+    public final Definitions loadFromClassPath(String resourceName)
+            throws IOException {
         InputStream is = null;
         try {
             is = getClass().getResourceAsStream(resourceName);
@@ -194,24 +142,80 @@ public class DecisionModelFactory {
         }
     }
 
-    // /**
-    // * Search for the requested decision.
-    // *
-    // * For now this is simply a resource check, but will add a more
-    // full-fledged
-    // * database backend in due course.
-    // *
-    // * @param definitionsId
-    // * The id of the decision model (definitions element id).
-    // * @param decisionId
-    // * The id of the decision sought (within the decision model)
-    // * @return
-    // * @throws IOException
-    // * If the decision model or decision cannot be found.
-    // */
-    // public Decision find(String definitionsId, String decisionId)
-    // throws IOException {
-    // return loadFromClassPath("/" + definitionsId + ".dmn").getDecisionById(
-    // decisionId);
-    // }
+    @Override
+    public List<DmnModel> listForTenant(@NotNull String tenantId) {
+        ArrayList<DmnModel> tenantModels = new ArrayList<DmnModel>();
+        for (DmnModel dmnModel : repo) {
+            if (tenantId.equals(dmnModel.getTenantId())) {
+                tenantModels.add(dmnModel);
+            }
+        }
+        return tenantModels;
+    }
+
+    protected DmnModel getModelForTenant(String tenantId, Long id) {
+        for (DmnModel dmnModel : repo) {
+            if (tenantId.equals(dmnModel.getTenantId())
+                    && id.equals(dmnModel.getId())) {
+                return dmnModel;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public DmnModel getModelForTenant(String definitionId, String tenantId) {
+        for (DmnModel dmnModel : repo) {
+            if (tenantId.equals(dmnModel.getTenantId())
+                    && definitionId.equals(dmnModel.getDefinitionId())) {
+                return dmnModel;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String getDmnForTenant(String tenantId, String id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public byte[] getImageForTenant(String tenantId, String id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public DmnModel createModelForTenant(Definitions def,
+            String deploymentMessage, byte[] image, String tenantId) {
+        DmnModel model = new DmnModel(def, deploymentMessage, image, tenantId);
+        return createModelForTenant(model);
+    }
+
+    @Override
+    public DmnModel createModelForTenant(DmnModel model) {
+        repo.add(model);
+        return model;
+    }
+
+    @Override
+    public void updateModelForTenant(String definitionId, DmnModel model,
+            String tenantId) {
+        // be sure
+        model.setTenantId(tenantId);
+        model.setDefinitionId(definitionId);
+        createModelForTenant(model);
+    }
+
+    @Override
+    public void deleteModelForTenant(Long id, String tenantId) {
+        DmnModel model = getModelForTenant(tenantId, id);
+        if (model == null ) { 
+            throw new DecisionNotFoundException(String.format(
+                    "Unable to find model for tenant %1$s with id %2$d",
+                    tenantId, id));
+        }
+    }
+
 }

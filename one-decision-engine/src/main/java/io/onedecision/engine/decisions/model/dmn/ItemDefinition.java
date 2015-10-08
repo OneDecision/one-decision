@@ -12,12 +12,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -57,10 +59,7 @@ import org.w3c.dom.Element;
     "typeDefinition",
     "allowedValues"
 })
-public class ItemDefinition
-    extends NamedElement
-    implements Serializable
-{
+public class ItemDefinition extends NamedElement implements Serializable {
 
     @XmlElement(name = "itemComponent")
     protected List<ItemComponent> itemComponents;
@@ -297,19 +296,19 @@ public class ItemDefinition
     }
 
     @Override
-    public ItemDefinition withAnies(Element... values) {
+    public ItemDefinition withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public ItemDefinition withAnies(Collection<Element> values) {
+    public ItemDefinition withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

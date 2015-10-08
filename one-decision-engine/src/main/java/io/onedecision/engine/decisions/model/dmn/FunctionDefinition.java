@@ -11,12 +11,14 @@ package io.onedecision.engine.decisions.model.dmn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -46,10 +48,7 @@ import org.w3c.dom.Element;
     "informationItems",
     "expression"
 })
-public class FunctionDefinition
-    extends Expression
-    implements Serializable
-{
+public class FunctionDefinition extends Expression implements Serializable {
 
     @XmlElement(name = "InformationItem")
     protected java.util.List<InformationItem> informationItems;
@@ -151,19 +150,19 @@ public class FunctionDefinition
     }
 
     @Override
-    public FunctionDefinition withAnies(Element... values) {
+    public FunctionDefinition withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public FunctionDefinition withAnies(Collection<Element> values) {
+    public FunctionDefinition withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }

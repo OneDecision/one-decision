@@ -59,7 +59,7 @@ public class SchemaValidator implements ErrorHandler {
 
             InputStream is = null;
             try {
-                is = getRessourceAsStreamWrapper("schema/" + systemId);
+                is = getResourceAsStreamWrapper("schema/" + systemId);
             } catch (Exception e) {
                 System.err.println(e.toString());
             }
@@ -72,7 +72,7 @@ public class SchemaValidator implements ErrorHandler {
 
     private List<Exception> errors = new ArrayList<Exception>();
 
-    private InputStream getRessourceAsStreamWrapper(String name) {
+    private InputStream getResourceAsStreamWrapper(String name) {
         InputStream is = getClass().getResourceAsStream(name);
         if (is == null)
             is = getClass().getResourceAsStream("/" + name);
@@ -88,7 +88,7 @@ public class SchemaValidator implements ErrorHandler {
 
         try {
             schemaFactory.newSchema(new StreamSource(
-                    getRessourceAsStreamWrapper("schema/DMN10.xsd")));
+                    getResourceAsStreamWrapper("schema/dmn11.xsd")));
         } catch (SAXException e1) {
             errors.reject("Cannot find / read schema",
                     "Exception: " + e1.getMessage());
@@ -104,23 +104,24 @@ public class SchemaValidator implements ErrorHandler {
             parser = parserFactory.newSAXParser();
             XMLReader reader = parser.getXMLReader();
             reader.setErrorHandler(this);
+
+            try {
+                parser.parse(new InputSource(is), (DefaultHandler) null);
+            } catch (Exception e) {
+                String msg = "Schema validation failed";
+                LOGGER.error(msg, e);
+                errors.reject(msg, "Exception: " + e.getMessage());
+            }
+            if (this.errors.size() > 0) {
+                errors.reject("Schema validation failed",
+                        this.errors.toString());
+            }
         } catch (ParserConfigurationException e1) {
             errors.reject("Cannot create parser",
                     "Exception: " + e1.getMessage());
         } catch (SAXException e1) {
             errors.reject("Parser cannot be created",
                     "Exception: " + e1.getMessage());
-        }
-
-        try {
-            parser.parse(new InputSource(is), (DefaultHandler) null);
-        } catch (Exception e) {
-            String msg = "Schema validation failed";
-            LOGGER.error(msg, e);
-            errors.reject(msg, "Exception: " + e.getMessage());
-        }
-        if (this.errors.size() > 0) {
-            errors.reject("Schema validation failed", this.errors.toString());
         }
     }
 

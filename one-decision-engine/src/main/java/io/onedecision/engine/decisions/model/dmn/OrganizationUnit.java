@@ -12,10 +12,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+
 import org.w3c.dom.Element;
 
 
@@ -45,10 +47,8 @@ import org.w3c.dom.Element;
     "decisionMades",
     "decisionOwneds"
 })
-public class OrganizationUnit
-    extends BusinessContextElement
-    implements Serializable
-{
+public class OrganizationUnit extends BusinessContextElement implements
+        Serializable {
 
     @XmlElement(name = "decisionMade")
     protected List<DmnElementReference> decisionMades;
@@ -164,19 +164,19 @@ public class OrganizationUnit
     }
 
     @Override
-    public OrganizationUnit withAnies(Element... values) {
+    public OrganizationUnit withAnys(Element... values) {
         if (values!= null) {
             for (Element value: values) {
-                getAnies().add(value);
+                getAnys().add(value);
             }
         }
         return this;
     }
 
     @Override
-    public OrganizationUnit withAnies(Collection<Element> values) {
+    public OrganizationUnit withAnys(Collection<Element> values) {
         if (values!= null) {
-            getAnies().addAll(values);
+            getAnys().addAll(values);
         }
         return this;
     }
