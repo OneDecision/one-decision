@@ -49,6 +49,8 @@ import org.w3c.dom.Element;
 })
 public class Expression extends DmnElement implements Serializable {
 
+    private static final long serialVersionUID = 2580886513550699368L;
+
     @Override
     public Expression withDescription(String value) {
         setDescription(value);

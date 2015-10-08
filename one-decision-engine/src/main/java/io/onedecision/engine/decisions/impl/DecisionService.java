@@ -18,13 +18,13 @@ import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.RuntimeService;
 import io.onedecision.engine.decisions.impl.del.DelExpression;
-import io.onedecision.engine.decisions.model.dmn.Clause;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.DtInput;
+import io.onedecision.engine.decisions.model.dmn.DtOutput;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.Import;
@@ -159,7 +159,22 @@ public class DecisionService implements DecisionConstants, RuntimeService {
             }
         }
         
-        // TODO init vars needed here?
+        // init vars
+        for (Decision decision : dm.getDecisions()) {
+            // TODO What is this!!!!!!
+            // decision.getAllowedAnswers()
+            for (DtInput input : decision.getDecisionTable().getInputs()) {
+                sb.append("if (" + input.getInputExpression().getText()
+                        + "==undefined) var "
+                        + input.getInputExpression().getText()
+                        + " = {};\n");
+            }
+            for (DtOutput input : decision.getDecisionTable().getOutputs()) {
+                sb.append("if (" + input.getOutputDefinition().getId()
+                        + "==undefined) var "
+                        + input.getOutputDefinition().getId() + " = {};\n");
+            }
+        }
 
         return getScript(sb, dm.getDecision(decisionId).getDecisionTable());
     }
@@ -180,40 +195,6 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         // Rhino _and_ Nashorn compatible way to enable access to println
         sb.append("var System = java.lang.System;\n");
 
-        // TODO if needed do this in method above where have Definitions object
-        // Set<String> varsToInit = new HashSet<String>();
-        // for (DtInput o : dt.getInputs()) {
-        // if (o.getInputExpression() != null
-        // && !o.getInputExpression().getText().isEmpty()) {
-        // // TODO dmn11
-        // // varsToInit.add(o.getInputExpression().getText()
-        // // .getId());
-        // } else {
-        // // TODO Now an error after separation of input and output
-        // // clauses in DMN11?
-        // LOGGER.debug(String.format(
-        // "clause %1$s does not have an input expression",
-        // o.getName()));
-        // }
-        // }
-        //
-        // for (DtOutput o : dt.getOutputs()) {
-        // if (o.getOutputDefinition() != null) {
-        // // substring to remove leading #
-        // varsToInit.add(o.getOutputDefinition().getHref().substring(1));
-        // } else {
-        // // TODO not needed in DMN 1.1?
-        // LOGGER.debug(String.format(
-        // "clause %1$s does not have an output definition",
-        // o.getName()));
-        // }
-        // }
-        // for (String var : varsToInit) {
-        // sb.append("if (" + var + " == undefined) " + var + " = {};\n");
-        // // sb.append("println(" + var + ");\n");
-        // sb.append("if (typeof " + var + " == 'string') var " + var
-        // + " = JSON.parse(" + var + ");\n");
-        // }
         sb.append(createFunctionName(dt.getId())).append("();\n\n");
         
         sb.append("function ").append(createFunctionName(dt.getId()))
@@ -223,15 +204,21 @@ public class DecisionService implements DecisionConstants, RuntimeService {
             ruleIdx++;
             List<LiteralExpression> conditions = rule.getInputEntry();
             for (int i = 0; i < conditions.size(); i++) {
+                LiteralExpression inputExpression = dt.getInputs().get(i)
+                        .getInputExpression();
                 if (i == 0) {
                     sb.append("if (");
                 } else {
                     sb.append(" && ");
                 }
                 Expression ex = conditions.get(i);
+                sb.append(inputExpression.getText());
                 if (ex instanceof LiteralExpression) {
                     LiteralExpression le = (LiteralExpression) ex;
-                    sb.append(compile(le.getText(), le));
+                    if (isLiteral(le.getText())) {
+                        sb.append(" == ");
+                    }
+                    sb.append(compile(inputExpression.getText(), le));
                 } else {
                     throw new IllegalStateException(
                             "Only LiteralExpressions handled at this time");
@@ -245,23 +232,21 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                     sb.append("  System.out.println('  match on rule \""
                             + ruleIdx + "\"');\n");
                 }
-                // TODO dmn11
-                // Expression ex = conclusions.get(i);
-                // if (ex instanceof LiteralExpression) {
-                // sb.append("  ");
-                // sb.append(compile((LiteralExpression) ex));
-                // sb.append(";\n");
-                // } else if (ex instanceof AdaptedExpression) {
-                // sb.append("  ");
-                // LiteralExpression le = (LiteralExpression) adapter
-                // .unmarshal((AdaptedExpression) ex);
-                // sb.append(le.getText().getContent().get(0));
-                // sb.append(";\n");
-                // } else {
-                // // TODO
-                // throw new IllegalStateException(
-                // "Only LiteralExpressions handled at this time");
-                // }
+                Expression ex = conclusions.get(i);
+                if (ex instanceof LiteralExpression) {
+                    LiteralExpression le = (LiteralExpression) ex;
+                    sb.append("  ");
+                    sb.append(dt.getOutputs().get(i).getOutputDefinition()
+                            .getId());
+                    if (isLiteral(le.getText())) {
+                        sb.append(" = ");
+                    }
+                    sb.append(compile(le));
+                    sb.append(";\n");
+                } else {
+                    throw new IllegalStateException(
+                            "Only LiteralExpressions handled at this time");
+                }
             }
             if (dt.getHitPolicy() == HitPolicy.FIRST) {
                 sb.append("  return;\n");
@@ -282,14 +267,13 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         return sb.toString();
     }
 
-    private Clause findClauseFromInputEntry(DecisionTable dt, Expression ex) {
-        for (DtInput input : dt.getInputs()) {
-            if (ex.getId().equals(input.getId())) {
-                return input;
-            }
+    private boolean isLiteral(String expr) {
+        if (expr.trim().startsWith("<") || expr.trim().startsWith("=")
+                || expr.trim().startsWith(">")) {
+            return false;
+        } else {
+            return true;
         }
-
-        return null;
     }
 
     protected String createFunctionName(String id) {
@@ -319,9 +303,10 @@ public class DecisionService implements DecisionConstants, RuntimeService {
 	
     protected String compile(String input, String expr) {
 		String rtn = expr;
-		if (!expr.startsWith(input)) {
-             rtn = input + "." + expr;
-        }
+        // TODO dmn11
+        // if (!expr.startsWith(input)) {
+        // rtn = input + "." + expr;
+        // }
         for (DelExpression compiler : getDelExpressions()) {
             rtn = compiler.compile(rtn);
 		}

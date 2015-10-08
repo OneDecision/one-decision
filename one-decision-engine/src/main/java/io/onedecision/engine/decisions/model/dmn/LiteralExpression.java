@@ -49,6 +49,7 @@ import org.w3c.dom.Element;
 })
 public class LiteralExpression extends Expression implements Serializable {
 
+    private static final long serialVersionUID = 462026745806933742L;
     protected ImportedValues importedValues;
     protected String text;
     @XmlAttribute(name = "expressionLanguage")

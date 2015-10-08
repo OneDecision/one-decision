@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -35,10 +36,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDMNElementReference")
-public class DmnElementReference
-    implements Serializable
-{
+public class DmnElementReference implements Serializable {
 
+    private static final long serialVersionUID = -1430433065624066595L;
     @XmlAttribute(name = "href", required = true)
     @XmlSchemaType(name = "anyURI")
     protected String href;
@@ -65,6 +65,16 @@ public class DmnElementReference
      */
     public void setHref(String value) {
         this.href = value;
+    }
+
+    /**
+     * Gets the value of the id, which is found by removing the leading # from
+     * the href property.
+     * 
+     * @return possible object is {@link String }
+     */
+    public String getId() {
+        return href == null ? null : href.substring(1);
     }
 
     public DmnElementReference withHref(String value) {

@@ -33,4 +33,10 @@ public interface ExamplesConstants {
     static final String CD_DMN_RESOURCE = "/decisions/examples/calculate_discount_dmn11.xml";
     static final String CD_DEFINITION_ID = "27002";
     static final String CD_DECISION_ID = "calcDiscount1";
+
+    // Decision table from Figure 27 in spec
+    static final String FIG27_DMN_RESOURCE = "/decisions/examples/Fig27CalculateDiscount.dmn";
+    static final String FIG27_DEFINITION_ID = "fig27CalculateDiscount";
+    static final String FIG27_DECISION_ID = "calcDiscount";
+
 }
