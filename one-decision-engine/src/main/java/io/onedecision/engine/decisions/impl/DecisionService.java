@@ -229,22 +229,13 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                     sb.append(" && ");
                 }
                 Expression ex = conditions.get(i);
-                
-                // TODO dmn11
-                Clause clause = findClauseFromInputEntry(dt, ex);
-                // sb.append(compile(clause.getInputExpressionId(), ex));
-
-                // if (ex instanceof LiteralExpression) {
-                // sb.append(compile(clause.getInputExpressionId(),
-                // (LiteralExpression) ex));
-                // } else if (ex instanceof AdaptedExpression) {
-                // LiteralExpression le = (LiteralExpression) adapter
-                // .unmarshal((AdaptedExpression) ex);
-                // sb.append(compile(clause.getInputExpressionId(), le));
-                // } else {
-                // throw new IllegalStateException(
-                // "Only LiteralExpressions handled at this time");
-                // }
+                if (ex instanceof LiteralExpression) {
+                    LiteralExpression le = (LiteralExpression) ex;
+                    sb.append(compile(le.getText(), le));
+                } else {
+                    throw new IllegalStateException(
+                            "Only LiteralExpressions handled at this time");
+                }
             }
             sb.append(") { \n");
             List<Expression> conclusions = rule.getConclusions();

@@ -67,7 +67,7 @@ public class DmnElement implements Serializable {
     private static final long serialVersionUID = -7139950575176133148L;
     protected String description;
     @XmlAnyElement
-    protected List<Element> anys;
+    protected List<Element> any;
     @XmlAttribute(name = "id", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
@@ -123,10 +123,10 @@ public class DmnElement implements Serializable {
      * 
      */
     public List<Element> getAnys() {
-        if (anys == null) {
-            anys = new ArrayList<Element>();
+        if (any == null) {
+            any = new ArrayList<Element>();
         }
-        return this.anys;
+        return this.any;
     }
 
     /**

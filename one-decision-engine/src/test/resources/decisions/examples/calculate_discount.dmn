@@ -21,10 +21,10 @@
           <typeDefinition href=""/>
         </inputExpression>
         <inputValue id="27002_dt_i1_ie_1">
-          <text>&lt;![CDATA[!= "gold"]]&gt;</text>
+          <text>!= "gold"</text>
         </inputValue>
         <inputValue id="27002_dt_i1_ie_2">
-          <text>&lt;![CDATA[== "gold"]]&gt;</text>
+          <text>== "gold"</text>
         </inputValue>
       </input>
       <input id="27002_dt_i2">
@@ -32,10 +32,10 @@
           <description>Order Size</description>
         </inputExpression>
         <inputValue id="27002_dt_i2_ie_1">
-          <text>&lt;![CDATA[&lt; 500]]&gt;</text>
+          <text>&lt; 500</text>
         </inputValue>
         <inputValue id="27002_dt_i2_ie_2">
-          <text>&lt;![CDATA[&gt;= 500]]&gt;</text>
+          <text>&gt;= 500</text>
         </inputValue>
       </input>
       <output id="27002_dt_o1">
@@ -58,7 +58,7 @@
       </output>
       <rule>
         <inputEntry>
-	          <text>&lt;![CDATA[!= "gold"]]&gt;</text>
+	          <text>!= "gold"</text>
 	      </inputEntry>
         <!-- <condition>27002_dt_i1_ie_1</condition>-->
         <conclusion>27002_dt_o1_od_1</conclusion>
@@ -66,7 +66,7 @@
       </rule>
       <rule>
         <inputEntry>
-            <text>&lt;![CDATA[!= "gold"]]&gt;</text>
+            <text>!= "gold"</text>
         </inputEntry>
         <!-- <condition>27002_dt_i1_ie_2</condition>-->
         <condition>27002_dt_i2_ie_1</condition>

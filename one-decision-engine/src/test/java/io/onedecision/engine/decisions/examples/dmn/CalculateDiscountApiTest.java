@@ -120,18 +120,16 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
             // build expressions
             LiteralExpression orderSizeSmall = objFact
                     .createLiteralExpression().withId("27002_dt_i2_ie_1")
-                    .withText("<![CDATA[< 500]]>");
+                    .withText("< 500");
             LiteralExpression orderSizeLarge = objFact
                     .createLiteralExpression().withId("27002_dt_i2_ie_2")
-                    .withText("<![CDATA[>= 500]]>");
+                    .withText(">= 500");
             LiteralExpression customerCategoryOther = objFact.createLiteralExpression()
                     .withId("27002_dt_i1_ie_1")
-                    .withText(
-                            "<![CDATA[!= \"gold\"]]>");
+                    .withText("!= \"gold\"");
             LiteralExpression customerCategoryGold = objFact.createLiteralExpression()
                     .withId("27002_dt_i1_ie_2")
-                    .withText(
-                            "<![CDATA[== \"gold\"]]>");
+                    .withText("== \"gold\"");
             LiteralExpression totalPrice = objFact.createLiteralExpression()
                     .withId("27002_dt_o1_od_1")
                     .withText(
@@ -158,6 +156,8 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                     .withInputExpression(
                                             objFact.createLiteralExpression()
                                                     .withId("27002_dt_i1_ie")
+                                                    .withText(
+                                                            "customerCategory")
                                                     .withDescription(
                                                             "Customer Category"))
                                     .withInputValues(
@@ -169,6 +169,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                     .withInputExpression(
                                             objFact.createLiteralExpression()
                                                     .withId("27002_dt_i2_ie")
+                                                    .withText("orderSize")
                                                     .withDescription(
                                                             "Order Size"))
                                     .withInputValues(

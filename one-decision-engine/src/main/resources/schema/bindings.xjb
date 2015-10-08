@@ -4,7 +4,7 @@
     xmlns:retep="http://retep.org/xml/ns/retepTools"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    schemaLocation = "dmn.xsd">
+    schemaLocation = "dmn11.xsd">
     
   <jaxb:bindings>
     <!-- 

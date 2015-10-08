@@ -52,10 +52,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "condition",
     "conclusion"
 })
-public class DecisionRule
-    implements Serializable
-{
+public class DecisionRule implements Serializable {
 
+    private static final long serialVersionUID = 5552181443229088239L;
     @XmlElementRef(name = "condition", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
     protected List<JAXBElement<Object>> condition;
     @XmlElementRef(name = "conclusion", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
