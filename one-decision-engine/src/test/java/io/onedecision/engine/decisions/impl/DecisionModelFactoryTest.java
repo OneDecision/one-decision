@@ -143,9 +143,9 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
                     for (DecisionRule rule : rules) {
                         System.out.println("rule: " + rule);
                         System.out.println("rule condition: "
-                                + rule.getConditions());
+                                + rule.getInputEntry());
                         System.out.println("rule conclusion: "
-                                + rule.getConclusions());
+                                + rule.getOutputEntry());
                     }
                 }
             }

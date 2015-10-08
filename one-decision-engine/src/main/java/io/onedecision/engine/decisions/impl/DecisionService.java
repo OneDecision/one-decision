@@ -221,7 +221,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         int ruleIdx = 0;
         for (DecisionRule rule : dt.getRules()) {
             ruleIdx++;
-            List<Expression> conditions = rule.getConditions();
+            List<LiteralExpression> conditions = rule.getInputEntry();
             for (int i = 0; i < conditions.size(); i++) {
                 if (i == 0) {
                     sb.append("if (");
@@ -238,7 +238,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                 }
             }
             sb.append(") { \n");
-            List<Expression> conclusions = rule.getConclusions();
+            List<LiteralExpression> conclusions = rule.getOutputEntry();
 
             for (int i = 0; i < conclusions.size(); i++) {
                 if (i == 0) {

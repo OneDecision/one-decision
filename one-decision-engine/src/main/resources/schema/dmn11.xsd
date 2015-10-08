@@ -256,25 +256,19 @@
     <!-- NB: When the isOrdered attribute is "true", the ordering of the output entries is significant and MUST be preserved -->
     <!-- NB: irOrdered MUST be true iff the hit policy of the containing decision table is PRIORITY or OUTPUT ORDER -->
   </xsd:complexType>
-<!-- 
+ 
   <xsd:complexType name="tDecisionRule">
     <xsd:sequence>
       <xsd:element name="inputEntry" type="tLiteralExpression" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="outputEntry" type="tLiteralExpression" minOccurs="0" maxOccurs="unbounded"/>
+      <!--
+        <xsd:element name="condition" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="conclusion" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      -->       
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:ID"/>
     <xsd:attribute name="isOrdered" type="xsd:boolean"/>
   </xsd:complexType>
---> 
-  <xsd:complexType name="tDecisionRule">
-    <xsd:sequence>
-      <xsd:element name="condition" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-      <xsd:element name="conclusion" type="xsd:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-    </xsd:sequence>
-    <xsd:attribute name="id" type="xsd:ID"/>
-    <xsd:attribute name="isOrdered" type="xsd:boolean"/>
-  </xsd:complexType>
-
   
   <xsd:complexType name="tImportedValues">
     <xsd:complexContent>

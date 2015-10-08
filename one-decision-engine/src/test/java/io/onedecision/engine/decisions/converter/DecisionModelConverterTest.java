@@ -72,8 +72,8 @@ public class DecisionModelConverterTest implements ExamplesConstants {
 
 		assertEquals(5, dt.getRules().size());
         for (DecisionRule rule : dt.getRules()) {
-            assertEquals(2, rule.getConditions().size());
-            assertEquals(1, rule.getConclusions().size());
+            assertEquals(2, rule.getInputEntry().size());
+            assertEquals(1, rule.getOutputEntry().size());
         }
 
         File dmnFile = new File("target", ARR_DEFINITION_ID + ".dmn");

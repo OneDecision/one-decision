@@ -81,7 +81,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
         vars.put("orderSize", orderSize);
         de.getRuntimeService().executeDecision(CD_DEFINITION_ID,
                 CD_DECISION_ID, vars, TENANT_ID);
-        Assert.assertNotNull(vars.get("totalOrderSum"));
+        Assert.assertNotNull(vars.get("totalOrderPrice"));
         Assert.assertNotNull(vars.get("amountDueDate"));
     }
 
@@ -98,7 +98,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                     .withName("Order Size")
                     .withTypeDefinition("number");
             ItemDefinition totalPriceDef = objFact.createItemDefinition()
-                    .withId("totalOrderSum")
+                    .withId("totalOrderPrice")
                     .withTypeDefinition("number");
             ItemDefinition amountDueDateDef = objFact.createItemDefinition()
                     .withId("amountDueDate")
@@ -132,12 +132,10 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                     .withText("== \"gold\"");
             LiteralExpression totalPrice = objFact.createLiteralExpression()
                     .withId("27002_dt_o1_od_1")
-                    .withText(
-                            "ordersize * price");
+                    .withText("orderSize * totalOrderPrice");
             LiteralExpression totalPriceDiscounted = objFact.createLiteralExpression()
                     .withId("27002_dt_o1_od_2")
-                    .withText(
-                            "(ordersize * price) * 0.9");
+                    .withText("(orderSize * totalOrderPrice) * 0.9");
             LiteralExpression dueDate = objFact.createLiteralExpression()
                     .withId("27002_dt_o2_od_1")
                     .withText("amountDueDate");
@@ -194,30 +192,18 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                     .withOutputValues(dueDate, dueDateExtended))
                     .withRules(
                             objFact.createDecisionRule()
-                                    .withCondition(
-                                            objFact.createDecisionRuleCondition(customerCategoryOther))
-                                    .withConclusion(
-                                            objFact.createDecisionRuleConclusion(totalPrice))
-                                    .withConclusion(
-                                            objFact.createDecisionRuleConclusion(dueDate)),
+                                    .withInputEntry(customerCategoryOther)
+                                    .withOutputEntry(totalPrice, dueDate),
                             objFact.createDecisionRule()
-                                    .withCondition(
-                                            objFact.createDecisionRuleCondition(customerCategoryGold))
-                                    .withCondition(
-                                            objFact.createDecisionRuleCondition(orderSizeSmall))
-                                    .withConclusion(
-                                            objFact.createDecisionRuleConclusion(totalPriceDiscounted))
-                                    .withConclusion(
-                                            objFact.createDecisionRuleConclusion(dueDate)),
+                                    .withInputEntry(customerCategoryGold,
+                                            orderSizeSmall)
+                                    .withOutputEntry(totalPriceDiscounted,
+                                            dueDate),
                             objFact.createDecisionRule()
-                                    .withCondition(
-                                            objFact.createDecisionRuleCondition(customerCategoryGold))
-                                    .withCondition(
-                                            objFact.createDecisionRuleCondition(orderSizeLarge))
-                                    .withConclusion(
-                                            objFact.createDecisionRuleConclusion(totalPriceDiscounted))
-                                    .withConclusion(
-                                            objFact.createDecisionRuleConclusion(dueDateExtended)));
+                                    .withInputEntry(customerCategoryGold,
+                                            orderSizeLarge)
+                                    .withOutputEntry(totalPriceDiscounted,
+                                            dueDateExtended));
 
             Decision d = objFact.createDecision()
                     .withId(CD_DECISION_ID)
