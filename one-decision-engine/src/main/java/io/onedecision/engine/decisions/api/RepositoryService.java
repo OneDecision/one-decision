@@ -68,6 +68,8 @@ public interface RepositoryService {
      */
     void deleteModelForTenant(Long id, String tenantId);
 
+    void deleteModelForTenant(String deploymentId, String tenantId);
+
     void write(Definitions dm, Writer out) throws IOException;
 
 }

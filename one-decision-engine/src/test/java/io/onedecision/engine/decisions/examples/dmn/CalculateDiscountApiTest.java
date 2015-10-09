@@ -82,7 +82,6 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
         de.getRuntimeService().executeDecision(CD_DEFINITION_ID,
                 CD_DECISION_ID, vars, TENANT_ID);
         Assert.assertNotNull(vars.get("totalOrderPrice"));
-        Assert.assertNotNull(vars.get("amountDueDate"));
     }
 
     // demonstrate Java API for defining decision.
@@ -100,9 +99,6 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
             ItemDefinition totalPriceDef = objFact.createItemDefinition()
                     .withId("totalOrderPrice")
                     .withTypeDefinition("number");
-            ItemDefinition amountDueDateDef = objFact.createItemDefinition()
-                    .withId("amountDueDate")
-                    .withTypeDefinition("date");
             
             // build definitions container
             Definitions def = objFact
@@ -113,8 +109,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                     .withItemDefinitions(
                             customerCategoryDef,
                             orderSizeDef,
-                            totalPriceDef,
-                            amountDueDateDef                          
+                            totalPriceDef
                     );
 
             // build expressions
@@ -136,13 +131,6 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
             LiteralExpression totalPriceDiscounted = objFact.createLiteralExpression()
                     .withId("27002_dt_o1_od_2")
                     .withText("(orderSize * totalOrderPrice) * 0.9");
-            LiteralExpression dueDate = objFact.createLiteralExpression()
-                    .withId("27002_dt_o2_od_1")
-                    .withText("amountDueDate");
-            LiteralExpression dueDateExtended = objFact.createLiteralExpression()
-                    .withId("27002_dt_o2_od_2")
-                    .withText(
-                            "addDate(amountDueDate,0,1,0)");
 
             // build decision table from expressions
             DecisionTable dt = objFact.createDecisionTable()
@@ -182,41 +170,31 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                                 .withHref("#"+totalPriceDef.getId()))
                                     .withOutputValues(
                                             totalPrice,
-                                            totalPriceDiscounted
-                            ),
-                            objFact.createDtOutput()
-                                    .withId("27002_dt_o2")
-                                    .withOutputDefinition(
-                                            objFact.createDmnElementReference()
-                                                .withHref("#"+amountDueDateDef.getId()))
-                                    .withOutputValues(dueDate, dueDateExtended))
+                                            totalPriceDiscounted))
                     .withRules(
                             objFact.createDecisionRule()
                                     .withInputEntry(customerCategoryOther)
-                                    .withOutputEntry(totalPrice, dueDate),
+                                    .withOutputEntry(totalPrice),
                             objFact.createDecisionRule()
                                     .withInputEntry(customerCategoryGold,
                                             orderSizeSmall)
-                                    .withOutputEntry(totalPriceDiscounted,
-                                            dueDate),
+                                    .withOutputEntry(totalPriceDiscounted),
                             objFact.createDecisionRule()
                                     .withInputEntry(customerCategoryGold,
                                             orderSizeLarge)
-                                    .withOutputEntry(totalPriceDiscounted,
-                                            dueDateExtended));
+                                    .withOutputEntry(totalPriceDiscounted));
 
             Decision d = objFact.createDecision()
                     .withId(CD_DECISION_ID)
                     .withName("Determine Customer Discount")
+                    .withInformationItem(
+                            objFact.createInformationItem().withId(
+                                    "totalOrderPrice"))
                     .withDecisionTable(dt);
 
             def.withDecision(d);
 
             assertSerializationProduced(def);
-            // Decision decision = def.getDecisionById(CD_DECISION_ID);
-            // assertNotNull("Unable to find decision with id: " +
-            // CD_DECISION_ID,
-            // decision);
 
             dm = new DmnModel(def, null, TENANT_ID);
         }

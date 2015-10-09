@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions id="fig27CalculateDiscount" xmlns="http://www.omg.org/spec/DMN/20130901">
+	<description>Calculates a customer discount using rules embedding the
+		input/output values directly.</description>
+	<ItemDefinition name="Discount" id="discount">
+		<typeDefinition>string</typeDefinition>
+	</ItemDefinition>
+	<Decision name="Discount" id="calcDiscount">
+		<InformationItem id="discount" />
+		<DecisionTable hitPolicy="UNIQUE" preferedOrientation="Rule-as-Column"
+			id="27002_dt">
+			<input id="27002_dt_i1">
+				<inputExpression id="27002_dt_i1_ie">
+					<text>Customer</text>
+				</inputExpression>
+				<inputValue id="27002_dt_i1_ie_1">
+					<text>"Business"</text>
+				</inputValue>
+				<inputValue id="27002_dt_i1_ie_2">
+					<text>"Private"</text>
+				</inputValue>
+			</input>
+			<input id="27002_dt_i2">
+				<inputExpression id="27002_dt_i2_ie">
+					<text>Ordersize</text>
+				</inputExpression>
+				<inputValue>
+					<text>&lt; 10</text>
+				</inputValue>
+				<inputValue id="27002_dt_i2_ie_2">
+					<text>&gt;= 10</text>
+				</inputValue>
+			</input>
+			<output id="27002_dt_o1" name="Discount">
+				<outputDefinition href="#discount" />
+				<outputValue id="27002_dt_o1_od_1">
+					<text>0.05</text>
+				</outputValue>
+				<outputValue id="27002_dt_o1_od_2">
+					<text>0.10</text>
+				</outputValue>
+				<outputValue id="27002_dt_o2_od_1">
+					<text>0.15</text>
+				</outputValue>
+			</output>
+			<rule>
+				<inputEntry id="27002_dt_i1_ie_1">
+					<text>"Business"</text>
+				</inputEntry>
+				<inputEntry>
+					<text>&lt; 10</text>
+				</inputEntry>
+				<outputEntry id="27002_dt_o1_od_2">
+					<text>0.10</text>
+				</outputEntry>
+			</rule>
+			<rule>
+				<inputEntry id="27002_dt_i1_ie_1">
+					<text>"Business"</text>
+				</inputEntry>
+				<inputEntry id="27002_dt_i2_ie_2">
+					<text>&gt;= 10</text>
+				</inputEntry>
+				<outputEntry id="27002_dt_o2_od_1">
+					<text>0.15</text>
+				</outputEntry>
+			</rule>
+			<rule>
+				<inputEntry id="27002_dt_i1_ie_2">
+					<text>"Private"</text>
+				</inputEntry>
+				<outputEntry id="27002_dt_o1_od_1">
+					<text>0.05</text>
+				</outputEntry>
+			</rule>
+		</DecisionTable>
+	</Decision>
+</Definitions>

@@ -209,10 +209,11 @@ public class Definitions
 
     public List<InformationItem> getInformationItems() {
         List<InformationItem> informationItems = new ArrayList<InformationItem>();
-        for (Object o : getAnys()) {
+        for (Object o : getDrgElements()) {
             JAXBElement<?> el = (JAXBElement<?>) o;
-            if (el.getValue() instanceof InformationItem) {
-                informationItems.add((InformationItem) el.getValue());
+            if (el.getValue() instanceof InputData) {
+                informationItems.add(((InputData) el.getValue())
+                        .getInformationItem());
             }
         }
         return informationItems;

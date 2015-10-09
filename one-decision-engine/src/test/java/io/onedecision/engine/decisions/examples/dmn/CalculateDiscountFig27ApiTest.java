@@ -184,6 +184,8 @@ public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
             Decision d = objFact.createDecision()
                     .withId(FIG27_DECISION_ID)
                     .withName("Discount")
+                    .withInformationItem(
+                            objFact.createInformationItem().withId("discount"))
                     .withDecisionTable(dt);
 
             def.withDecision(d);

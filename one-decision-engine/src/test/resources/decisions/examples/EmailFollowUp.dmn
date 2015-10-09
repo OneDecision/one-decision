@@ -15,88 +15,106 @@
 	
 	<ns2:InformationItem id="contact" name="contact">
 		<ns2:description>The customer contact record to pass to the decision</ns2:description>
-		<ns2:itemDefinition>contactDef</ns2:itemDefinition>
-	</ns2:InformationItem>
-	<ns2:InformationItem id="email" name="email">
-		<ns2:description>The email to be selected by the decision</ns2:description>
-		<ns2:itemDefinition>emailDef</ns2:itemDefinition>
+		<ns2:itemDefinition href="#contactDef"/>
 	</ns2:InformationItem>
 	
 	<ns2:Decision id="DetermineEmailToSend" name="Determine Email Follow Up">
+	
+	  <ns2:InformationItem id="email" name="email">
+	    <ns2:description>The email to be selected by the decision</ns2:description>
+	    <ns2:itemDefinition href="#emailDef"/>
+	  </ns2:InformationItem>
+	  
 		<ns2:DecisionTable hitPolicy="UNIQUE" id="DetermineEmailToSend_dt">
-			<ns2:description>DT to determine Email Follow Up</ns2:description>
-			<ns2:clause name="timeSinceLogin">
-			  <ns2:inputExpression id="dt0_c0_ie" ol:type="LiteralExpression">
-          <ns2:description>The customer contact object</ns2:description>
-          <ns2:inputVariable>contact</ns2:inputVariable>
+			<ns2:description>DT to determine which email to send a contact</ns2:description>
+			<ns2:input name="timeSinceLogin">
+			  <ns2:inputExpression id="dt0_c0_ie">
+          <ns2:description>The time since the contact logged in</ns2:description>
+          <ns2:text>contact.timeSinceLogin</ns2:text>
         </ns2:inputExpression>
-				<ns2:inputEntry id="timeSinceLoginLT14Days">
+				<ns2:inputValue id="timeSinceLoginLT14Days">
 					<ns2:description>Time since login is less than 14 days</ns2:description>
-					<ns2:text>contact.timeSinceLogin &lt; P14D</ns2:text>
-				</ns2:inputEntry>
-				<ns2:inputEntry id="timeSinceLoginGE14Days">
+					<ns2:text>&lt; P14D</ns2:text>
+				</ns2:inputValue>
+				<ns2:inputValue id="timeSinceLoginGE14Days">
 					<ns2:description>Time since login is at least 14 days</ns2:description>
-					<ns2:text>contact.timeSinceLogin &gt;= P14D</ns2:text>
-				</ns2:inputEntry>
-			</ns2:clause>
-			<ns2:clause name="timeSinceEmail">
-        <ns2:inputExpression id="dt0_c1_ie" ol:type="LiteralExpression">
-          <ns2:description>The customer contact object</ns2:description>
-          <ns2:inputVariable>contact</ns2:inputVariable>
+					<ns2:text>&gt;= P14D</ns2:text>
+				</ns2:inputValue>
+			</ns2:input>
+			<ns2:input name="timeSinceEmail">
+        <ns2:inputExpression id="dt0_c1_ie">
+          <ns2:description>The time since we last emailed the contact</ns2:description>
+          <ns2:text>contact.timeSinceEmail</ns2:text>
         </ns2:inputExpression>
- 				<ns2:inputEntry id="timeSinceEmailLT7Days">
+ 				<ns2:inputValue id="timeSinceEmailLT7Days">
 					<ns2:description>Time since email is less than 7 days</ns2:description>
-					<ns2:inputVariable>contact</ns2:inputVariable>
-					<ns2:text>contact.timeSinceEmail &lt; P7D</ns2:text>
-				</ns2:inputEntry>
-				<ns2:inputEntry id="timeSinceEmailGE7Days">
+					<ns2:text>&lt; P7D</ns2:text>
+				</ns2:inputValue>
+				<ns2:inputValue id="timeSinceEmailGE7Days">
 					<ns2:description>Time since email is at least 7 days</ns2:description>
-					<ns2:inputVariable>contact</ns2:inputVariable>
-					<ns2:text>contact.timeSinceEmail &gt; P7D</ns2:text>
-				</ns2:inputEntry>
-			</ns2:clause>
-			<ns2:clause name="template">
-				<ns2:outputDefinition id="dt0_c2_od" ol:type="LiteralExpression">email</ns2:outputDefinition>
-				<ns2:outputEntry id="templateNone">
+					<ns2:text>&gt; P7D</ns2:text>
+				</ns2:inputValue>
+			</ns2:input>
+			<ns2:output name="template">
+				<ns2:outputDefinition href="#email.template"/>
+				<ns2:outputValue id="templateNone">
 					<ns2:description>Email template to use is 'None'</ns2:description>
-					<ns2:outputDefinition>email</ns2:outputDefinition>
-					<ns2:text>email.template = 'None'</ns2:text>
-				</ns2:outputEntry>
-				<ns2:outputEntry id="templateMissedYou">
+					<ns2:text>"None"</ns2:text>
+				</ns2:outputValue>
+				<ns2:outputValue id="templateMissedYou">
 					<ns2:description>Email template to use is 'MissedYou'</ns2:description>
-					<ns2:outputDefinition>email</ns2:outputDefinition>
-					<ns2:text>email.template = 'MissedYou'</ns2:text>
-				</ns2:outputEntry>
-			</ns2:clause>
-			<ns2:clause name="subject">
-        <ns2:outputDefinition id="dt0_c3_od" ol:type="LiteralExpression">email</ns2:outputDefinition>
-        <ns2:outputEntry id="subjectNone">
+					<ns2:text>"MissedYou"</ns2:text>
+				</ns2:outputValue>
+			</ns2:output>
+			<ns2:output name="subject">
+        <ns2:outputDefinition href="#email.subject"/>
+        <ns2:outputValue id="subjectNone">
           <ns2:description>Email subject to use is 'None'</ns2:description>
-          <ns2:outputDefinition>email</ns2:outputDefinition>
-          <ns2:text>email.subject = 'None'</ns2:text>
-        </ns2:outputEntry>
-        <ns2:outputEntry id="subjectMissedYou">
+          <ns2:text>"None"</ns2:text>
+        </ns2:outputValue>
+        <ns2:outputValue id="subjectMissedYou">
           <ns2:description>Email subject to use is 'MissedYou'</ns2:description>
-          <ns2:outputDefinition>email</ns2:outputDefinition>
-          <ns2:text>email.subject = "We've missed you"</ns2:text>
+          <ns2:text>"We've missed you"</ns2:text>
+        </ns2:outputValue>
+      </ns2:output>
+			<ns2:rule>
+        <ns2:inputEntry>
+          <ns2:text>&lt; P14D</ns2:text>
+        </ns2:inputEntry>
+        <ns2:outputEntry>
+          <ns2:text>"None"</ns2:text>
         </ns2:outputEntry>
-      </ns2:clause>
-			<ns2:rule >
-        <ns2:condition>timeSinceLoginLT14Days</ns2:condition>
-        <ns2:condition></ns2:condition>
-        <ns2:conclusion>templateNone</ns2:conclusion>
+        <ns2:outputEntry>
+          <ns2:text>"None"</ns2:text>
+        </ns2:outputEntry>
       </ns2:rule>
-      <ns2:rule >
-        <ns2:condition>timeSinceLoginGE14Days</ns2:condition>
-        <ns2:condition>timeSinceEmailLT7Days</ns2:condition>
-        <ns2:conclusion>templateNone</ns2:conclusion>
-        <ns2:conclusion>subjectNone</ns2:conclusion>
+      <ns2:rule>
+        <ns2:inputEntry>
+          <ns2:text>&gt; P14D</ns2:text>
+        </ns2:inputEntry>
+        <ns2:inputEntry>
+          <ns2:text>&lt; P7D</ns2:text>
+        </ns2:inputEntry>
+        <ns2:outputEntry>
+          <ns2:text>"None"</ns2:text>
+        </ns2:outputEntry>
+        <ns2:outputEntry>
+          <ns2:text>"None"</ns2:text>
+        </ns2:outputEntry>
       </ns2:rule>
-      <ns2:rule >
-        <ns2:condition>timeSinceLoginGE14Days</ns2:condition>
-        <ns2:condition>timeSinceEmailGE7Days</ns2:condition>
-        <ns2:conclusion>templateMissedYou</ns2:conclusion>
-        <ns2:conclusion>subjectMissedYou</ns2:conclusion>
+      <ns2:rule>
+        <ns2:inputEntry>
+          <ns2:text>&gt;= P14D</ns2:text>
+        </ns2:inputEntry>
+        <ns2:inputEntry>
+          <ns2:text>&gt;= P7D</ns2:text>
+        </ns2:inputEntry>
+        <ns2:outputEntry>
+          <ns2:text>"MissedYou"</ns2:text>
+        </ns2:outputEntry>
+        <ns2:outputEntry>
+          <ns2:text>"We've missed you"</ns2:text>
+        </ns2:outputEntry>
 			</ns2:rule>
 		</ns2:DecisionTable>
 	</ns2:Decision>

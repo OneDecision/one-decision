@@ -218,4 +218,14 @@ public class DecisionModelFactory implements RepositoryService {
         }
     }
 
+    @Override
+    public void deleteModelForTenant(String deploymentId, String tenantId) {
+        DmnModel model = getModelForTenant(deploymentId, tenantId);
+        if (model == null) {
+            throw new DecisionNotFoundException(String.format(
+                    "Unable to find model for tenant %1$s with id %2$s",
+                    tenantId, deploymentId));
+        }
+    }
+
 }

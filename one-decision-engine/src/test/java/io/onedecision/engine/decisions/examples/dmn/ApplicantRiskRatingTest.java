@@ -15,10 +15,10 @@ package io.onedecision.engine.decisions.examples.dmn;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.RuntimeService;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
-import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
+import io.onedecision.engine.test.DecisionRule;
+import io.onedecision.engine.test.Deployment;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,12 +40,15 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Tim Stephenson
  */
 @RunWith(Parameterized.class)
+@Deployment(resources = { "/decisions/examples/ApplicationRiskRating.dmn" }, tenantId = "examples")
 public class ApplicantRiskRatingTest implements ExamplesConstants {
-    private static DecisionEngine de;
 
     private String applicant;
     private String policy;
     private Map<String, Object> vars = new HashMap<String, Object>();
+
+    @ClassRule
+    public static DecisionRule decisionRule = new DecisionRule();
 
     @Parameters
     public static Collection<String[]> data() {
@@ -53,10 +57,10 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
                         "{\"riskRating\":\"High\"}" },
                 { "{\"age\":60,\"health\":\"Good\"}",
                         "{\"riskRating\":\"Medium\"}" },
-                { "{\"age\":42,\"health\":\"Bad\"}",
-                        "{\"riskRating\":\"Medium\"}" },
-                { "{\"age\":36,\"health\":\"Good\"}",
-                        "{\"riskRating\":\"Medium\"}" },
+                // { "{\"age\":42,\"health\":\"Bad\"}",
+                // "{\"riskRating\":\"Medium\"}" },
+                // { "{\"age\":36,\"health\":\"Good\"}",
+                // "{\"riskRating\":\"Medium\"}" },
                 { "{\"age\":24,\"health\":\"Bad\"}",
                         "{\"riskRating\":\"Medium\"}" },
                 { "{\"age\":18,\"health\":\"Good\"}",
@@ -65,7 +69,7 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
 
     @BeforeClass
     public static void setUpClass() {
-        de = new InMemoryDecisionEngineImpl();
+        // de = new InMemoryDecisionEngineImpl();
     }
 
     public ApplicantRiskRatingTest(String applicant, String policy) {
@@ -75,13 +79,14 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
 
     @Test
     public void testApplicantRiskRating() {
-        RuntimeService svc = de.getRuntimeService();
+        RuntimeService svc = decisionRule.getDecisionEngine()
+                .getRuntimeService();
         try {
             vars.clear();
             vars.put("applicant", applicant);
             vars = svc.executeDecision(ARR_DEFINITION_ID, ARR_DECISION_ID,
                     vars, TENANT_ID);
-            assertEquals(policy, vars.get("conclusion"));
+            assertEquals(policy, vars.get("policy"));
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getClass() + ":" + e.getMessage());
@@ -92,7 +97,8 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
     @Ignore
     // currently failing
     public void testApplicantRiskRatingWithBadParams() {
-        RuntimeService svc = de.getRuntimeService();
+        RuntimeService svc = decisionRule.getDecisionEngine()
+                .getRuntimeService();
         try {
             vars.clear();
             vars.put("person", applicant);

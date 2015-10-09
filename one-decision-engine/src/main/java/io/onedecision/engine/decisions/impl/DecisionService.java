@@ -24,14 +24,13 @@ import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.DtInput;
-import io.onedecision.engine.decisions.model.dmn.DtOutput;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.Import;
-import io.onedecision.engine.decisions.model.dmn.InformationItem;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -50,15 +49,15 @@ public class DecisionService implements DecisionConstants, RuntimeService {
 
 	protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionService.class);
 
-	private static final List<String> EXCLUDED_OBJECTS = newArrayList(
-            "context", "print", "println", "System");
-
     public DecisionEngine de;
 
 	protected List<DelExpression> compilers;
 
     private Map<String, String> cache = new HashMap<String, String>();
     private ScriptEngine jsEng;
+
+    private static final List<Character> OPERATORS = Arrays
+            .asList(new Character[] { '<', '=', '!', '>' });;
 
     private static List<String> newArrayList(String... objects) {
         List<String> list = new ArrayList<String>();
@@ -98,23 +97,22 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         return execute(model.getDefinitions(), decisionId, params);
     }
 
+    // TODO Should we simply return Object as only single value possible?
     public Map<String, Object> execute(Definitions dm, String decisionId,
             Map<String, Object> vars) throws DecisionException {
         String script = getScript(dm, decisionId);
-        Map<String, Object> results = execute(dm.getDecision(decisionId),
+        Decision decision = dm.getDecision(decisionId);
+        Map<String, Object> results = execute(decision,
                 script, vars);
 
-        Map<String, Object> limitedResults = new HashMap<String, Object>();
-        for (InformationItem item : dm.getInformationItems()) {
-            limitedResults.put(item.getId(), results.get(item.getId()));
-        }
-
-        return limitedResults;
+        return Collections.singletonMap(decision.getInformationItem().getId(),
+                results.get(decision.getInformationItem().getId()));
     }
 
+    // TODO time to drop this?
     public Map<String, Object> execute(Decision d, Map<String, Object> params)
             throws DecisionException {
-        String script = getScript(d.getDecisionTable());
+        String script = getScript(new StringBuilder(), d);
         return execute(d, script, params);
     }
 
@@ -135,11 +133,11 @@ public class DecisionService implements DecisionConstants, RuntimeService {
             throw new DecisionException("Unable to evaluate decision", ex);
         }
 
-        // TODO should be able to limit return to decision's own information
-        // items
+        // TODO rather than placing return type into params map, could return a
+        // single object?
         for (Entry<String, Object> o2 : jsEng.getBindings(
                 ScriptContext.ENGINE_SCOPE).entrySet()) {
-            if (!EXCLUDED_OBJECTS.contains(o2.getKey())) {
+            if (o2.getKey().equals(d.getInformationItem().getId())) {
                 params.put(o2.getKey(), o2.getValue());
             }
         }
@@ -160,34 +158,34 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         }
         
         // init vars
-        for (Decision decision : dm.getDecisions()) {
-            // TODO What is this!!!!!!
-            // decision.getAllowedAnswers()
-            for (DtInput input : decision.getDecisionTable().getInputs()) {
-                sb.append("if (" + input.getInputExpression().getText()
-                        + "==undefined) var "
-                        + input.getInputExpression().getText()
-                        + " = {};\n");
-            }
-            for (DtOutput input : decision.getDecisionTable().getOutputs()) {
-                sb.append("if (" + input.getOutputDefinition().getId()
-                        + "==undefined) var "
-                        + input.getOutputDefinition().getId() + " = {};\n");
-            }
+        // root objects must be listed as InputData at the Definitions level
+        // but we'll leave that as a task for the validator for now.
+        Decision d = dm.getDecision(decisionId); 
+        for (DtInput input : d.getDecisionTable().getInputs()) {
+            String rootObject = getRootObject(input.getInputExpression()
+                    .getText());
+            sb.append("if (" + rootObject + "==undefined) var " + rootObject
+                    + " = {};\n");
+            sb.append("if (typeof " + rootObject + "=='string' && "
+                    + rootObject + ".charAt(0)=='{') " + rootObject
+                    + " = JSON.parse(" + rootObject + ");\n");
         }
 
-        return getScript(sb, dm.getDecision(decisionId).getDecisionTable());
+        sb.append("var " + getRootObject(d.getInformationItem().getId())
+                    + " = {};\n");
+
+        return getScript(sb, d);
     }
 
-    /**
-     * @deprecated
-     */
-    public String getScript(DecisionTable dt) throws DecisionException {
-        StringBuilder sb = new StringBuilder();
-        return getScript(sb, dt);
+    protected String getRootObject(String text) {
+        if (text.indexOf('.') != -1) {
+            return text.substring(0, text.indexOf('.'));
+        }
+        return text;
     }
 
-    protected String getScript(StringBuilder sb, DecisionTable dt) {
+    protected String getScript(StringBuilder sb, Decision d) {
+        DecisionTable dt = d.getDecisionTable();
         if (cache.containsKey(dt.getId())) {
             return cache.get(dt.getId());
         }
@@ -243,6 +241,15 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                     }
                     sb.append(compile(le));
                     sb.append(";\n");
+
+                    if (LOGGER.isDebugEnabled()) {
+                        sb.append("  System.out.println('  "
+                                + getRootObject(d.getInformationItem().getId())
+                                + "'+JSON.stringify("
+                                + getRootObject(d.getInformationItem().getId())
+                                + "));\n");
+                    }
+
                 } else {
                     throw new IllegalStateException(
                             "Only LiteralExpressions handled at this time");
@@ -255,12 +262,14 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                     + ruleIdx
                     + "\"'); }\n");
         }
-        sb.append("}");
+        sb.append("}\n\n");
 
-        // for (String var : varsToInit) {
-        // sb.append("if (typeof " + var + " == 'object')  " + var
-        // + " = JSON.stringify(" + var + ");\n");
-        // }
+        // Make sure output is serialised
+        sb.append("if (typeof " + d.getInformationItem().getId()
+                + " == 'object')  " + d.getInformationItem().getId()
+                + " = JSON.stringify(" + d.getInformationItem().getId()
+                + ");\n");
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(sb.toString());
         }
@@ -268,8 +277,9 @@ public class DecisionService implements DecisionConstants, RuntimeService {
     }
 
     private boolean isLiteral(String expr) {
-        if (expr.trim().startsWith("<") || expr.trim().startsWith("=")
-                || expr.trim().startsWith(">")) {
+        char c = expr.trim().charAt(0); 
+
+        if (OPERATORS.contains(c)) {
             return false;
         } else {
             return true;
