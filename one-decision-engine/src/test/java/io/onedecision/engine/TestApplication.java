@@ -13,6 +13,9 @@
  *******************************************************************************/
 package io.onedecision.engine;
 
+import io.onedecision.engine.decisions.api.DecisionEngine;
+import io.onedecision.engine.decisions.impl.SpringDecisionEngineImpl;
+
 import java.util.Arrays;
 
 import javax.sql.DataSource;
@@ -52,6 +55,15 @@ public class TestApplication extends WebMvcConfigurerAdapter {
 
 	protected static final Logger LOGGER = LoggerFactory
 			.getLogger(TestApplication.class);
+
+    public TestApplication() {
+        super();
+    }
+
+    @Bean
+    protected DecisionEngine decisionEngine() {
+        return new SpringDecisionEngineImpl();
+    }
 
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(TestApplication.class, args);

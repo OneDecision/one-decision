@@ -50,9 +50,6 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     @Autowired
     private DecisionDmnModelRepository repo;
 
-    @Autowired
-    private DecisionModelFactory decisionModelFactory;
-
     /**
      * @see io.onedecision.engine.decisions.web.RepositoryService#listForTenant(java.lang.String)
      */
@@ -175,9 +172,10 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
             throw new NoDmnFileInUploadException();
         }
 
-        return createModelForTenant(decisionModelFactory.load(dmnContent), deploymentMessage,
-                image,
-                tenantId);
+        DmnModel dmnModel = createModelForTenant(load(dmnContent),
+                deploymentMessage, image, tenantId);
+        dmnModel.setName(dmnFileName);
+        return dmnModel;
     }
 
     /**

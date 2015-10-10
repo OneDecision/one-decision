@@ -10,17 +10,17 @@
   <parent>
     <groupId>io.onedecision</groupId>
     <artifactId>onedecision-root</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
   <repositories>
-    <!-- Provides Swagger dependencies - ->
+    <!-- Provides Swagger dependencies -->
     <repository>
       <id>jcenter-snapshots</id>
       <name>jcenter</name>
       <url>https://jcenter.bintray.com/</url>
-    </repository>-->
+    </repository>
     <!-- Provides JAXB Builder dependencies -->
 	  <repository>
 	    <id>sonatype-releases</id>
@@ -86,20 +86,15 @@
       <artifactId>joda-time</artifactId>
     </dependency>
     <!-- Provides builder pattern for models -->
-    <!-- <dependency>
-      <groupId>uk.org.retep.tools</groupId>
-	    <artifactId>builder</artifactId>
-	    <version>10.5.1</version>
-	  </dependency>-->
-	  <dependency>
-		  <groupId>com.sun.xml.bind</groupId>
-		  <artifactId>jaxb-xjc</artifactId>
-		  <version>2.2.11</version>
-		</dependency>
-	  <dependency>
-	    <groupId>org.jvnet.jaxb2_commons</groupId>
-			<artifactId>jaxb2-fluent-api</artifactId>
-			<version>3.0</version>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <version>2.2.11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jvnet.jaxb2_commons</groupId>
+      <artifactId>jaxb2-fluent-api</artifactId>
+      <version>3.0</version>
     </dependency>
     <!-- Generates REST documentation -->
     <dependency>
@@ -134,10 +129,10 @@
       <version>3.1.1</version>
     </dependency>
     <dependency>
-		  <groupId>org.webjars</groupId>
-		  <artifactId>ractive</artifactId>
-		  <version>0.7.1</version>
-		</dependency>
+      <groupId>org.webjars</groupId>
+      <artifactId>ractive</artifactId>
+      <version>0.7.1</version>
+    </dependency>
     <!-- TEST dependencies -->
     <dependency>
       <groupId>com.h2database</groupId>
@@ -161,6 +156,44 @@
     </dependency>
   </dependencies>
 
+  <profiles>
+    <!-- Despite best efforts generated classes require some manual tweaking for now -->
+    <profile>
+      <id>jaxb</id>
+      
+      <build>
+	      <plugins>
+		      <plugin>
+		        <groupId>org.jvnet.jaxb2.maven2</groupId>
+		        <artifactId>maven-jaxb2-plugin</artifactId>
+		        <version>0.13.0</version>
+		        <configuration>
+		            <extension>true</extension>
+		            <args>
+		                <arg>-Xfluent-api</arg>
+		            </args>
+		            <schemaDirectory>src/main/resources/schema</schemaDirectory>
+		            <plugins>
+		                <plugin>
+		                    <groupId>net.java.dev.jaxb2-commons</groupId>
+		                    <artifactId>jaxb-fluent-api</artifactId>
+		                    <version>2.1.8</version>
+		                </plugin>
+		            </plugins>
+		        </configuration>
+		        <executions>
+		          <execution>
+		            <goals>
+		              <goal>generate</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>
+	      </plugins>
+	    </build>
+    </profile>
+  </profiles>
+
   <build>
     <resources>
       <resource>
@@ -180,45 +213,6 @@
           </dependency>
         </dependencies>
       </plugin>
-      <plugin>
-			  <groupId>org.jvnet.jaxb2.maven2</groupId>
-			  <artifactId>maven-jaxb2-plugin</artifactId>
-			  <version>0.13.0</version>
-			  <configuration>
-		        <extension>true</extension>
-		        <args>
-		            <arg>-Xfluent-api</arg>
-		        </args>
-		        <schemaDirectory>src/main/resources/schema</schemaDirectory>
-		        <plugins>
-		            <plugin>
-		                <groupId>net.java.dev.jaxb2-commons</groupId>
-		                <artifactId>jaxb-fluent-api</artifactId>
-		                <version>2.1.8</version>
-		            </plugin>
-		        </plugins>
-		    </configuration>
-			  <executions>
-			    <execution>
-			      <goals>
-			        <goal>generate</goal>
-			      </goals>
-			    </execution>
-			  </executions>
-			  <!-- configuration>
-			    <extension>true</extension>
-			    <args>
-			      <arg>-retepTools</arg>
-			    </args>
-			  </configuration>
-			  <dependencies>
-			    <dependency>
-			      <groupId>uk.org.retep.tools</groupId>
-			      <artifactId>jaxb</artifactId>
-			      <version>10.5.1</version>
-			    </dependency>
-			  </dependencies>-->
-			</plugin>
     </plugins>
   </build>
 

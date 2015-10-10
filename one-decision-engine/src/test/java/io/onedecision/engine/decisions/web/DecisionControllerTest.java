@@ -19,6 +19,7 @@ import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
+import io.onedecision.engine.decisions.impl.SpringDecisionEngineImpl;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.test.MockMultipartFileUtil;
 
@@ -31,7 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -46,9 +46,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @WebAppConfiguration
 public class DecisionControllerTest implements ExamplesConstants {
 
+    // @ClassRule
+    // public static DecisionRule decisionRule = new DecisionRule();
+
     @Autowired
-    @Qualifier("")
-    private static DecisionEngine de;
+    protected static DecisionEngine decisionEngine;
 
     protected static DmnModel dmnModel;
 
@@ -58,12 +60,14 @@ public class DecisionControllerTest implements ExamplesConstants {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        repoSvc = (DecisionDmnModelController) de.getRepositoryService();
+        decisionEngine = new SpringDecisionEngineImpl();
+        repoSvc = (DecisionDmnModelController) decisionEngine
+                .getRepositoryService();
         dmnModel = repoSvc.handleFileUpload(TENANT_ID,
                 null/* no deployment message */,
                 MockMultipartFileUtil.newInstance(ARR_DMN_RESOURCE));
 
-        runtimeSvc = (DecisionController) de.getRuntimeService();
+        runtimeSvc = (DecisionController) decisionEngine.getRuntimeService();
     }
 
 
