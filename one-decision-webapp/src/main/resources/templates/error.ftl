@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/one-decision-0.8.0.css" rel="stylesheet">
+  <link href="css/one-decision-1.1.0.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/one-decision-16x16.png" />
   <style>
     html,body,section#main {
