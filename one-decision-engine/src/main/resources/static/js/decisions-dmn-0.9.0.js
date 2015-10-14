@@ -113,7 +113,12 @@ var ractive = new OneDecisionApp({
   },
   showDecision: function() {
     console.log('showDecision');
-    $('#currentHighlightedDmn').html(hljs.highlight('xml',formatXml(ractive.get('current.definitionXml'))).value);
+    try {
+      $('#currentHighlightedDmn').html(hljs.highlight('xml',formatXml(ractive.get('current.definitionXml'))).value);
+    } catch (e) { 
+      console.warn('Unable to load DMN syntax highlighter'); 
+      $('#currentHighlightedDmn').html(formatXml(ractive.get('current.definitionXml')).replace(/</g,'&lt;'));
+    }
     $('#decisionsTable').slideUp();
     $('#decisionsTableToggle').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
     $('#currentSect').slideDown();
