@@ -3,6 +3,12 @@ package io.onedecision.engine.decisions.api;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * Invoke decisions known to the engine.
+ *
+ * @see RepositoryService for how to register models.
+ * @author Tim Stephenson
+ */
 public interface RuntimeService {
 
     /**

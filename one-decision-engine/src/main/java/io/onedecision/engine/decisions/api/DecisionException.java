@@ -13,6 +13,11 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.api;
 
+/**
+ * Base class for all exceptions thrown by the engine.
+ *
+ * @author Tim Stephenson
+ */
 public class DecisionException extends RuntimeException {
 
 	private static final long serialVersionUID = 434480901378400857L;

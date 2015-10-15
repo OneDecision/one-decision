@@ -190,7 +190,7 @@ public class DomainController {
      * @param tenantId
      *            The tenant whose model is to be updated.
      * @param model
-     *            The new model.
+     *            The new domain model.
      */
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public @ResponseBody void updateModelForTenant(
@@ -211,13 +211,13 @@ public class DomainController {
      * 
      * @param tenantId
      *            The tenant whose model is to be updated.
-     * @param model
-     *            The new model.
+     * @param entityName
+     *            Name of the entity being updated.
      */
-    @RequestMapping(value = "/{entity}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{entityName}", method = RequestMethod.PUT)
     public @ResponseBody void updateEntityForTenant(
             @PathVariable("tenantId") String tenantId,
-            @PathVariable("entity") String entityName,
+            @PathVariable("entityName") String entityName,
             @RequestBody DomainEntity entity) {
         LOGGER.info(String.format(
                 "Updating domain model for tenant %1$s with entity %2$s",

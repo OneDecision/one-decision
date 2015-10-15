@@ -14,15 +14,12 @@
 package io.onedecision.engine.decisions.impl;
 
 import io.onedecision.engine.decisions.api.DecisionNotFoundException;
-import io.onedecision.engine.decisions.api.InvalidDmnException;
 import io.onedecision.engine.decisions.api.RepositoryService;
-import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,22 +65,6 @@ public class DecisionModelFactory implements RepositoryService {
         }
     }
 
-    protected void write(Decision d, Writer out) throws IOException {
-        JAXBContext context;
-        try {
-            context = JAXBContext.newInstance(Definitions.class);
-            Marshaller m = context.createMarshaller();
-            // Since no @XmlRootElement generated for Definitions need to create
-            // element wrapper here. See
-            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
-            m.marshal(new JAXBElement<Decision>(new QName(
-                    "http://www.omg.org/spec/DMN/20130901", "Decision"),
-                    Decision.class, d), out);
-        } catch (JAXBException e) {
-            throw new IOException(e.getMessage(), e);
-        }
-    }
-
     public final Definitions loadFromClassPath(String resourceName)
             throws IOException {
         InputStream is = null;
@@ -103,7 +84,8 @@ public class DecisionModelFactory implements RepositoryService {
     }
 
     @SuppressWarnings("unchecked")
-    public Definitions load(InputStream inputStream) throws IOException {
+    protected final Definitions load(InputStream inputStream)
+            throws IOException {
         JAXBContext context;
         try {
             context = JAXBContext.newInstance(Definitions.class);
@@ -119,26 +101,6 @@ public class DecisionModelFactory implements RepositoryService {
             String msg = "Unable to load decision model from stream";
             LOGGER.error(msg, e);
             throw new IOException(msg, e);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public Definitions load(@NotNull String definition) throws IOException {
-        JAXBContext context;
-        try {
-            context = JAXBContext.newInstance(Definitions.class);
-            Unmarshaller um = context.createUnmarshaller();
-
-            Object dm = um.unmarshal(new StringReader(definition));
-            if (dm instanceof JAXBElement<?>) {
-                return ((JAXBElement<Definitions>) dm).getValue();
-            } else {
-                return (Definitions) dm;
-            }
-        } catch (JAXBException e) {
-            String msg = "Unable to load decision model from stream";
-            LOGGER.error(msg, e);
-            throw new InvalidDmnException(msg, e);
         }
     }
 
@@ -171,26 +133,19 @@ public class DecisionModelFactory implements RepositoryService {
                 return dmnModel;
             }
         }
-        return null;
+        throw new DecisionNotFoundException(String.format(
+                "Could not find decision model with definition %1$s for tenant %2$s",
+                definitionId, tenantId));
     }
 
     @Override
-    public String getDmnForTenant(String tenantId, String id) {
-        // TODO Auto-generated method stub
-        return null;
+    public String getDmnForTenant(String definitionId, String tenantId) {
+        return getModelForTenant(definitionId, tenantId).getDefinitionXml();
     }
 
     @Override
-    public byte[] getImageForTenant(String tenantId, String id) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public DmnModel createModelForTenant(Definitions def,
-            String deploymentMessage, byte[] image, String tenantId) {
-        DmnModel model = new DmnModel(def, deploymentMessage, image, tenantId);
-        return createModelForTenant(model);
+    public byte[] getImageForTenant(String definitionId, String tenantId) {
+        return getModelForTenant(definitionId, tenantId).getImage();
     }
 
     @Override

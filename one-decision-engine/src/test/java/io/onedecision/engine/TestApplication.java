@@ -13,9 +13,6 @@
  *******************************************************************************/
 package io.onedecision.engine;
 
-import io.onedecision.engine.decisions.api.DecisionEngine;
-import io.onedecision.engine.decisions.impl.SpringDecisionEngineImpl;
-
 import java.util.Arrays;
 
 import javax.sql.DataSource;
@@ -31,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
@@ -42,28 +40,17 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = { "io.onedecision.engine" })
 @EntityScan({ "io.onedecision.engine.decisions", "io.onedecision.engine.domain" })
 @EnableJpaRepositories({ "io.onedecision.engine.domain.repositories",
 		"io.onedecision.engine.decisions.repositories" })
-@EnableSwagger2
+@Import(OneDecisionConfig.class)
 public class TestApplication extends WebMvcConfigurerAdapter {
 
 	protected static final Logger LOGGER = LoggerFactory
 			.getLogger(TestApplication.class);
-
-    public TestApplication() {
-        super();
-    }
-
-    @Bean
-    protected DecisionEngine decisionEngine() {
-        return new SpringDecisionEngineImpl();
-    }
 
     public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(TestApplication.class, args);

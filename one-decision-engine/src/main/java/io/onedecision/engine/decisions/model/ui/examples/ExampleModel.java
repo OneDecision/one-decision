@@ -11,7 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.onedecision.engine.decisions.model.ui;
+package io.onedecision.engine.decisions.model.ui.examples;
+
+import io.onedecision.engine.decisions.model.ui.DecisionModel;
 
 public interface ExampleModel {
 

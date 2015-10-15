@@ -17,11 +17,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
-import io.onedecision.engine.decisions.impl.DecisionModelFactory;
-import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.test.MockMultipartFileUtil;
 import io.onedecision.engine.decisions.web.DecisionDmnModelController;
+import io.onedecision.engine.test.DecisionRule;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -46,8 +44,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class DmnLifecycleTest implements ExamplesConstants {
 
     @Autowired
-    @Qualifier("springDecisionEngineImpl")
-    protected DecisionEngine de;
+    protected DecisionEngine decisionEngine;
 
     /**
      * Minimal test that the Spring configuration annotations are complete and
@@ -62,16 +59,14 @@ public class DmnLifecycleTest implements ExamplesConstants {
 
     @Test
     public void testCrudLifecycle() throws IOException {
-        RepositoryService svc = de.getRepositoryService();
+        RepositoryService svc = decisionEngine.getRepositoryService();
 
-        Definitions model = ((DecisionModelFactory) de.getRepositoryService())
-                .loadFromClassPath(ARR_DMN_RESOURCE);
+        String dmnXml = DecisionRule.loadFromClassPath(ARR_DMN_RESOURCE);
+        DmnModel model = new DmnModel(dmnXml, TENANT_ID);
 
         // Create
-        DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-                model,
-                "A test deployment of " + ARR_DMN_RESOURCE,
-                null/* image */, TENANT_ID);
+        DmnModel dmnModel = decisionEngine.getRepositoryService()
+                .createModelForTenant(model);
 
         // Retrieve
         List<DmnModel> models = svc.listForTenant(TENANT_ID);
@@ -81,13 +76,14 @@ public class DmnLifecycleTest implements ExamplesConstants {
                 .getDefinitionXml());
 
         // Retrieve DMN only
-        String definitions = svc.getDmnForTenant(TENANT_ID,
-                dmnModel.getDefinitionId());
+        String definitions = svc.getDmnForTenant(dmnModel.getDefinitionId(),
+                TENANT_ID);
         assertEquals(dmnModel.getDefinitionXml(), definitions);
 
         // Update
         models.get(0).setName(models.get(0).getName() + " updated");
-        svc.updateModelForTenant(model.getId(), models.get(0), TENANT_ID);
+        svc.updateModelForTenant(model.getDefinitionId(), models.get(0),
+                TENANT_ID);
         DmnModel model2 = svc.getModelForTenant(dmnModel.getDefinitionId(),
                 TENANT_ID);
         assertEquals(dmnModel.getDefinitionXml(), model2.getDefinitionXml());
@@ -98,7 +94,7 @@ public class DmnLifecycleTest implements ExamplesConstants {
 
     @Test
     public void testUpload() throws IOException {
-        DecisionDmnModelController svc = (DecisionDmnModelController) de
+        DecisionDmnModelController svc = (DecisionDmnModelController) decisionEngine
                 .getRepositoryService();
 
         // Definitions referenceModel = fac.loadFromClassPath(ARR_DMN_RESOURCE);

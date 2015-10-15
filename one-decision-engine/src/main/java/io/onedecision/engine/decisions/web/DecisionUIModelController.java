@@ -16,8 +16,8 @@ package io.onedecision.engine.decisions.web;
 import io.onedecision.engine.decisions.api.ModelingService;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.decisions.model.ui.ExampleModel;
 import io.onedecision.engine.decisions.model.ui.examples.EmailFollowUpModel;
+import io.onedecision.engine.decisions.model.ui.examples.ExampleModel;
 import io.onedecision.engine.decisions.repositories.DecisionUIModelRepository;
 
 import java.util.ArrayList;

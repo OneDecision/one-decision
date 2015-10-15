@@ -15,7 +15,7 @@
  * Contributors:
  *     Tim Stephenson - initial API and implementation
  *******************************************************************************/
-package io.onedecision.engine;
+package io.onedecision.engine.decisions.impl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.onedecision.engine.domain.api.test;
+package io.onedecision.engine.test;
 
 import static org.junit.Assert.assertNotNull;
 import io.onedecision.engine.domain.api.DomainModelFactory;

@@ -12,7 +12,7 @@
  * limitations under the License.
  *******************************************************************************/
 /**
- * Support for Spring configuration. 
+ * Helpers for writing JUnit tests.
  */
-package io.onedecision.engine;
+package io.onedecision.engine.test;
 

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.impl;
 
-import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.RuntimeService;
@@ -107,13 +106,6 @@ public class DecisionService implements DecisionConstants, RuntimeService {
 
         return Collections.singletonMap(decision.getInformationItem().getId(),
                 results.get(decision.getInformationItem().getId()));
-    }
-
-    // TODO time to drop this?
-    public Map<String, Object> execute(Decision d, Map<String, Object> params)
-            throws DecisionException {
-        String script = getScript(new StringBuilder(), d);
-        return execute(d, script, params);
     }
 
     protected Map<String, Object> execute(Decision d,

@@ -13,12 +13,10 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
-import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.model.dmn.Decision;
-import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
@@ -53,7 +51,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     private DecisionDmnModelRepository repo;
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#listForTenant(java.lang.String)
+     * @see io.onedecision.engine.decisions.api.RepositoryService#listForTenant(java.lang.String)
      */
     @Override
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -68,10 +66,6 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         return list;
     }
 
-    /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#getModelForTenant(java.lang.String,
-     *      java.lang.Long)
-     */
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json" })
     public @ResponseBody DmnModel getModelForTenant(
@@ -88,14 +82,34 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#getDmnForTenant(java.lang.String,
+     * @see io.onedecision.engine.decisions.api.RepositoryService#getModelForTenant(java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    @RequestMapping(value = "/{definitionId}", method = RequestMethod.GET, produces = { "application/json" })
+    public @ResponseBody DmnModel getModelForTenant(
+            @PathVariable("definitionId") String definitionId,
+            @PathVariable("tenantId") String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s for tenant %2$s", definitionId,
+                tenantId));
+
+        DmnModel model = repo.findByDefinitionId(tenantId, definitionId);
+        indexDecisions(model);
+        LOGGER.debug(String.format("... result from db: %1$s", model));
+
+        return model;
+    }
+
+    /**
+     * @see io.onedecision.engine.decisions.api.RepositoryService#getDmnForTenant(java.lang.String,
      *      java.lang.String)
      */
     @Override
     @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "application/xml" })
     public @ResponseBody String getDmnForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") String id) {
+            @PathVariable("id") String id,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Seeking decision model (dmn) %1$s for tenant %2$s", id,
                 tenantId));
@@ -107,14 +121,14 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#getImageForTenant(java.lang.String,
+     * @see io.onedecision.engine.decisions.api.RepositoryService#getImageForTenant(java.lang.String,
      *      java.lang.String)
      */
     @Override
     @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "image/png" })
     public @ResponseBody byte[] getImageForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") String id) {
+            @PathVariable("id") String id,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Seeking decision model image %1$s for tenant %2$s", id,
                 tenantId));
@@ -128,10 +142,10 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     /**
      * Upload DMN representation of decision.
      * 
-     * @param file
-     *            A DMN file posted in a multi-part request and optionally an
+     * @param files
+     *            DMN files posted in a multi-part request and optionally an
      *            image of it.
-     * @return
+     * @return The model created in the repository.
      * @throws IOException
      *             If cannot parse the file.
      */
@@ -175,7 +189,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
             throw new NoDmnFileInUploadException();
         }
 
-        DmnModel dmnModel = new DmnModel(load(dmnContent), deploymentMessage,
+        DmnModel dmnModel = new DmnModel(dmnContent, deploymentMessage,
                 image, tenantId);
         dmnModel.setName(dmnFileName);
         dmnModel.setDefinitionXml(dmnContent);
@@ -183,31 +197,10 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     protected void indexDecisions(DmnModel model) {
-        if (model.getDefinitions() == null) {
-            try {
-                model.setDefinitions(load(model.getDefinitionXml()));
-            } catch (IOException e) {
-                throw new DecisionException(e.getMessage());
-            }
-        }
         for (Decision d : model.getDefinitions().getDecisions()) {
             model.getDecisionIds().add(d.getId());
             model.getDecisionNames().add(d.getName());
         }
-    }
-
-    /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#createModelForTenant(io.onedecision.engine.decisions.model.dmn.Definitions,
-     *      java.lang.String, byte[],
-     *      java.lang.String)
-     */
-    @Override
-    public DmnModel createModelForTenant(Definitions model,
-            String deploymentMessage, byte[] image,
-            String tenantId) {
-        DmnModel dmnModel = new DmnModel(model, deploymentMessage, image,
-                tenantId);
-        return createModelForTenant(dmnModel);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -220,7 +213,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#createModelForTenant(io.onedecision.engine.decisions.model.dmn.DmnModel)
+     * @see io.onedecision.engine.decisions.api.RepositoryService#createModelForTenant(io.onedecision.engine.decisions.model.dmn.DmnModel)
      */
     @Override
     public DmnModel createModelForTenant(DmnModel model) {
@@ -231,8 +224,8 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#updateModelForTenant(io.onedecision.engine.decisions.model.dmn.DmnModel,
-     *      java.lang.String,
+     * @see io.onedecision.engine.decisions.api.RepositoryService#updateModelForTenant(java.lang.String,
+     *      io.onedecision.engine.decisions.model.dmn.DmnModel,
      *      java.lang.String)
      */
     @Override
@@ -255,8 +248,8 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     /**
-     * @see io.onedecision.engine.decisions.web.RepositoryService#deleteModelForTenant(java.lang.String,
-     *      java.lang.Long)
+     * @see io.onedecision.engine.decisions.api.RepositoryService#deleteModelForTenant(java.lang.Long,
+     *      java.lang.String)
      */
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

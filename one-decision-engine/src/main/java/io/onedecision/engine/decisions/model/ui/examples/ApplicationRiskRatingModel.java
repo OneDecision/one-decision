@@ -16,7 +16,6 @@ package io.onedecision.engine.decisions.model.ui.examples;
 import io.onedecision.engine.decisions.model.ui.DecisionConclusion;
 import io.onedecision.engine.decisions.model.ui.DecisionCondition;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.decisions.model.ui.ExampleModel;
 
 import java.util.ArrayList;
 import java.util.List;

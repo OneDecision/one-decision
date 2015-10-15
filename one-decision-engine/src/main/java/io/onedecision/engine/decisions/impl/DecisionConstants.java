@@ -1,4 +1,4 @@
-package io.onedecision.engine.decisions.api;
+package io.onedecision.engine.decisions.impl;
 
 public interface DecisionConstants {
     String EXPR_URI_JS = "http://www.ecma-international.org/ecma-262/5.1/";

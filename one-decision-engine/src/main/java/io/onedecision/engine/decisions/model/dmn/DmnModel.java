@@ -14,7 +14,13 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
+import io.onedecision.engine.decisions.api.DecisionException;
+import io.onedecision.engine.decisions.api.InvalidDmnException;
+
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -31,6 +37,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -106,15 +120,12 @@ public class DmnModel  implements Serializable {
 
     private transient Definitions definitions;
 
-    /**
-     * @deprecated
-     */
-    public DmnModel(Definitions model, String dmnXml) {
-        this();
-        setName(model.getName());
-        setDefinitionId(model.getId());
-        setTenantId(tenantId);
-        setDefinitionXml(dmnXml);
+    public DmnModel() {
+        created = new Date();
+    }
+
+    public DmnModel(Definitions model, String tenantId) {
+        this(model, model.getName(), tenantId);
     }
 
     public DmnModel(Definitions model, String deploymentMessage, String tenantId) {
@@ -122,21 +133,26 @@ public class DmnModel  implements Serializable {
         setName(model.getName());
         setDefinitionId(model.getId());
         setDefinitions(model);
+        setDefinitionXml(serialize(model));
         setTenantId(tenantId);
+        setDeploymentMessage(deploymentMessage);
     }
 
-    public DmnModel(Definitions model, String deploymentMessage, byte[] image,
-            String tenantId) {
+    public DmnModel(String definitionXml, String tenantId)
+            throws DecisionException {
         this();
-        setName(model.getName());
-        setDefinitionId(model.getId());
-        setDefinitions(model);
-        setImage(image);
+        setDefinitions(deserialize(definitionXml));
+        setName(definitions.getName());
+        setDefinitionId(definitions.getId());
+        setDefinitionXml(definitionXml);
         setTenantId(tenantId);
+        setDeploymentMessage(deploymentMessage);
     }
-    
-    public DmnModel() {
-        created = new Date();
+
+    public DmnModel(String definitionXml, String deploymentMessage,
+            byte[] image, String tenantId) throws IOException {
+        this(definitionXml, tenantId);
+        setDeploymentMessage(deploymentMessage);
     }
 
 	public Long getId() {
@@ -195,8 +211,50 @@ public class DmnModel  implements Serializable {
 		this.definitionXml = definitionXml;
 	}
 
-    public Definitions getDefinitions() {
+    private String serialize(Definitions def) {
+        JAXBContext context;
+        StringWriter stringWriter = new StringWriter();
+        try {
+            context = JAXBContext.newInstance(Definitions.class);
+            Marshaller m = context.createMarshaller();
+            Result out = new StreamResult(stringWriter);
+            // Since no @XmlRootElement generated for Definitions need to create
+            // element wrapper here. See
+            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
+            m.marshal(new JAXBElement<Definitions>(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "Definitions"),
+                    Definitions.class, def), out);
+        } catch (JAXBException e) {
+            String msg = "Unable to load decision model from stream";
+            throw new InvalidDmnException(msg, e);
+        }
+        return stringWriter.toString();
+    }
 
+    @SuppressWarnings("unchecked")
+    private Definitions deserialize(@NotNull String definition)
+            throws DecisionException {
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(Definitions.class);
+            Unmarshaller um = context.createUnmarshaller();
+
+            Object dm = um.unmarshal(new StringReader(definition));
+            if (dm instanceof JAXBElement<?>) {
+                return ((JAXBElement<Definitions>) dm).getValue();
+            } else {
+                return (Definitions) dm;
+            }
+        } catch (JAXBException e) {
+            String msg = "Unable to load decision model from stream";
+            throw new InvalidDmnException(msg, e);
+        }
+    }
+
+    public Definitions getDefinitions() {
+        if (definitions == null && definitionXml != null) {
+            definitions = deserialize(definitionXml);
+        }
         return definitions;
     }
 

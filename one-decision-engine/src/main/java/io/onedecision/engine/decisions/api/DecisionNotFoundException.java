@@ -13,7 +13,11 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.api;
 
-
+/**
+ * Reported when a requested model is not found in the engine's repository.
+ *
+ * @author Tim Stephenson
+ */
 public class DecisionNotFoundException extends DecisionException {
 
     private static final long serialVersionUID = -7579907826337455003L;

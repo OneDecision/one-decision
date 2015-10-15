@@ -28,6 +28,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Map exceptions to REST response codes.
+ *
+ * @author Tim Stephenson
+ */
 @ControllerAdvice
 public class OneDecisionExceptionHandler {
     protected static final Logger LOGGER = LoggerFactory

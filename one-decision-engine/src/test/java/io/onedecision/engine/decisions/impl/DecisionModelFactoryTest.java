@@ -63,74 +63,48 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
         Definitions dm = fact.loadFromClassPath(ARR_DMN_RESOURCE);
 
         assertNotNull("Definitions element was null", dm);
+        // applicantDef, policyDef
         assertEquals(2, dm.getItemDefinitions().size());
         assertEquals(1, dm.getDecisions().size());
-        assertEquals(2, dm.getInformationItems().size());
+        // applicant
+        assertEquals(1, dm.getInformationItems().size());
         assertEquals("applicant", dm.getInformationItems().get(0).getId());
-        assertEquals("conclusion", dm.getInformationItems().get(1).getId());
-        // TODO What about this:
-        // <LiteralExpression expressionLanguage="http://tempuri.org"
-        // id="idvalue2" name="conclusion">...
 
         for (Decision d : dm.getDecisions()) {
             assertEquals(ExamplesConstants.ARR_DECISION_ID, d.getId());
 
             DecisionTable dt = d.getDecisionTable();
-            assertNotNull(dt);
             assertEquals("dt0", dt.getId());
             if (dt != null) {
                 List<DtInput> inputs = dt.getInputs();
-                assertEquals(3, inputs.size());
-                for (int i = 0; i < 3; i++) {
+                // applicant's age and health
+                assertEquals(2, inputs.size());
+                for (int i = 0; i < 2; i++) {
                     DtInput input = inputs.get(i);
                     switch (i) {
                     case 0:
-                        Expression inExpr = input.getInputExpression();
-                        assertNotNull(inExpr);
-                        assertEquals("dt0_c0_ie", inExpr.getId());
-                        // TODO dmn11
-                        // assertEquals(1, inExpr.getInputVariable().size());
-                        // assertEquals("applicant", ((InformationItem) inExpr
-                        // .getInputVariable().get(0).getValue()).getId());
-                        // assertEquals("applicant",
-                        // inExpr.getOnlyInputVariable()
-                        // .getId());
-                        assertEquals(3, input.getInputValues().size());
-                        for (int j = 0; j < 3; j++) {
-                            Expression inEntry = input.getInputValues().get(j);
-                            switch (j) {
-                            case 0:
-                                assertTrue(inEntry instanceof LiteralExpression);
-                                LiteralExpression le = (LiteralExpression) inEntry;
-                                assertEquals("age > 60", le.getText());
-                                break;
-                            }
-                        }
+                        assertInputClause(input, "dt0_c0_ie", "applicant.age",
+                                3, new String[] { "> 60" });
                         break;
                     case 1:
-                        inExpr = input.getInputExpression();
-                        assertNotNull(inExpr);
-                        assertEquals("dt0_c1_ie", inExpr.getId());
-                     // TODO dmn11
-//                        assertEquals(1, inExpr.getInputVariable().size());
-//                        assertEquals("applicant", ((InformationItem) inExpr
-//                                .getInputVariable().get(0).getValue()).getId());
-//                        assertEquals("applicant", inExpr.getOnlyInputVariable()
-//                                .getId());
+                        assertInputClause(input, "dt0_c1_ie",
+                                "applicant.health", 2, new String[] {
+                                        "\"Good\"", "\"Bad\"" });
                         break;
                     }
                 }
                 
                 List<DtOutput> outputs = dt.getOutputs();
-                assertEquals(3, outputs.size());
-                for (int i = 0; i < 3; i++) {
+                // policy risk rating
+                assertEquals(1, outputs.size());
+                for (int i = 0; i < 1; i++) {
                     DtOutput output = outputs.get(i);
                     switch (i) {
                     case 0:
                         DmnElementReference outDef = output
                                 .getOutputDefinition();
                         assertNotNull(outDef);
-                        assertEquals("#conclusion", outDef.getHref());
+                        assertEquals("#policy.riskRating", outDef.getHref());
                         assertEquals(3, output.getOutputValues().size());
 
                         break;
@@ -175,5 +149,24 @@ public class DecisionModelFactoryTest implements ExamplesConstants {
         }
         assertTrue(f.exists());
         System.out.println("wrote dmn to :" + f.getAbsolutePath());
+    }
+
+    private void assertInputClause(DtInput input, String inExprId,
+            String inExprText, int noInputValues, String[] inputValues) {
+        LiteralExpression inExpr = input.getInputExpression();
+        assertNotNull(inExpr);
+        assertEquals(inExprId, inExpr.getId());
+        assertEquals(inExprText, inExpr.getText());
+        assertEquals(noInputValues, input.getInputValues().size());
+        for (int j = 0; j < noInputValues; j++) {
+            Expression inEntry = input.getInputValues().get(j);
+            switch (j) {
+            case 0:
+                assertTrue(inEntry instanceof LiteralExpression);
+                LiteralExpression le = (LiteralExpression) inEntry;
+                assertEquals(inputValues[0], le.getText());
+                break;
+            }
+        }
     }
 }

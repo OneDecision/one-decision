@@ -26,7 +26,7 @@ import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 import io.onedecision.engine.decisions.model.dmn.validators.SchemaValidator;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.domain.api.test.MockDomainModelFactory;
+import io.onedecision.engine.test.MockDomainModelFactory;
 
 import java.io.File;
 import java.io.FileInputStream;

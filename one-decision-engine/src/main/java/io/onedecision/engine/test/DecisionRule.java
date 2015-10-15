@@ -1,16 +1,17 @@
 package io.onedecision.engine.test;
 
 import io.onedecision.engine.decisions.api.DecisionEngine;
-import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
 import io.onedecision.engine.decisions.impl.del.DelExpression;
 import io.onedecision.engine.decisions.impl.del.DurationExpression;
-import io.onedecision.engine.decisions.model.dmn.Definitions;
+import io.onedecision.engine.decisions.model.dmn.DmnModel;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
@@ -159,17 +160,29 @@ public class DecisionRule implements TestRule {
         // Allow for mock configuration
         configureDecisionEngine();
 
+        // Load DMN resources into engine
         Deployment deployment = description.getAnnotation(Deployment.class);
         tenantId = deployment.tenantId();
         for (String resource : deployment.resources()) {
-            Definitions model = ((DecisionModelFactory) de
-                    .getRepositoryService())
-                    .loadFromClassPath(resource);
-            definitionIds.add(model.getId());
-            de.getRepositoryService().createModelForTenant(model,
-                    "deployed by DecisionRule", null, tenantId);
+            String dmnXml = loadFromClassPath(resource);
+            DmnModel dmnModel = new DmnModel(dmnXml, null, null, tenantId);
+            definitionIds.add(dmnModel.getDefinitionId());
+            de.getRepositoryService().createModelForTenant(dmnModel);
         }
 
+    }
+
+    public static String loadFromClassPath(String resource) {
+        InputStream is = null;
+        try {
+            is = DecisionRule.class.getResourceAsStream(resource);
+            return new Scanner(is).useDelimiter("\\A").next();
+        } finally {
+            try {
+                is.close();
+            } catch (Exception e) {
+            }
+        }
     }
 
     protected void initializeDecisionEngine() {
