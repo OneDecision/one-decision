@@ -15,10 +15,13 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -72,6 +75,14 @@ public class DmnModel  implements Serializable {
     private String definitionXml;
 
     @JsonProperty
+    @Embedded
+    private List<String> decisionIds;
+
+    @JsonProperty
+    @Embedded
+    private List<String> decisionNames;
+
+    @JsonProperty
     @Lob
     private byte[] image;
 
@@ -93,7 +104,7 @@ public class DmnModel  implements Serializable {
     @JsonProperty
     private Date lastUpdated;
 
-    private Definitions definitions;
+    private transient Definitions definitions;
 
     /**
      * @deprecated
@@ -185,11 +196,46 @@ public class DmnModel  implements Serializable {
 	}
 
     public Definitions getDefinitions() {
+
         return definitions;
     }
 
     public void setDefinitions(Definitions tDef) {
         this.definitions = tDef;
+    }
+
+    /**
+     * On creation the decision ids are read from the DMN file to allow ready
+     * retrieval later.
+     *
+     * @return Returns list of decision ids contained in the model.
+     */
+    public List<String> getDecisionIds() {
+        if (decisionIds == null) {
+            decisionIds = new ArrayList<String>();
+        }
+        return decisionIds;
+    }
+
+    public void setDecisionIds(List<String> decisionIds) {
+        this.decisionIds = decisionIds;
+    }
+
+    /**
+     * On creation the decision names are read from the DMN file to allow ready
+     * retrieval later.
+     *
+     * @return Returns list of decision names contained in the model.
+     */
+    public List<String> getDecisionNames() {
+        if (decisionNames == null) {
+            decisionNames = new ArrayList<String>();
+        }
+        return decisionNames;
+    }
+
+    public void setDecisionNames(List<String> decisionNames) {
+        this.decisionNames = decisionNames;
     }
 
 	public byte[] getImage() {

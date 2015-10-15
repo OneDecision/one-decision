@@ -2,10 +2,10 @@
   <section id="currentSect" style="display:none">
       <h2>
         <span>{{current.name}}</span>
-        <div class="pull-right">
+        <span class="pull-right">
           <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.definitionId}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
           <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
-        </div>          
+        </span>
       </h2>
       <p>
         <span class="a-primary-label control-label">{{current.deploymentMessage}}: </span>
@@ -13,6 +13,15 @@
         <span class="a-secondary-label control-label">Definition Id: </span> {{current.definitionId}};
         <span class="a-secondary-label control-label">Deployed: </span> {{formatDateTime(current.created)}};
       </p>
+      <h3>Decisions</h3>
+      <ul>
+        {{#current.decisionNames:idx}}
+          <li>{{.}} ({{current.decisionIds[idx]}})</li>
+        {{/}}
+        {{^current.decisionIds}}
+          <li>None</li>
+        {{/}}
+      </ul>
       <pre><code id="currentHighlightedDmn" class="xml"></code></pre>
   </section>
 {{/}}

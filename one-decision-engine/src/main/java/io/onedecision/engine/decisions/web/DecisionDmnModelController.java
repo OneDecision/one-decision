@@ -13,9 +13,11 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
+import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
@@ -79,6 +81,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
                 "Seeking decision model %1$s for tenant %2$s", id, tenantId));
 
         DmnModel model = repo.findOneForTenant(tenantId, id);
+        indexDecisions(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model;
@@ -172,10 +175,25 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
             throw new NoDmnFileInUploadException();
         }
 
-        DmnModel dmnModel = createModelForTenant(load(dmnContent),
-                deploymentMessage, image, tenantId);
+        DmnModel dmnModel = new DmnModel(load(dmnContent), deploymentMessage,
+                image, tenantId);
         dmnModel.setName(dmnFileName);
-        return dmnModel;
+        dmnModel.setDefinitionXml(dmnContent);
+        return createModelForTenant(dmnModel);
+    }
+
+    protected void indexDecisions(DmnModel model) {
+        if (model.getDefinitions() == null) {
+            try {
+                model.setDefinitions(load(model.getDefinitionXml()));
+            } catch (IOException e) {
+                throw new DecisionException(e.getMessage());
+            }
+        }
+        for (Decision d : model.getDefinitions().getDecisions()) {
+            model.getDecisionIds().add(d.getId());
+            model.getDecisionNames().add(d.getName());
+        }
     }
 
     /**
@@ -208,7 +226,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     public DmnModel createModelForTenant(DmnModel model) {
         LOGGER.info(String.format("Creating decision model for tenant %1$s",
                 model.getTenantId()));
-
+        indexDecisions(model);
         return repo.save(model);
     }
 
