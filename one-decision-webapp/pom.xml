@@ -25,7 +25,7 @@
     <dependency>
         <groupId>io.onedecision</groupId>
         <artifactId>onedecision-engine</artifactId>
-        <version>0.8.2-SNAPSHOT</version>
+        <version>${project.version}</version>
     </dependency>
     <!-- Override scope so we can provide test helpers  -->
     <dependency>
