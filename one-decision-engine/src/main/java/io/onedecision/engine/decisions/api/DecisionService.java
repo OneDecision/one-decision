@@ -27,6 +27,8 @@ import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter;
 import io.onedecision.engine.decisions.model.dmn.adapters.ExpressionAdapter.AdaptedExpression;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.script.ScriptContext;
@@ -46,7 +49,10 @@ import org.slf4j.LoggerFactory;
 
 public class DecisionService implements DecisionConstants {
 
-	protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionService.class);
+    private static final String CP_PROTOCOL = "classpath://";
+
+    protected static final Logger LOGGER = LoggerFactory
+            .getLogger(DecisionService.class);
 
 	private static final List<String> EXCLUDED_OBJECTS = newArrayList(
             "context", "print", "println", "System");
@@ -137,7 +143,28 @@ public class DecisionService implements DecisionConstants {
         
         for (DecisionModelImport import_ : dm.getImport()) {
             if (EXPR_URI_JS.equals(import_.getImportType())) {
-                sb.append("load('" + import_.getLocationURI() + "');\n");
+                if (import_.getLocationURI().startsWith(CP_PROTOCOL)) {
+                    InputStream is = null;
+                    try {
+                        String resource = import_.getLocationURI().substring(
+                                CP_PROTOCOL.length());
+                        is = getClass().getResourceAsStream(resource);
+                        sb.append('\n')
+                            .append(new Scanner(is).useDelimiter("\\A").next())
+                            .append('\n');
+                    } catch (Exception e) {
+                        LOGGER.error(String.format(
+                                "Unable to load classpath resource: %1$s",
+                                import_.getLocationURI()), e);
+                    } finally {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                        }
+                    }
+                } else {
+                    sb.append("load('" + import_.getLocationURI() + "');\n");
+                }
             }
         }
         
@@ -284,7 +311,7 @@ public class DecisionService implements DecisionConstants {
 	
     protected String compile(String input, String expr) {
 		String rtn = expr;
-		if (!expr.startsWith(input)) {
+        if (!expr.startsWith(input) && !isFunction(expr)) {
              rtn = input + "." + expr;
         }
         for (DelExpression compiler : getDelExpressions()) {
@@ -292,4 +319,12 @@ public class DecisionService implements DecisionConstants {
 		}
 		return rtn;
 	}
+
+    private boolean isFunction(String input) {
+        if (input.indexOf('(') == -1 && input.indexOf(')') == -1) {
+            return false;
+        }else {
+            return true;
+        }
+    }
 }
