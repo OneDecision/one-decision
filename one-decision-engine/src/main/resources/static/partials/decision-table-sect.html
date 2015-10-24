@@ -71,7 +71,7 @@
       <tr class="rule">
         <th>&nbsp;</th>
         <th class="hit-policy" colspan="2">
-          <input autocomplete="false" class="edit typeahead" placeholder="Click to set hit policy" title="{{hitPolicy}}" value="{{hitPolicy}}"/>
+          <input autocomplete="false" class="edit typeahead" placeholder="Click to set hit policy" title="{{decision.hitPolicy}}" value="{{decision.hitPolicy}}"/>
         </th>
         {{#each decision.conclusions[0].expressions:idx}}
           <td contenteditable>{{idx+1}}</td>
