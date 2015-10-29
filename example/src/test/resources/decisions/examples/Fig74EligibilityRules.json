@@ -1,0 +1,20 @@
+{
+  "decisionId":"Eligibility rules",
+  "hitPolicy":"PRIORITY",
+  "domainModelUri":"http://onedecision.io/loans",
+  "inputs":[
+    {"name":"Pre-Bureau Risk Category"},
+    {"name":"Pre-Bureau Affordability"},
+    {"name":"Age"}
+  ],
+  "outputs":[
+    {"name":"Eligibility"}
+  ],
+  "rules":[
+    {"inputEntries":["\"DECLINE\"","-","-"],"outputEntries":["\"INELIGIBLE\""]},
+    {"inputEntries":["-","false","-"],"outputEntries":["\"INELIGIBLE\""]},
+    {"inputEntries":["-","-","<18"],"outputEntries":["\"INELIGIBLE\""]},
+    {"inputEntries":["-","-","-"],"outputEntries":["\"ELIGIBLE\""]}
+  ],
+  "tenantId":"onedecision"
+}

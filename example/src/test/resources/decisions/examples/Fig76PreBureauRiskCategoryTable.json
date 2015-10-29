@@ -1,0 +1,23 @@
+{
+  "decisionId":"Pre-bureau risk category table",
+  "hitPolicy":"UNIQUE",
+  "domainModelUri":"http://onedecision.io/loans",
+  "inputs":[
+    {"name":"Existing Customer"},
+    {"name":"Application Risk Score"}
+  ],
+  "outputs":[
+    {"name":"Pre-Bureau Risk Category"}
+  ],
+  "rules":[
+    { "inputEntries":["false","<100"],"outputEntries":["\"HIGH\""] },
+    { "inputEntries":["false","[100-120)"],"outputEntries":["\"MEDIUM\""] },
+    { "inputEntries":["false","[120-130]"],"outputEntries":["\"LOW\""] },
+    { "inputEntries":["false",">130"],"outputEntries":["\"VERY LOW\""] },
+    { "inputEntries":["true","<80"],"outputEntries":["\"DECLINE\""] },
+    { "inputEntries":["true","[80..90)"],"outputEntries":["\"HIGH\""] },
+    { "inputEntries":["true","[90..110]"],"outputEntries":["\"MEDIUM\""] },
+    { "inputEntries":["true",">110"],"outputEntries":["\"LOW\""] }
+  ],
+  "tenantId":"onedecision"
+}
