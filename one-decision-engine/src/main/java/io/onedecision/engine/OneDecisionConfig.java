@@ -34,7 +34,7 @@ public class OneDecisionConfig {
         SpringDecisionEngineImpl de = new SpringDecisionEngineImpl();
         de.setRepositoryService(repoSvc);
         de.setRuntimeService(runSvc);
-        de.setModelingService(modelingSvc);
+        // de.setModelingService(modelingSvc);
         return de;
     }
 }

@@ -192,7 +192,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                     "totalOrderPrice"))
                     .withDecisionTable(dt);
 
-            def.withDecision(d);
+            def.withDecisions(d);
 
             assertSerializationProduced(def);
 

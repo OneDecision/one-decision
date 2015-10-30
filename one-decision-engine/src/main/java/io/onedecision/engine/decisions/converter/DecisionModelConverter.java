@@ -26,7 +26,9 @@ import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.ui.DecisionExpression;
+import io.onedecision.engine.decisions.model.ui.DecisionInput;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
+import io.onedecision.engine.decisions.model.ui.DecisionOutput;
 import io.onedecision.engine.domain.api.DomainModelFactory;
 import io.onedecision.engine.domain.model.DomainEntity;
 import io.onedecision.engine.domain.model.DomainModel;
@@ -68,7 +70,9 @@ public class DecisionModelConverter implements
 	public Definitions convert(DecisionModel source) {
         Definitions target = objFact.createDefinitions();
 		target.setId(createId(source));
-		target.setName(source.getName() + " Model");
+        if (source.getName() != null) {
+            target.setName(source.getName() + " Model");
+        }
 		target.setExpressionLanguage(URI_JAVASCRIPT_5);
 		target.setNamespace("http://onedecision.io/" + source.getTenantId());
 		target.setTypeLanguage(URI_JSON);
@@ -77,33 +81,44 @@ public class DecisionModelConverter implements
         // target.getDrgElement().add(objFact.createBusinessKnowledgeModel(bkm));
 
 		List<InformationItem> informationItems = new ArrayList<InformationItem>();
-		for (DomainEntity type : getDomainModel(source.getDomainModelUri())
-				.getEntities()) {
-            ItemDefinition itemDef = objFact.createItemDefinition();
-			itemDef.setId(createTypeDef(type));
-			itemDef.setName(type.getName() + " Definition");
-			itemDef.setDescription(type.getDescription());
 
-            // TODO dmn11
-            // target.getItemDefinition().add(itemDef);
+        // TODO is this ok to be null?
+        if (source.getDomainModelUri() != null) {
+            for (DomainEntity type : getDomainModel(source.getDomainModelUri())
+                    .getEntities()) {
+                ItemDefinition itemDef = objFact.createItemDefinition();
+                itemDef.setId(createTypeDef(type));
+                itemDef.setName(type.getName() + " Definition");
+                itemDef.setDescription(type.getDescription());
 
-			// More indirection - yay!!
-            InformationItem informationItem = objFact.createInformationItem();
-			informationItem.setId(toCamelCase(type.getName()));
-			// TODO these should have own namespace (corresponding to domain)
+                target.getItemDefinitions().add(itemDef);
 
-            // TODO dmn11
-            // informationItem.setItemDefinition(new QName(itemDef.getId()));
-            // informationItems.add(informationItem);
-            // bkm.getInformationItem().add(informationItem);
+                // More indirection - yay!!
+                InformationItem informationItem = objFact
+                        .createInformationItem();
+                informationItem.setId(toCamelCase(type.getName()));
+                // TODO these should have own namespace (corresponding to
+                // domain)
+
+                // TODO dmn11
+                // informationItem.setItemDefinition(new
+                // QName(itemDef.getId()));
+                // informationItems.add(informationItem);
+                // bkm.getInformationItem().add(informationItem);
+            }
 		}
 
         Decision decision = objFact.createDecision();
-		decision.setId(source.getId() == null ? UUID.randomUUID() + "_d"
-				: source.getId().toString() + "_d");
-		decision.setName(source.getName() + " Decision");
-        // TODO dmn11
-        // target.getDrgElement().add(objFact.createDecision(decision));
+        decision.setId(source.getDecisionId() == null ? UUID.randomUUID()
+                + "_d" : source.getDecisionId());
+        // TODO is it possible for d output to differ from first dt output?
+        decision.setInformationItem(objFact.createInformationItem().withId(
+                toCamelCase(source.getOutputs().get(0).getName())));
+
+        if (source.getName() != null) {
+            decision.setName(source.getName());
+        }
+        target.getDrgElements().add(objFact.createDecision(decision));
 
         DecisionTable dt = objFact.createDecisionTable();
 		dt.setId(source.getId() == null ? UUID.randomUUID() + "_dt"
@@ -118,81 +133,41 @@ public class DecisionModelConverter implements
 		dt.setPreferedOrientation(DecisionTableOrientation.RULE_AS_COLUMN);
 		decision.setExpression(objFact.createDecisionTable(dt));
 
-		for (DecisionExpression condition : source.getConditions()) {
-            List<String> added = new ArrayList<String>();
-            String inputVarName = inferVarName(condition.getName());
-            // TODO dmn11
-            // InformationItem inputVar = findInformationItem(target,
-            // inputVarName);
-            // JAXBElement<Object> inputExpr = objFact
-            // .createTExpressionInputVariable(inputVar);
-            //
-            // List<Expression> entries = new ArrayList<Expression>();
-            // for (String expr : condition.getExpressions()) {
-            // if (!added.contains(expr)) {
-            // added.add(expr);
-            //
-            // LiteralExpression le = objFact.createTLiteralExpression();
-            // le.setId(createId(dt, source, source.getConditions(),
-            // condition, expr));
-            // // le.setName(condition.getName());
-            // le.getInputVariable().add(inputExpr);
-            //
-            // Text txt = objFact.createTLiteralExpressionText();
-            // txt.getContent().add(expr);
-            // le.setText(txt);
-            // entries.add(le);
-            // }
-            // }
-            // TClause clause = objFact.createTClause();
-            // clause.setName(getLeaf(condition.getName()));
-            // clause.getInputEntry().addAll(entries);
-            //
-            // TLiteralExpression inExpr = objFact.createTLiteralExpression();
-            // clause.setInputExpression(inExpr);
-            // inExpr.setId(createId(dt, source, condition));
-            // inExpr.setName(condition.getName());
-            // inExpr.setDescription(condition.getLabel());
-            // inExpr.getInputVariable().add(
-            // objFact.createTExpressionInputVariable(inputVar));
-            //
-            // dt.getClause().add(clause);
-//		}
+		for (DecisionInput input : source.getInputs()) {
+            dt.getInputs().add(
+                    objFact.createDtInput()
+                            .withName(input.getName())
+                            .withInputExpression(
+                                    objFact.createLiteralExpression()
+                                            .withText(input.getName())));
         }
-//
-//		for (DecisionExpression conclusion : source.getConclusions()) {
-//            List<String> added = new ArrayList<String>();
-//			Clause clause = objFact.createTClause();
-//            clause.setName(getLeaf(conclusion.getName()));
-//			// TODO customer namespace?
-//			clause.setOutputDefinition(new QName(inferVarName(conclusion
-//					.getName())));
-//
-//			for (String expr : conclusion.getExpressions()) {
-//                if (!added.contains(expr)) {
-//                    added.add(expr);
-//                    LiteralExpression le = objFact.createTLiteralExpression();
-//                    le.setId(createId(dt, source, source.getConclusions(),
-//                            conclusion, expr));
-//                    le.setDescription(conclusion.getLabel());
-//                    // TODO appear unable to set output definition as expected
-//                    // by DecisionService.getScript
-//                    le.setItemDefinition(new QName(inferVarName(conclusion
-//                            .getName())));
-//                    Text txt = objFact.createTLiteralExpressionText();
-//                    txt.getContent().add(conclusion.getName() + " = " + expr);
-//                    le.setText(txt);
-//                    clause.getOutputEntry().add(le);
-//                }
-//			}
-//
-//			dt.getClause().add(clause);
-//		}
-//
-//        inferRules(source, dt);
-//
-//		return target;
-            throw new RuntimeException("Not yet implemented");
+		
+		for (DecisionOutput output : source.getOutputs()) {
+            dt.getOutputs().add(
+                    objFact.createDtOutput()
+                            .withName(output.getName())
+                            .withOutputDefinition(
+                                    objFact.createDmnElementReference()
+                                            .withHref(toHref(output.getName()))));
+        }
+        
+		for (io.onedecision.engine.decisions.model.ui.DecisionRule rule : source.getRules()) {
+            DecisionRule dmnRule = objFact.createDecisionRule();
+            for (int i = 0; i < rule.getInputEntries().length; i++) {
+                dmnRule.getInputEntry().add(
+                        objFact.createLiteralExpression().withText(
+                                rule.getInputEntries()[i]));
+            }
+            for (int i = 0; i < rule.getOutputEntries().length; i++) {
+                dmnRule.getOutputEntry().add(
+                        objFact.createLiteralExpression().withText(
+                                rule.getOutputEntries()[i]));
+            }
+            
+            dt.withRules(dmnRule);
+        }
+
+        return target;
 	}
 
     private String getLeaf(String name) {
@@ -217,11 +192,11 @@ public class DecisionModelConverter implements
 	}
 
 	private void inferRules(DecisionModel source, DecisionTable dt) {
-		for (int i = 0; i < source.getConditions().get(0).getExpressions().length; i++) {
+        for (int i = 0; i < source.getInputs().get(0).getExpressions().length; i++) {
 			System.out.println("expression  " + i);
             DecisionRule dmRule = objFact.createDecisionRule();
 
-			for (DecisionExpression condExpr : source.getConditions()) {
+            for (DecisionExpression condExpr : source.getInputs()) {
                 LOGGER.debug(String.format("  condition: %1$s (%2$s): %3$s",
                         condExpr.getName(), condExpr.getLabel(),
                         condExpr.getExpressions()[i]));
@@ -243,7 +218,7 @@ public class DecisionModelConverter implements
                 // .createTDecisionRuleCondition(l);
                 // dmRule.getCondition().add(ruleCond);
 			}
-			for (DecisionExpression concExpr : source.getConclusions()) {
+            for (DecisionExpression concExpr : source.getOutputs()) {
                 LOGGER.debug(String.format("  conclusion: %1$s %2$s: %3$s",
                         concExpr.getId(), concExpr.getName(),
                         concExpr.getExpressions()[i]));
@@ -316,13 +291,13 @@ public class DecisionModelConverter implements
 	}
 
     private String createId(DecisionModel source) {
-        return source.getId() == null ? UUID.randomUUID().toString()
-                : toCamelCase(source.getId().toString()) + "Model";
+        return source.getDecisionId() == null ? UUID.randomUUID().toString()
+                : source.getDecisionId().toString() + "Model";
     }
 
 	private String createId(DecisionTable dt, DecisionModel source,
 			DecisionExpression condition) {
-		return dt.getId() + "_c" + source.getConditions().indexOf(condition);
+        return dt.getId() + "_c" + source.getInputs().indexOf(condition);
 	}
 
 	private String createId(DecisionTable dt, DecisionModel source,
@@ -336,6 +311,10 @@ public class DecisionModelConverter implements
 	private String toCamelCase(String name) {
 		return name.substring(0, 1).toLowerCase() + name.substring(1);
 	}
+
+    private String toHref(String name) {
+        return "#" + toCamelCase(name);
+    }
 
 	private String inferVarName(String expr) {
 		if (expr.indexOf('.') == -1) {

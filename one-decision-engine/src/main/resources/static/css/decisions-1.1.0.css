@@ -35,6 +35,12 @@ input:focus {
 .rule td {
   border-right: 1px solid #ccc;
 }
+.input { 
+  background-color: #ccccff !important;
+}
+.output { 
+  background-color: #ffcccc !important;
+}
 .newCondition,
 .newConclusion {
 	border: none;

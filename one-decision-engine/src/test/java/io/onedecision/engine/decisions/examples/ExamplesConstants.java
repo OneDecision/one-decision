@@ -15,13 +15,13 @@ package io.onedecision.engine.decisions.examples;
 
 public interface ExamplesConstants {
 
-	static final String TENANT_ID = "examples";
+    static final String TENANT_ID = "examples";
 
     // Application Risk Rating example
     static final String ARR_JSON_RESOURCE = "/decisions/examples/ApplicationRiskRating.json";
     static final String ARR_DMN_RESOURCE = "/decisions/examples/ApplicationRiskRating.dmn";
     static final String ARR_DEFINITION_ID = "ApplicationRiskRating";
-	static final String ARR_DECISION_ID = "1_d";
+    static final String ARR_DECISION_ID = "1_d";
 
     // Email Follow Up example
     static final String EFU_JSON_RESOURCE = "/decisions/examples/EmailFollowUp.json";

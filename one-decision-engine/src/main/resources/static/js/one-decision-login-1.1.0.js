@@ -31,6 +31,20 @@ var ractive = new OneDecisionApp({
     },
     formatDate: function(timeString) {
       return new Date(timeString).toLocaleDateString(navigator.languages);
-    }
+    },
+    stdPartials: [
+       { "name": "poweredBy", "url": "/partials/powered-by.html"},
+       { "name": "profileArea", "url": "/partials/profile-area.html"},
+       { "name": "sidebar", "url": "/partials/sidebar.html"},
+       { "name": "titleArea", "url": "/partials/title-area.html"}
+    ],
+    tenant: { id: 'onedecision' },
+    title: "Decision",
+    username: localStorage['username']
+  },
+  oninit: function() {
+    console.info('oninit');
+    this.ajaxSetup();
+    this.loadStandardPartials(this.get('stdPartials'));
   }
 });

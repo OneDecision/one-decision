@@ -40,12 +40,16 @@ public class DecisionRule {
     private Long id;
 
     @JsonProperty 
-    protected String[] expressions;
+    protected String[] inputEntries;
+
+    @JsonProperty
+    protected String[] outputEntries;
 
     public DecisionRule() {}
 
-    public DecisionRule(String[] expressions) {
-        setExpressions(expressions);
+    public DecisionRule(String[] inputEntries, String[] outputEntries) {
+        setInputEntries(inputEntries);
+        setOutputEntries(outputEntries);
     }
 
 	public Long getId() {
@@ -56,11 +60,29 @@ public class DecisionRule {
 		this.id = id;
 	}
 
-	public String[] getExpressions() {
-		return expressions;
+	public String[] getInputEntries() {
+		return inputEntries;
 	}
 
-	public void setExpressions(String[] expressions) {
-		this.expressions = expressions;
+    public void setInputEntries(String[] inputEntries) {
+        this.inputEntries = inputEntries;
 	}
+
+    public String[] getOutputEntries() {
+        return outputEntries;
+    }
+
+    public void setOutputEntries(String[] outputEntries) {
+        this.outputEntries = outputEntries;
+    }
+
+    public DecisionRule withInputEntries(String[] inputEntries) {
+        setInputEntries(inputEntries);
+        return this;
+    }
+
+    public DecisionRule withOutputEntries(String[] outputEntries) {
+        setOutputEntries(outputEntries);
+        return this;
+    }
 }

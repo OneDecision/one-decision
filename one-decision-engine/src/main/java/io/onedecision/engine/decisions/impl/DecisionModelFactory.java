@@ -115,7 +115,7 @@ public class DecisionModelFactory implements RepositoryService {
         return tenantModels;
     }
 
-    protected DmnModel getModelForTenant(String tenantId, Long id) {
+    protected DmnModel getModelForTenant(Long id, String tenantId) {
         for (DmnModel dmnModel : repo) {
             if (tenantId.equals(dmnModel.getTenantId())
                     && id.equals(dmnModel.getId())) {
@@ -165,7 +165,7 @@ public class DecisionModelFactory implements RepositoryService {
 
     @Override
     public void deleteModelForTenant(Long id, String tenantId) {
-        DmnModel model = getModelForTenant(tenantId, id);
+        DmnModel model = getModelForTenant(id, tenantId);
         if (model == null ) { 
             throw new DecisionNotFoundException(String.format(
                     "Unable to find model for tenant %1$s with id %2$d",

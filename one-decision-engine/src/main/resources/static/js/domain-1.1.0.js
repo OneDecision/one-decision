@@ -140,7 +140,7 @@ $(document).ready(function() {
   ractive.initCallbacks.add(function() {
     console.info('initialization handler');
     //ractive.applyBranding();
-    //ractive.fetch();
+    ractive.fetch();
     //ractive.initControls();
   });
   

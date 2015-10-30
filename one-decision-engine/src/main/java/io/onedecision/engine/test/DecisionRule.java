@@ -5,6 +5,7 @@ import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
 import io.onedecision.engine.decisions.impl.del.DelExpression;
 import io.onedecision.engine.decisions.impl.del.DurationExpression;
+import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 
 import java.io.IOException;
@@ -160,12 +161,28 @@ public class DecisionRule implements TestRule {
         // Allow for mock configuration
         configureDecisionEngine();
 
-        // Load DMN resources into engine
+        // Load resources into engine
         Deployment deployment = description.getAnnotation(Deployment.class);
         tenantId = deployment.tenantId();
         for (String resource : deployment.resources()) {
-            String dmnXml = loadFromClassPath(resource);
-            DmnModel dmnModel = new DmnModel(dmnXml, null, null, tenantId);
+            String model = loadFromClassPath(resource);
+            DmnModel dmnModel = null;
+            if (resource.toLowerCase().endsWith(".json")) {
+                if (deployment.domainModelUri() != null
+                        && deployment.domainModelUrl() != null) {
+                    de.getModelingService().setDomainModelFactory(
+                            new MockDomainModelFactory(
+                                    deployment.domainModelUri(), 
+                                    deployment.domainModelUrl()));
+                }
+                Definitions dm = de.getModelingService().convert(model);
+                dmnModel = new DmnModel(dm, tenantId);
+            } else if (resource.toLowerCase().endsWith(".dmn")) {
+                dmnModel = new DmnModel(model, null, null, tenantId);
+            } else {
+                throw new IllegalArgumentException(
+                        "Only know how to convert resources with .json or .dmn extensions");
+            }
             definitionIds.add(dmnModel.getDefinitionId());
             de.getRepositoryService().createModelForTenant(dmnModel);
         }

@@ -54,24 +54,21 @@ public class DtOutput extends Clause implements Serializable {
     protected LiteralExpression defaultOutputEntry;
 
     /**
-     * Gets the value of the outputDefinition property.
+     * The range of this OutputClause.
      * 
-     * @return
-     *     possible object is
-     *     {@link DmnElementReference }
-     *     
+     * @return possible object is {@link DmnElementReference }
+     * 
      */
     public DmnElementReference getOutputDefinition() {
         return outputDefinition;
     }
 
     /**
-     * Sets the value of the outputDefinition property.
+     * The range of this OutputClause.
      * 
      * @param value
-     *     allowed object is
-     *     {@link DmnElementReference }
-     *     
+     *            allowed object is {@link DmnElementReference }
+     * 
      */
     public void setOutputDefinition(DmnElementReference value) {
         this.outputDefinition = value;

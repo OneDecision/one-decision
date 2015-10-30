@@ -13,9 +13,11 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
+import io.onedecision.engine.decisions.impl.TransformUtil;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
@@ -23,10 +25,13 @@ import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 import java.io.IOException;
 import java.util.List;
 
+import javax.xml.transform.TransformerConfigurationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Controller to support the native DMN decision definition.
+ * Controller to manage native DMN decision definitions.
  * 
  * @author Tim Stephenson
  */
@@ -50,6 +55,22 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     @Autowired
     private DecisionDmnModelRepository repo;
 
+    protected TransformUtil transformUtil ;
+
+    protected TransformUtil getTransformUtil() {
+        // if (transformUtil == null) {
+            transformUtil = new TransformUtil();
+            try {
+                transformUtil.setXsltResources("/static/xslt/dmn2html.xslt");
+            } catch (TransformerConfigurationException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DecisionException("Unable to render decision model",
+                        e);
+            }
+        // }
+        return transformUtil;
+    }
+    
     /**
      * @see io.onedecision.engine.decisions.api.RepositoryService#listForTenant(java.lang.String)
      */
@@ -66,15 +87,66 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         return list;
     }
 
-    @Override
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json" })
-    public @ResponseBody DmnModel getModelForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") Long id) {
+    @RequestMapping(value = "/{definitionOrInternalId}", method = RequestMethod.GET, produces = { "text/html" })
+    public String getModelForTenantHtml(
+            @PathVariable("definitionOrInternalId") String id,
+            @PathVariable("tenantId") String tenantId, Model model) {
         LOGGER.info(String.format(
                 "Seeking decision model %1$s for tenant %2$s", id, tenantId));
 
-        DmnModel model = repo.findOneForTenant(tenantId, id);
+        DmnModel dmnModel = null;
+        try {
+            dmnModel = getModelForTenant(Long.parseLong(id), tenantId);
+        } catch (NumberFormatException e) {
+            dmnModel = getModelForTenant(id, tenantId);
+        } finally {
+            model.addAttribute("dmnModel", dmnModel);
+        }
+
+        return "decisionModel";
+    }
+
+    @RequestMapping(value = "/{definitionId}/{decisionId}", method = RequestMethod.GET, produces = { "text/html" })
+    public String getDecisionForTenantHtml(
+            @PathVariable("definitionId") String definitionId,
+            @PathVariable("decisionId") String decisionId,
+            @PathVariable("tenantId") String tenantId, Model model) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s.%2$s for tenant %3$s",
+                definitionId, decisionId, tenantId));
+
+        DmnModel dmnModel = getModelForTenant(definitionId, tenantId);
+        Decision decision = dmnModel.getDefinitions().getDecision(decisionId);
+        model.addAttribute("dmnModel", dmnModel);
+        model.addAttribute("decision", decision);
+        model.addAttribute("decisionHtml",
+                getTransformUtil().transform(dmnModel.getDefinitionXml()));
+
+        return "decision";
+    }
+
+    @RequestMapping(value = "/{definitionOrInternalId}", method = RequestMethod.GET, produces = { "application/json" })
+    public @ResponseBody DmnModel getModelForTenantRestApi(
+            @PathVariable("definitionOrInternalId") String id,
+            @PathVariable("tenantId") String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
+
+        try {
+            return getModelForTenant(Long.parseLong(id), tenantId);
+        } catch (NumberFormatException e) {
+            return getModelForTenant(id, tenantId);
+        }
+    }
+
+    @Override
+    public @ResponseBody DmnModel getModelForTenant(
+            @PathVariable("id") Long id,
+            @PathVariable("tenantId") String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
+
+        DmnModel model = repo.findOneForTenant(id, tenantId);
         indexDecisions(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
@@ -86,7 +158,6 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
      *      java.lang.String)
      */
     @Override
-    @RequestMapping(value = "/{definitionId}", method = RequestMethod.GET, produces = { "application/json" })
     public @ResponseBody DmnModel getModelForTenant(
             @PathVariable("definitionId") String definitionId,
             @PathVariable("tenantId") String tenantId) {
@@ -94,7 +165,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
                 "Seeking decision model %1$s for tenant %2$s", definitionId,
                 tenantId));
 
-        DmnModel model = repo.findByDefinitionId(tenantId, definitionId);
+        DmnModel model = repo.findByDefinitionId(definitionId, tenantId);
         indexDecisions(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
@@ -114,7 +185,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
                 "Seeking decision model (dmn) %1$s for tenant %2$s", id,
                 tenantId));
 
-        DmnModel model = repo.findByDefinitionId(tenantId, id);
+        DmnModel model = repo.findByDefinitionId(id, tenantId);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model.getDefinitionXml();
@@ -133,7 +204,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
                 "Seeking decision model image %1$s for tenant %2$s", id,
                 tenantId));
 
-        DmnModel model = repo.findByDefinitionId(tenantId, id);
+        DmnModel model = repo.findByDefinitionId(id, tenantId);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model.getImage();

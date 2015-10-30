@@ -14,9 +14,9 @@
 package io.onedecision.engine.decisions.web;
 
 import io.onedecision.engine.decisions.api.ModelingService;
-import io.onedecision.engine.decisions.model.dmn.Definitions;
+import io.onedecision.engine.decisions.impl.BaseModelingService;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.decisions.model.ui.examples.EmailFollowUpModel;
+import io.onedecision.engine.decisions.model.ui.examples.ApplicationRiskRatingModel;
 import io.onedecision.engine.decisions.model.ui.examples.ExampleModel;
 import io.onedecision.engine.decisions.repositories.DecisionUIModelRepository;
 
@@ -26,8 +26,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -48,9 +46,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @Controller
 @RequestMapping(value = "/{tenantId}/decision-ui-models")
-public class DecisionUIModelController implements ModelingService {
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(DecisionUIModelController.class);
+public class DecisionUIModelController extends BaseModelingService implements
+        ModelingService {
 
     @Autowired
     private DecisionUIModelRepository repo;
@@ -76,8 +73,7 @@ public class DecisionUIModelController implements ModelingService {
 	protected List<ExampleModel> getExampleUIModels() {
         if (examples == null) {
             examples = new ArrayList<ExampleModel>();
-            // examples.add(new ApplicationRiskRatingModel());
-            examples.add(new EmailFollowUpModel());
+            examples.add(new ApplicationRiskRatingModel());
         }
         return examples;
     }
@@ -165,7 +161,8 @@ public class DecisionUIModelController implements ModelingService {
         LOGGER.info(String.format(
                 "Updating decision model %2$s for tenant %1$s", tenantId, id));
 
-        if (!id.equals(model.getId())) {
+        // id may be null depending on the configuration of
+        if (model.getId() != null && !id.equals(model.getId())) {
             throw new IllegalStateException(
                     "Proposed model does not match the resource identifier");
         }
@@ -189,8 +186,4 @@ public class DecisionUIModelController implements ModelingService {
         repo.delete(id);
     }
 
-    @Override
-    public Definitions convert(DecisionModel source) {
-        return null;
-    }
 }

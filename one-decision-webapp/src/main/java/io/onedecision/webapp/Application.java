@@ -104,6 +104,11 @@ public class Application extends WebMvcConfigurerAdapter {
                     	.loginPage("/login").failureUrl("/login?error")
                     .successHandler(getSuccessHandler()).permitAll()
                     .and().csrf().disable().httpBasic();
+
+            // Allow frames
+            // TODO really only needed for embedding notation may can tighten
+            // up?
+            http.headers().frameOptions().disable();
         }
 
         private AuthenticationSuccessHandler getSuccessHandler() {

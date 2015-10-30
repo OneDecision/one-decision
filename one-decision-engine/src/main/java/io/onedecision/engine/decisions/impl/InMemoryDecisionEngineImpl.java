@@ -10,8 +10,7 @@ public class InMemoryDecisionEngineImpl extends AbstractDecisionEngineImpl
         DecisionService runtimeSvc = new DecisionService();
         runtimeSvc.setDecisionEngine(this);
         setRuntimeService(runtimeSvc);
-        // TODO
-        setModelingService(null);
+        setModelingService(new BaseModelingService());
     }
 
 }

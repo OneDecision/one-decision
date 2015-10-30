@@ -187,6 +187,11 @@ public class Definitions
         return this.drgElements;
     }
 
+    /**
+     * @return Sub-set of <code>DrgElement</code>s that are
+     *         <code>Decision</code>. Consequently, this is <em>NOT</em> a live
+     *         list.
+     */
     public Set<Decision> getDecisions() {
         HashSet<Decision> decisions = new HashSet<Decision>();
         for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
@@ -455,11 +460,36 @@ public class Definitions
         return this;
     }
 
-    public void withDecision(Decision... decisions) {
+    @SuppressWarnings("rawtypes")
+    public void withDecisions(Decision... decisions) {
         for (Decision d : decisions) {
             withDRGElements(new JAXBElement(new QName(
                     "http://www.omg.org/spec/DMN/20130901", "Decision"),
                     Decision.class, d));
+        }
+    }
+
+    public void withBusinessKnowledgeModel(BusinessKnowledgeModel... bkms) {
+        for (BusinessKnowledgeModel bkm : bkms) {
+            withDRGElements(new JAXBElement(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "BusinessKnowledgeModel"),
+                    BusinessKnowledgeModel.class, bkm));
+        }
+    }
+    
+    public void withInputData(InputData... data) {
+        for (InputData id : data) {
+            withDRGElements(new JAXBElement(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "InputData"),
+                    InputData.class, id));
+        }
+    }
+
+    public void withKnowledgeSources(KnowledgeSource... sources) {
+        for (KnowledgeSource ks : sources) {
+            withDRGElements(new JAXBElement(new QName(
+                    "http://www.omg.org/spec/DMN/20130901", "KnowledgeSource"),
+                    KnowledgeSource.class, ks));
         }
     }
 
@@ -555,5 +585,6 @@ public class Definitions
         setId(value);
         return this;
     }
+
 
 }

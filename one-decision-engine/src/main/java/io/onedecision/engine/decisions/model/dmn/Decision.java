@@ -152,12 +152,10 @@ public class Decision
     }
 
     /**
-     * Gets the value of the informationItem property.
+     * The instance of InformationItem that stores the result of this Decision.
      * 
-     * @return
-     *     possible object is
-     *     {@link InformationItem }
-     *     
+     * @return possible object is {@link InformationItem }
+     * 
      */
     public InformationItem getInformationItem() {
         return informationItem;

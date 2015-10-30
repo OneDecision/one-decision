@@ -16,7 +16,18 @@ var ractive = new OneDecisionApp({
   lazy: true,
   template: '#template',
   data: {
-    decisionTemplate: { "name":"A new decision", "hitPolicy":null, "domainModelUri":null, "conditions":[],"conclusions":[] },
+    decisionTemplate: { 
+      "decisionId":"A new decision",
+      "hitPolicy":"U",
+      "domainModelUri":null,
+      "inputs":[{name: "Select..."},{name:"Select..."}],
+      "outputs":[{name:"Select..."}],
+      "rules":[ 
+        { "inputEntries": ["A1", "A2"], "outputEntries": ["A3"] },
+        { "inputEntries": ["B1", "B2"], "outputEntries": ["B3"] },
+        { "inputEntries": ["C1", "C2"], "outputEntries": ["C3"] }
+      ] 
+    },      
     decision: $(this.decisionTemplate).clone(),
     decisions: [],
     entities: [],
@@ -64,24 +75,30 @@ var ractive = new OneDecisionApp({
     console.log('  tmplt:'+template);
     ractive.set('decision',template);
     ractive.set('decision.tenantId',ractive.get('tenant.id'));
-    ractive.addCondition();
-    ractive.addConclusion();
+//    ractive.addRule();
+//    ractive.addConclusion();
     ractive.set('saveObserver',true);
     ractive.showDecision();
   },
-  addCondition: function() {
-    console.log('addCondition...');
-    var conds = ractive.get('decision.conditions')[0];
-    var newCondition = { name: 'Select...', expressions: new Array(parseInt(conds == undefined ? '0' : conds.expressions.length)) };
-    $.each(newCondition.expressions, function(i,d) { 
-      newCondition.expressions[i] = '-'; 
+  addRule: function() {
+    console.log('addRule...');
+    var rule0 = ractive.get('decision.rules')[0];
+    var newRule = { 
+      inputEntries: new Array(parseInt(rule0 == undefined ? '0' : rule0.inputEntries.length)),
+      outputEntries: new Array(parseInt(rule0 == undefined ? '0' : rule0.outputEntries.length)) 
+    };
+    $.each(newRule.inputEntries, function(i,d) { 
+      newRule.inputEntries[i] = '-'; 
     });
-    console.log('  '+JSON.stringify(newCondition));
-    var idx = ractive.get('decision.conditions').push(newCondition);
+    $.each(newRule.outputEntries, function(i,d) { 
+      newRule.outputEntries[i] = '-'; 
+    });
+    console.log('  '+JSON.stringify(newRule));
+    var idx = ractive.get('decision.rules').push(newRule);
     console.log('Adding typeahead to conditions: '+idx);
     $('.condition:nth-child('+idx+') th input').typeahead({ minLength:0,source:ractive.get('entityAttrs')}); 
   },
-  addConclusion: function() {
+  /*addConclusion: function() {
     console.log('addConclusion...');
     var conds = ractive.get('decision.conditions')[0];
     var newConclusion = { name: 'Select...', expressions: new Array(parseInt(conds == undefined ? '0' : conds.expressions.length)) };
@@ -91,14 +108,12 @@ var ractive = new OneDecisionApp({
     // need row idx not conclusions idx
     idx = idx+ractive.get('decision.conditions').length+1
     $('.conclusion:nth-child('+idx+') th input').typeahead({ minLength:0,source:ractive.get('entityAttrs')}); 
-  },
-  addConditionExpr: function() {
-    console.log('addConditionExpr...');
-    $.each(ractive.get('decision.conditions'), function(i,d) {
-      d.expressions.push('-');
-    })
-    $.each(ractive.get('decision.conclusions'), function(i,d) {
-      d.expressions.push('-');
+  },*/
+  addRuleExpr: function() {
+    console.log('addRuleExpr...');
+    $.each(ractive.get('decision.rules'), function(i,d) {
+      d.inputValues.push('-');
+      d.outputValues.push('-');
     })
   },
   edit: function(type,i,j,obj) {

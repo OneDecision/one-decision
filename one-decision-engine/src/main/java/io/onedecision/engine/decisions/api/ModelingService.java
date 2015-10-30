@@ -2,6 +2,7 @@ package io.onedecision.engine.decisions.api;
 
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
+import io.onedecision.engine.domain.api.DomainModelFactory;
 
 import java.util.List;
 
@@ -67,6 +68,13 @@ public interface ModelingService {
     void deleteModelForTenant(Long id, String tenantId);
 
     /**
+     * EXPERIMENTAL
+     * 
+     * @param domainModelFactory
+     */
+    void setDomainModelFactory(DomainModelFactory domainModelFactory);
+
+    /**
      * Convert from the design time model to a DMN model.
      * 
      * @param source
@@ -74,5 +82,7 @@ public interface ModelingService {
      * @return DMN decision model (definitions root element).
      */
     Definitions convert(DecisionModel source);
+
+    Definitions convert(String model);
 
 }

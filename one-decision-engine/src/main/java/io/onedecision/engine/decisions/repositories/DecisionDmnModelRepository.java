@@ -27,12 +27,12 @@ public interface DecisionDmnModelRepository extends
         CrudRepository<DmnModel, Long> {
 
     @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.id = :id")
-    DmnModel findOneForTenant(@Param("tenantId") String tenantId,
-            @Param("id") Long id);
+    DmnModel findOneForTenant(@Param("id") Long id,
+            @Param("tenantId") String tenantId);
 
     @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.definitionId = :definitionId")
-    DmnModel findByDefinitionId(@Param("tenantId") String tenantId,
-            @Param("definitionId") String definitionId);
+    DmnModel findByDefinitionId(@Param("definitionId") String definitionId,
+            @Param("tenantId") String tenantId);
 
     @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId")
     List<DmnModel> findAllForTenant(@Param("tenantId") String tenantId);

@@ -13,9 +13,10 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.model.ui.examples;
 
-import io.onedecision.engine.decisions.model.ui.DecisionConclusion;
-import io.onedecision.engine.decisions.model.ui.DecisionCondition;
+import io.onedecision.engine.decisions.model.ui.DecisionInput;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
+import io.onedecision.engine.decisions.model.ui.DecisionOutput;
+import io.onedecision.engine.decisions.model.ui.DecisionRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,23 +39,31 @@ public class ApplicationRiskRatingModel implements ExampleModel {
         DecisionModel model = new DecisionModel();
         model.setName("Applicant Risk Rating");
 
-        List<DecisionCondition> conditions = new ArrayList<DecisionCondition>();
-        conditions.add(new DecisionCondition("Applicant Age", new String[] {
-                "<25", "<25", "[25..60]", ">60", ">60" }));
-        conditions.add(new DecisionCondition("Medical History", new String[] {
-                "good", "bad", "-", "good", "bad" }));
-        model.setConditions(conditions);
+        List<DecisionInput> inputs = new ArrayList<DecisionInput>();
+        // WRONG: not the info item but the allowed values
+        inputs.add(new DecisionInput().withName("Applicant Age"));
+        inputs.add(new DecisionInput().withName("Medical History"));
+        model.setInputs(inputs);
 
-        List<DecisionConclusion> conclusions = new ArrayList<DecisionConclusion>();
-        conclusions.add(new DecisionConclusion("Low", new String[] { "X", "-",
-                "-", "-", "-" }));
-        conclusions.add(new DecisionConclusion("Medium", new String[] { "-",
-                "X", "X", "X", "-" }));
-        conclusions.add(new DecisionConclusion("High", new String[] { "-", "-",
-                "-", "-", "X" }));
-        model.setConclusions(conclusions);
-        // model.setRules(new ArrayList<DecisionExpression>());
+        List<DecisionOutput> outputs = new ArrayList<DecisionOutput>();
+        outputs.add(new DecisionOutput().withName("Low"));
+        outputs.add(new DecisionOutput().withName("Medium"));
+        outputs.add(new DecisionOutput().withName("High"));
+        model.setOutputs(outputs);
 
+        ArrayList<DecisionRule> rules = new ArrayList<DecisionRule>();
+        rules.add(new DecisionRule().withInputEntries(new String[] { "<25",
+                "good", "Low" }));
+        rules.add(new DecisionRule().withInputEntries(new String[] { "<25",
+                "bad", "Medium" }));
+        rules.add(new DecisionRule().withInputEntries(new String[] {
+                "[25..60]", "-", "Medium" }));
+        rules.add(new DecisionRule().withInputEntries(new String[] { ">60",
+                "good", "Medium" }));
+        rules.add(new DecisionRule().withInputEntries(new String[] { ">60",
+                "bad", "High" }));
+        model.setRules(rules);
+                
         LOGGER.debug("... returning risk rating model");
         return model;
     }

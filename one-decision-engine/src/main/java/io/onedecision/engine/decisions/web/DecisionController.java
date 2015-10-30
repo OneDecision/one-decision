@@ -71,7 +71,7 @@ public class DecisionController extends DecisionService implements
                 "handling request to decision: %1$s.%2$s, with params: %3$s",
                 definitionId, decisionId, params));
 
-		DmnModel dmnModel = repo.findByDefinitionId(tenantId, definitionId);
+		DmnModel dmnModel = repo.findByDefinitionId(definitionId, tenantId);
         if (dmnModel == null) {
             throw new DecisionNotFoundException(tenantId, definitionId,
                     decisionId);
