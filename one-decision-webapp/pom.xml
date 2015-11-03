@@ -45,17 +45,6 @@
         <version>2.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-      <version>${activiti.version}</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>jcl-over-slf4j</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
     	<groupId>org.webjars</groupId>
     	<artifactId>bootstrap</artifactId>
     	<version>3.3.5</version>
@@ -72,14 +61,9 @@
     </dependency>
     <!-- TEST dependencies -->
     <dependency>
-      <groupId>org.toxos.activiti</groupId>
-      <artifactId>process-assertions</artifactId>
-      <version>0.5.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>

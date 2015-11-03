@@ -22,7 +22,6 @@
   </parent>
 
   <properties>
-    <activiti.version>5.18.0</activiti.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.7</java.version>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
