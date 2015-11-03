@@ -22,11 +22,12 @@ import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
-import io.onedecision.engine.decisions.model.dmn.DtInput;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.Import;
+import io.onedecision.engine.decisions.model.dmn.InputClause;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
+import io.onedecision.engine.decisions.model.dmn.UnaryTests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,8 +105,8 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         Map<String, Object> results = execute(decision,
                 script, vars);
 
-        return Collections.singletonMap(decision.getInformationItem().getId(),
-                results.get(decision.getInformationItem().getId()));
+        return Collections.singletonMap(decision.getVariable().getId(),
+                results.get(decision.getVariable().getId()));
     }
 
     protected Map<String, Object> execute(Decision d,
@@ -153,7 +154,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         // root objects must be listed as InputData at the Definitions level
         // but we'll leave that as a task for the validator for now.
         Decision d = dm.getDecision(decisionId); 
-        for (DtInput input : d.getDecisionTable().getInputs()) {
+        for (InputClause input : d.getDecisionTable().getInputs()) {
             String rootObject = getRootObject(input.getInputExpression()
                     .getText());
             sb.append("if (" + rootObject + "==undefined) var " + rootObject
@@ -192,7 +193,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         int ruleIdx = 0;
         for (DecisionRule rule : dt.getRules()) {
             ruleIdx++;
-            List<LiteralExpression> conditions = rule.getInputEntry();
+            List<UnaryTests> conditions = rule.getInputEntry();
             for (int i = 0; i < conditions.size(); i++) {
                 LiteralExpression inputExpression = dt.getInputs().get(i)
                         .getInputExpression();
@@ -201,18 +202,13 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                 } else {
                     sb.append(" && ");
                 }
-                Expression ex = conditions.get(i);
+                UnaryTests ex = conditions.get(i);
                 sb.append(inputExpression.getText());
-                if (ex instanceof LiteralExpression) {
-                    LiteralExpression le = (LiteralExpression) ex;
-                    if (isLiteral(le.getText())) {
+                // TODO changed literal ex to unary where text is not scalar but csv
+                    if (isLiteral(ex.getText())) {
                         sb.append(" == ");
                     }
-                    sb.append(compile(inputExpression.getText(), le));
-                } else {
-                    throw new IllegalStateException(
-                            "Only LiteralExpressions handled at this time");
-                }
+                    sb.append(compile(inputExpression.getText(), ex));
             }
             sb.append(") { \n");
             List<LiteralExpression> conclusions = rule.getOutputEntry();
@@ -226,7 +222,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                 if (ex instanceof LiteralExpression) {
                     LiteralExpression le = (LiteralExpression) ex;
                     sb.append("  ");
-                    sb.append(dt.getOutputs().get(i).getOutputDefinition()
+                    sb.append(dt.getOutputs().get(i)
                             .getId());
                     if (isLiteral(le.getText())) {
                         sb.append(" = ");
@@ -286,6 +282,11 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         }
     }
 
+    protected String compile(String input, UnaryTests ex) {
+        // TODO fix this after introduction of Unary tests
+        return compile("", ex.getText());
+    }
+
     protected String compile(LiteralExpression ex) {
         return compile("", ex);
     }
@@ -297,7 +298,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         if (!(expr instanceof String)) {
 			throw new DecisionException(
 					String.format(
-							"LiteralExpression is expected to be a String but was %1$s",
+                            "LiteralExpression is expected to be a String but was %1$s",
 							expr.getClass().getName()));
 		}
         return compile(input, (String) expr);

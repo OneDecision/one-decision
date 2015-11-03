@@ -53,13 +53,22 @@ public class DecisionModel implements Serializable {
 
     @NotNull
     @JsonProperty
-    protected String decisionId;
-
-    @JsonProperty
     protected String name;
 
     @JsonProperty
+    protected String description;
+
+    @JsonProperty
+    protected String question;
+
+    @JsonProperty
+    protected String allowedAnswers;
+
+    @JsonProperty
     protected String hitPolicy;
+
+    @JsonProperty
+    protected String preferredOrientation;
 
     @JsonProperty
     protected String domainModelUri;
@@ -114,14 +123,6 @@ public class DecisionModel implements Serializable {
 		this.id = id;
 	}
 
-    public String getDecisionId() {
-        return decisionId;
-    }
-
-    public void setDecisionId(String decisionId) {
-        this.decisionId = decisionId;
-    }
-
 	public String getName() {
 		return name;
 	}
@@ -130,7 +131,31 @@ public class DecisionModel implements Serializable {
 		this.name = name;
 	}
 
-	public String getHitPolicy() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAllowedAnswers() {
+        return allowedAnswers;
+    }
+
+    public void setAllowedAnswers(String allowedAnswers) {
+        this.allowedAnswers = allowedAnswers;
+    }
+
+    public String getHitPolicy() {
 		return hitPolicy;
 	}
 
@@ -138,7 +163,15 @@ public class DecisionModel implements Serializable {
 		this.hitPolicy = hitPolicy;
 	}
 
-	public String getDomainModelUri() {
+    public String getPreferredOrientation() {
+        return preferredOrientation;
+    }
+
+    public void setPreferredOrientation(String preferedOrientation) {
+        this.preferredOrientation = preferedOrientation;
+    }
+
+    public String getDomainModelUri() {
 		return domainModelUri;
 	}
 
@@ -205,20 +238,26 @@ public class DecisionModel implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                + ((outputs == null) ? 0 : outputs.hashCode());
-        result = prime * result
-                + ((inputs == null) ? 0 : inputs.hashCode());
+                + ((allowedAnswers == null) ? 0 : allowedAnswers.hashCode());
         result = prime * result + ((created == null) ? 0 : created.hashCode());
         result = prime * result
-                + ((decisionId == null) ? 0 : decisionId.hashCode());
+                + ((description == null) ? 0 : description.hashCode());
         result = prime * result
                 + ((domainModelUri == null) ? 0 : domainModelUri.hashCode());
         result = prime * result
                 + ((hitPolicy == null) ? 0 : hitPolicy.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((inputs == null) ? 0 : inputs.hashCode());
         result = prime * result
                 + ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((outputs == null) ? 0 : outputs.hashCode());
+        result = prime
+                * result
+                + ((preferredOrientation == null) ? 0 : preferredOrientation
+                        .hashCode());
+        result = prime * result
+                + ((question == null) ? 0 : question.hashCode());
         result = prime * result + ((rules == null) ? 0 : rules.hashCode());
         result = prime * result
                 + ((tenantId == null) ? 0 : tenantId.hashCode());
@@ -234,25 +273,20 @@ public class DecisionModel implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         DecisionModel other = (DecisionModel) obj;
-        if (outputs == null) {
-            if (other.outputs != null)
+        if (allowedAnswers == null) {
+            if (other.allowedAnswers != null)
                 return false;
-        } else if (!outputs.equals(other.outputs))
-            return false;
-        if (inputs == null) {
-            if (other.inputs != null)
-                return false;
-        } else if (!inputs.equals(other.inputs))
+        } else if (!allowedAnswers.equals(other.allowedAnswers))
             return false;
         if (created == null) {
             if (other.created != null)
                 return false;
         } else if (!created.equals(other.created))
             return false;
-        if (decisionId == null) {
-            if (other.decisionId != null)
+        if (description == null) {
+            if (other.description != null)
                 return false;
-        } else if (!decisionId.equals(other.decisionId))
+        } else if (!description.equals(other.description))
             return false;
         if (domainModelUri == null) {
             if (other.domainModelUri != null)
@@ -269,6 +303,11 @@ public class DecisionModel implements Serializable {
                 return false;
         } else if (!id.equals(other.id))
             return false;
+        if (inputs == null) {
+            if (other.inputs != null)
+                return false;
+        } else if (!inputs.equals(other.inputs))
+            return false;
         if (lastUpdated == null) {
             if (other.lastUpdated != null)
                 return false;
@@ -278,6 +317,21 @@ public class DecisionModel implements Serializable {
             if (other.name != null)
                 return false;
         } else if (!name.equals(other.name))
+            return false;
+        if (outputs == null) {
+            if (other.outputs != null)
+                return false;
+        } else if (!outputs.equals(other.outputs))
+            return false;
+        if (preferredOrientation == null) {
+            if (other.preferredOrientation != null)
+                return false;
+        } else if (!preferredOrientation.equals(other.preferredOrientation))
+            return false;
+        if (question == null) {
+            if (other.question != null)
+                return false;
+        } else if (!question.equals(other.question))
             return false;
         if (rules == null) {
             if (other.rules != null)

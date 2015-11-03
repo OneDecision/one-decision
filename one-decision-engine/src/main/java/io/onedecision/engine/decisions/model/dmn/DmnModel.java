@@ -14,6 +14,7 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
+import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.InvalidDmnException;
 
@@ -222,7 +223,8 @@ public class DmnModel  implements Serializable {
             // element wrapper here. See
             // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
             m.marshal(new JAXBElement<Definitions>(new QName(
-                    "http://www.omg.org/spec/DMN/20130901", "Definitions"),
+                    DecisionConstants.DMN_URI,
+                    "definitions"),
                     Definitions.class, def), out);
         } catch (JAXBException e) {
             String msg = "Unable to load decision model from stream";

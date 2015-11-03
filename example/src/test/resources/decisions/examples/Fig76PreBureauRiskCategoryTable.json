@@ -1,5 +1,6 @@
 {
-  "decisionId":"Pre-bureau risk category table",
+  "id":76,
+  "name":"Pre-bureau risk category table",
   "hitPolicy":"UNIQUE",
   "domainModelUri":"http://onedecision.io/loans",
   "inputs":[

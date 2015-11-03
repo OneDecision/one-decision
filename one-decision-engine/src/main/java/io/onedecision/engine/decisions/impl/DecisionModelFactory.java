@@ -13,6 +13,7 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.impl;
 
+import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
@@ -30,14 +31,14 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DecisionModelFactory implements RepositoryService {
+public class DecisionModelFactory implements DecisionConstants,
+        RepositoryService {
 
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionModelFactory.class);
@@ -57,8 +58,7 @@ public class DecisionModelFactory implements RepositoryService {
             // Since no @XmlRootElement generated for Definitions need to create
             // element wrapper here. See
             // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
-            m.marshal(new JAXBElement<Definitions>(new QName(
-                    "http://www.omg.org/spec/DMN/20130901", "Definitions"),
+            m.marshal(new JAXBElement<Definitions>(DEFINITIONS,
                     Definitions.class, dm), out);
         } catch (JAXBException e) {
             throw new IOException(e.getMessage(), e);

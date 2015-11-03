@@ -16,6 +16,15 @@ public class DecisionOutput extends DecisionExpression {
 
     private static final long serialVersionUID = -6088512588180027199L;
 
+    public void setAllowedValues(String... unaryTests) {
+        setExpressions(unaryTests);
+    }
+
+    public DecisionOutput withAllowedValues(String... unaryTests) {
+        setExpressions(unaryTests);
+        return this;
+    }
+
     public DecisionOutput withName(String name) {
         setName(name);
         return this;
@@ -25,5 +34,7 @@ public class DecisionOutput extends DecisionExpression {
         setLabel(label);
         return this;
     }
+    
+    
 
 }

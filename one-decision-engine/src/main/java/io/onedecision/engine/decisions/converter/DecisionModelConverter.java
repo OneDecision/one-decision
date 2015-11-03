@@ -25,6 +25,7 @@ import io.onedecision.engine.decisions.model.dmn.InformationItem;
 import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
+import io.onedecision.engine.decisions.model.dmn.OutputClause;
 import io.onedecision.engine.decisions.model.ui.DecisionExpression;
 import io.onedecision.engine.decisions.model.ui.DecisionInput;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
@@ -37,7 +38,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,7 +96,7 @@ public class DecisionModelConverter implements
                 // More indirection - yay!!
                 InformationItem informationItem = objFact
                         .createInformationItem();
-                informationItem.setId(toCamelCase(type.getName()));
+                informationItem.setId(toId(toCamelCase(type.getName())));
                 // TODO these should have own namespace (corresponding to
                 // domain)
 
@@ -109,11 +109,22 @@ public class DecisionModelConverter implements
 		}
 
         Decision decision = objFact.createDecision();
-        decision.setId(source.getDecisionId() == null ? UUID.randomUUID()
-                + "_d" : source.getDecisionId());
+        decision.setId(createDecisionId(source));
+        decision.setName(source.getName());
+        if (source.getDescription() != null) {
+            decision.setDescription(source.getDescription());
+        }
+        if (source.getQuestion() != null) {
+            decision.setQuestion(source.getQuestion());
+        }
+        if (source.getAllowedAnswers() != null) {
+            decision.setAllowedAnswers(source.getAllowedAnswers());
+        }
+
+
         // TODO is it possible for d output to differ from first dt output?
-        decision.setInformationItem(objFact.createInformationItem().withId(
-                toCamelCase(source.getOutputs().get(0).getName())));
+        // decision.setVariable(objFact.createInformationItem().withId(
+        // toCamelCase(source.getOutputs().get(0).getName())));
 
         if (source.getName() != null) {
             decision.setName(source.getName());
@@ -121,8 +132,7 @@ public class DecisionModelConverter implements
         target.getDrgElements().add(objFact.createDecision(decision));
 
         DecisionTable dt = objFact.createDecisionTable();
-		dt.setId(source.getId() == null ? UUID.randomUUID() + "_dt"
-				: source.getId().toString() + "_dt");
+        dt.setId(createDecisionId(source) + "t");
         // TODO DMN11
         // dt.setName(source.getName());
 		if (source.getHitPolicy() == null) {
@@ -130,32 +140,39 @@ public class DecisionModelConverter implements
 		} else {
 			dt.setHitPolicy(HitPolicy.valueOf(source.getHitPolicy()));
 		}
-		dt.setPreferedOrientation(DecisionTableOrientation.RULE_AS_COLUMN);
+        try {
+            dt.setPreferredOrientation(DecisionTableOrientation
+                    .fromValue(source.getPreferredOrientation()));
+        } catch (Exception e) {
+            dt.setPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW);
+        }
 		decision.setExpression(objFact.createDecisionTable(dt));
 
 		for (DecisionInput input : source.getInputs()) {
             dt.getInputs().add(
-                    objFact.createDtInput()
-                            .withName(input.getName())
+                    objFact.createInputClause()
+                            .withId(toId(input.getName()))
+                            .withLabel(input.getLabel())
                             .withInputExpression(
                                     objFact.createLiteralExpression()
                                             .withText(input.getName())));
         }
 		
 		for (DecisionOutput output : source.getOutputs()) {
-            dt.getOutputs().add(
-                    objFact.createDtOutput()
-                            .withName(output.getName())
-                            .withOutputDefinition(
-                                    objFact.createDmnElementReference()
-                                            .withHref(toHref(output.getName()))));
+            OutputClause outputClause = objFact.createOutputClause().withName(
+                    output.getName());
+            dt.getOutputs().add(outputClause);
+            if (output.getExpressions() != null) {
+                outputClause.withOutputValues(objFact.createUnaryTests()
+                        .withUnaryTests(output.getExpressions()));
+            }
         }
         
 		for (io.onedecision.engine.decisions.model.ui.DecisionRule rule : source.getRules()) {
             DecisionRule dmnRule = objFact.createDecisionRule();
             for (int i = 0; i < rule.getInputEntries().length; i++) {
                 dmnRule.getInputEntry().add(
-                        objFact.createLiteralExpression().withText(
+                        objFact.createUnaryTests().withText(
                                 rule.getInputEntries()[i]));
             }
             for (int i = 0; i < rule.getOutputEntries().length; i++) {
@@ -291,26 +308,26 @@ public class DecisionModelConverter implements
 	}
 
     private String createId(DecisionModel source) {
-        return source.getDecisionId() == null ? UUID.randomUUID().toString()
-                : source.getDecisionId().toString() + "Model";
+        return toId(source.getId() == null ? UUID.randomUUID().toString()
+                : source.getId().toString() + "Model");
     }
 
-	private String createId(DecisionTable dt, DecisionModel source,
-			DecisionExpression condition) {
-        return dt.getId() + "_c" + source.getInputs().indexOf(condition);
-	}
+    private String createDecisionId(DecisionModel source) {
+        return toId(source.getId() == null ? UUID.randomUUID().toString()
+                : source.getId() + "_d");
+    }
 
-	private String createId(DecisionTable dt, DecisionModel source,
-            List<? extends DecisionExpression> conditions,
-            DecisionExpression condition, String expr) {
-		List<String> exprs = Arrays.asList(condition.getExpressions());
-		return dt.getId() + "_c" + conditions.indexOf(condition) + "_e"
-				+ exprs.indexOf(expr);
-	}
+    private String toCamelCase(String name) {
+        return name.substring(0, 1).toLowerCase() + name.substring(1);
+    }
 
-	private String toCamelCase(String name) {
-		return name.substring(0, 1).toLowerCase() + name.substring(1);
-	}
+    private String toId(String name) {
+        String id = name.replace(' ', '_').replace('-', '_');
+        if (Character.isDigit(id.charAt(0))) {
+            id = '_' + id;
+        }
+        return id;
+    }
 
     private String toHref(String name) {
         return "#" + toCamelCase(name);

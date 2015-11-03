@@ -1,24 +1,24 @@
 {
-  "decisionId":"Bureau call type table",
+  "id":72,
+  "name":"Bureau call type table",
   "hitPolicy":"UNIQUE",
   "domainModelUri":"http://onedecision.io/loans",
   "inputs":[
-    {"name":"Pre-Bureau Risk Category"},
-    {"name":"Select..."}
+    {"name":"_72PreBureauRiskCategory", "label":"Pre-Bureau Risk Category"}
   ],
   "outputs":[
     {"name":"Bureau Call Type"}
   ],
   "rules":[
     {
-      "inputEntries":["\"HIGH\",\"MEDIUM\"","\"LOW\""],
-      "outputEntries":["\"VERY LOW\",\"DECLINE\""]
+      "inputEntries":["\"HIGH\",\"MEDIUM\""],
+      "outputEntries":["FULL"]
     },{
-      "inputEntries":["B1","B2"],
-      "outputEntries":["B3"]
+      "inputEntries":["LOW"],
+      "outputEntries":["MINI"]
     },{
-      "inputEntries":["\"FULL\"","\"MINI\""],
-      "outputEntries":["\"NONE\""]
+      "inputEntries":["\"VERY LOW\",\"DECLINE\""],
+      "outputEntries":["NONE"]
     }
   ],
   "tenantId":"onedecision"

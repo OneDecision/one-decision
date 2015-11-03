@@ -1,6 +1,7 @@
 package io.onedecision.engine.decisions.examples.dmn;
 
 import static org.junit.Assert.assertTrue;
+import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
@@ -12,6 +13,7 @@ import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
+import io.onedecision.engine.decisions.model.dmn.UnaryTests;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 
 import java.io.File;
@@ -91,14 +93,14 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
             ItemDefinition customerCategoryDef = objFact.createItemDefinition()
                     .withId("customerCategory")
                     .withName("Customer Category")
-                    .withTypeDefinition("string");
+                    .withTypeRef(DecisionConstants.FEEL_STRING);
             ItemDefinition orderSizeDef = objFact.createItemDefinition()
                     .withId("orderSize")
                     .withName("Order Size")
-                    .withTypeDefinition("number");
+                    .withTypeRef(DecisionConstants.FEEL_NUMBER);
             ItemDefinition totalPriceDef = objFact.createItemDefinition()
                     .withId("totalOrderPrice")
-                    .withTypeDefinition("number");
+                    .withTypeRef(DecisionConstants.FEEL_NUMBER);
             
             // build definitions container
             Definitions def = objFact
@@ -113,23 +115,22 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                     );
 
             // build expressions
-            LiteralExpression orderSizeSmall = objFact
-                    .createLiteralExpression().withId("27002_dt_i2_ie_1")
+            UnaryTests orderSizeSmall = objFact.createUnaryTests()
+                    .withId("27002_dt_i2_ie_1")
                     .withText("< 500");
-            LiteralExpression orderSizeLarge = objFact
-                    .createLiteralExpression().withId("27002_dt_i2_ie_2")
+            UnaryTests orderSizeLarge = objFact.createUnaryTests()
+                    .withId("27002_dt_i2_ie_2")
                     .withText(">= 500");
-            LiteralExpression customerCategoryOther = objFact.createLiteralExpression()
+            UnaryTests customerCategoryOther = objFact.createUnaryTests()
                     .withId("27002_dt_i1_ie_1")
                     .withText("!= \"gold\"");
-            LiteralExpression customerCategoryGold = objFact.createLiteralExpression()
+            UnaryTests customerCategoryGold = objFact.createUnaryTests()
                     .withId("27002_dt_i1_ie_2")
                     .withText("== \"gold\"");
             LiteralExpression totalPrice = objFact.createLiteralExpression()
-                    .withId("27002_dt_o1_od_1")
                     .withText("orderSize * totalOrderPrice");
-            LiteralExpression totalPriceDiscounted = objFact.createLiteralExpression()
-                    .withId("27002_dt_o1_od_2")
+            LiteralExpression totalPriceDiscounted = objFact
+                    .createLiteralExpression()
                     .withText("(orderSize * totalOrderPrice) * 0.9");
 
             // build decision table from expressions
@@ -137,7 +138,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                     .withId("27002_dt")
                     .withHitPolicy(HitPolicy.FIRST)
                     .withInputs(
-                            objFact.createDtInput()
+                            objFact.createInputClause()
                                     .withId("27002_dt_i1")
                                     .withInputExpression(
                                             objFact.createLiteralExpression()
@@ -147,10 +148,12 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                                     .withDescription(
                                                             "Customer Category"))
                                     .withInputValues(
-                                            customerCategoryOther,
-                                            customerCategoryGold
+                                            objFact.createUnaryTests()
+                                                    .withUnaryTests(
+                                                            "!= \"gold\"",
+                                                            "== \"gold\"")
                                     ),
-                            objFact.createDtInput()
+                            objFact.createInputClause()
                                     .withId("27002_dt_i2")
                                     .withInputExpression(
                                             objFact.createLiteralExpression()
@@ -159,18 +162,11 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                                     .withDescription(
                                                             "Order Size"))
                                     .withInputValues(
-                                            orderSizeSmall,
-                                            orderSizeLarge)
-                    )
+                                            objFact.createUnaryTests()
+                                                    .withUnaryTests("< 500",
+                                                            ">= 500")))
                     .withOutputs(
-                            objFact.createDtOutput()
-                                    .withId("27002_dt_o1")
-                                    .withOutputDefinition(
-                                            objFact.createDmnElementReference()
-                                                .withHref("#"+totalPriceDef.getId()))
-                                    .withOutputValues(
-                                            totalPrice,
-                                            totalPriceDiscounted))
+                            objFact.createOutputClause().withId("27002_dt_o1"))
                     .withRules(
                             objFact.createDecisionRule()
                                     .withInputEntry(customerCategoryOther)

@@ -84,10 +84,10 @@ public class Fig78ApiTest implements ExamplesConstants {
             // build item definitions
             ItemDefinition applicantData = objFact.createItemDefinition()
                     .withId("applicantData").withName("Applicant Data")
-                    .withTypeDefinition("string"); // TODO
+                    .withTypeRef(Ch11LoanExample.APPLICANT_DATA);
             ItemDefinition bureauData = objFact.createItemDefinition()
                     .withId("bureauData").withName("Bureau Data")
-                    .withTypeDefinition("string"); // TODO
+                    .withTypeRef(Ch11LoanExample.BUREAU_DATA);
             
             // build definitions container
             Definitions def = objFact
@@ -98,7 +98,7 @@ public class Fig78ApiTest implements ExamplesConstants {
                     .withItemDefinitions(applicantData, bureauData);
 
             DecisionTable dt = ch11LoanExample
-                    .getApplicationRiskScoreDecisionTable();
+                    .getApplicationRiskScoreModelDecisionTable();
 
             Decision d = objFact.createDecision()
                     .withId("Application risk score model")

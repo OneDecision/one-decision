@@ -1,5 +1,6 @@
 {
-  "decisionId":"Eligibility rules",
+  "id":74,
+  "name":"Eligibility rules",
   "hitPolicy":"PRIORITY",
   "domainModelUri":"http://onedecision.io/loans",
   "inputs":[

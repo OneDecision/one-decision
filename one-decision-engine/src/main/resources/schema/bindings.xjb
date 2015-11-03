@@ -4,7 +4,7 @@
     xmlns:retep="http://retep.org/xml/ns/retepTools"
     xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    schemaLocation = "dmn11.xsd">
+    schemaLocation = "dmn.xsd">
     
   <jaxb:bindings>
     <!-- 
@@ -27,6 +27,33 @@
 	  <jaxb:package name = "io.onedecision.engine.decisions.model.dmn" />
 	</jaxb:schemaBindings>
 
+  <jaxb:bindings node="//xs:complexType[@name='tArtifact']">
+    <jaxb:class name="Artifact"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tAssociation']">
+    <jaxb:class name="Association"/>
+  </jaxb:bindings>
+  <!-- <jaxb:bindings node="//xs:simpleType[@name='tAssociationDirection']">
+    <jaxb:class name="AssociationDirection"/>
+  </jaxb:bindings> -->
+  <!-- <jaxb:bindings node="//xs:simpleType[@name='tBuiltinAggregator']">
+    <jaxb:class name="BuiltInAggregator"/>
+  </jaxb:bindings>-->
+  <jaxb:bindings node="//xs:complexType[@name='tDecisionService']">
+    <jaxb:class name="DecisionService"/>
+  </jaxb:bindings>
+  <!-- <jaxb:bindings node="//xs:simpleType[@name='tDecisionTableOrientation']">
+    <jaxb:class name="DecisionTableOrientation"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:simpleType[@name='tHitPolicy']">
+    <jaxb:class name="HitPolicy"/>
+  </jaxb:bindings>-->
+  <jaxb:bindings node="//xs:complexType[@name='tTextAnnotation']">
+    <jaxb:class name="TextAnnotation"/>
+  </jaxb:bindings>
+  <jaxb:bindings node="//xs:complexType[@name='tUnaryTests']">
+    <jaxb:class name="UnaryTests"/>
+  </jaxb:bindings>
   <jaxb:bindings node="//xs:complexType[@name='tDMNElement']">
     <jaxb:class name="DmnElement"/>
   </jaxb:bindings>
@@ -81,9 +108,6 @@
   <jaxb:bindings node="//xs:complexType[@name='tItemDefinition']">
     <jaxb:class name="ItemDefinition"/>
   </jaxb:bindings>
-  <jaxb:bindings node="//xs:complexType[@name='tItemComponent']">
-    <jaxb:class name="ItemComponent"/>
-  </jaxb:bindings>
   <jaxb:bindings node="//xs:complexType[@name='tLiteralExpression']">
     <jaxb:class name="LiteralExpression"/>
   </jaxb:bindings>
@@ -99,20 +123,17 @@
   <jaxb:bindings node="//xs:complexType[@name='tDecisionTable']">
     <jaxb:class name="DecisionTable"/>
   </jaxb:bindings>
-  <jaxb:bindings node="//xs:complexType[@name='tClause']">
-    <jaxb:class name="Clause"/>
-  </jaxb:bindings>
   <jaxb:bindings node="//xs:complexType[@name='tDecisionRule']">
     <jaxb:class name="DecisionRule"/>
   </jaxb:bindings>
   <jaxb:bindings node="//xs:complexType[@name='tImportedValues']">
     <jaxb:class name="ImportedValues"/>
   </jaxb:bindings>
-  <jaxb:bindings node="//xs:complexType[@name='tDTOutput']">
-    <jaxb:class name="DtOutput"/>
+  <jaxb:bindings node="//xs:complexType[@name='tOutputClause']">
+    <jaxb:class name="OutputClause"/>
   </jaxb:bindings>
-  <jaxb:bindings node="//xs:complexType[@name='tDTInput']">
-    <jaxb:class name="DtInput"/>
+  <jaxb:bindings node="//xs:complexType[@name='tInputClause']">
+    <jaxb:class name="InputClause"/>
   </jaxb:bindings>
   <jaxb:bindings node="//xs:complexType[@name='tContext']">
     <jaxb:class name="Context"/>
