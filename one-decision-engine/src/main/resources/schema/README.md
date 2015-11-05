@@ -11,5 +11,5 @@ Java bindings have been generated from this schema using:
 
 To generate Builder pattern: 
 ```
-    mvn org.jvnet.jaxb2.maven2:maven-jaxb2-plugin:generate
+    mvn -P jaxb org.jvnet.jaxb2.maven2:maven-jaxb2-plugin:generate
 ```

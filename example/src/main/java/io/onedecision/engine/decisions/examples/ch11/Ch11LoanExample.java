@@ -259,11 +259,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                     creditOfficerKS, affordabilityKS);
 
             // build business knowledge model
-            InformationItem bureauCallPreBureauRiskCategory = objFact.createInformationItem()
-                    .withId("bureauCallPreBureauRiskCategory_ii")
-                    .withTypeRef(DecisionConstants.FEEL_STRING)
-                    .withName("Pre-Bureau Risk Category");
-            BusinessKnowledgeModel bureauCallTypeTable = objFact
+            BusinessKnowledgeModel bureauCallTypeBKM = objFact
                     .createBusinessKnowledgeModel()
                     .withId("bureauCallTypeTable_bkm")
                     .withName("Bureau call type table")
@@ -272,62 +268,29 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withRequiredAuthority(riskManagerKS))
                     .withEncapsulatedLogic(
                             objFact.createFunctionDefinition()
-                                    .withDecisionTable(
-                                            getBureauCallTypeDecisionTable())
-                                    .withFormalParameters(
-                                            bureauCallPreBureauRiskCategory))
+                                    .withDecisionTable(getBureauCallTypeDecisionTable())
+                                    .withFormalParameter("Pre-Bureau Risk Category",FEEL_STRING))
             ;
+            // TODO Context
 
-            InformationItem preBureauExistingCustomer = objFact
-                    .createInformationItem()
-                    .withId("preBureauExistingCustomer_ii")
-                    .withName("Existing Customer")
-                    .withTypeRef(
-                            ((ItemDefinition) applicantDataDef
-                                    .getItemComponentByName("ExistingCustomer"))
-                                    .getTypeRef());
-            InformationItem preBureauApplicationRiskScore = objFact
-                    .createInformationItem()
-                    .withId("preBureauApplicationRiskScore_ii")
-                    .withName("￼Application Risk Score")
-                    .withTypeRef(FEEL_NUMBER);
-            DecisionTable preBureauRiskCategoryDecisionTable = getPreBureauRiskCategoryDecisionTable();
+            DecisionTable preBureauRiskCategoryDecisionTable = getPreBureauRiskCategoryDT();
             BusinessKnowledgeModel preBureauRiskCategoryTable = objFact
                     .createBusinessKnowledgeModel()
                     .withId("preBureauRiskCategoryTable_bkm")
                     .withName("Pre-bureau risk category table")
                     .withEncapsulatedLogic(
                             objFact.createFunctionDefinition()
-                                    .withDecisionTable(
-                                            preBureauRiskCategoryDecisionTable)
+                                    .withDecisionTable(preBureauRiskCategoryDecisionTable)
                                     .withFormalParameter(
-                                            preBureauExistingCustomer)
-                                    .withFormalParameter(
-                                            preBureauApplicationRiskScore));
+                                            objFact.createInformationItem()
+                                                    .withName("Existing Customer")
+                                                    .withTypeRef(
+                                                            ((ItemDefinition) applicantDataDef
+                                                                    .getItemComponentByName("ExistingCustomer"))
+                                                                    .getTypeRef()))
+                                    .withFormalParameter("￼Application Risk Score", FEEL_NUMBER));
+            // TODO Context
 
-            InformationItem applicantAge = objFact.createInformationItem()
-                    .withId("age")
-                    .withName("Age")
-                    .withTypeRef(
-                            ((ItemDefinition) applicantDataDef
-                                    .getItemComponentByName("Age"))
-                                    .getTypeRef());
-            InformationItem maritalStatus = objFact
-                    .createInformationItem()
-                    .withId("maritalStatus")
-                    .withName("MaritalStatus")
-                    .withTypeRef(
-                            ((ItemDefinition) applicantDataDef
-                                    .getItemComponentByName("MaritalStatus"))
-                                    .getTypeRef());
-            InformationItem employmentStatus = objFact
-                    .createInformationItem()
-                    .withId("employmentStatus")
-                    .withName("Employment Status")
-                    .withTypeRef(
-                            ((ItemDefinition) applicantDataDef
-                                    .getItemComponentByName("EmploymentStatus"))
-                                    .getTypeRef());
             BusinessKnowledgeModel applicationRiskScoreModel = objFact
                     .createBusinessKnowledgeModel()
                     .withId("applicationRiskScoreModel_bkm")
@@ -339,9 +302,22 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                             objFact.createFunctionDefinition()
                                     .withDecisionTable(
                                             getApplicationRiskScoreModelDecisionTable())
-                                    .withFormalParameter(applicantAge)
-                                    .withFormalParameter(maritalStatus)
-                                    .withFormalParameter(employmentStatus));
+                                    .withFormalParameter(
+                                            "Age", 
+                                            ((ItemDefinition) applicantDataDef
+                                                    .getItemComponentByName("Age"))
+                                                    .getTypeRef())
+                                    .withFormalParameter(
+                                            "MaritalStatus",
+                                            ((ItemDefinition) applicantDataDef
+                                                    .getItemComponentByName("MaritalStatus"))
+                                                    .getTypeRef())
+                                    .withFormalParameter(
+                                            "Employment Status",
+                                            ((ItemDefinition) applicantDataDef
+                                                    .getItemComponentByName("EmploymentStatus"))
+                                                    .getTypeRef()));
+            // TODO Context
 
             DecisionTable creditContingencyFactorDecisionTable = getCreditContingencyFactorDecisionTable();
             BusinessKnowledgeModel creditContingencyFactorTable = objFact
@@ -353,13 +329,10 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withRequiredAuthority(riskManagerKS))
                     .withEncapsulatedLogic(
                             objFact.createFunctionDefinition()
-                                    .withFormalParameters(
-                                            objFact.createInformationItem()
-                                                    .withId("riskCategory_p")
-                                                    .withName("Rick Category")
-                                                    .withTypeRef(RISK_CATEGORY))
+                                    .withFormalParameter("Risk Category", RISK_CATEGORY)
                                     .withDecisionTable(
                                             creditContingencyFactorDecisionTable));
+            // TODO Context???
             InformationItem riskCategory = objFact.createInformationItem()
                     .withId("riskCategory_ii")
                     .withName("Risk Category")
@@ -370,25 +343,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
             ;
             // TODO the information items here should probably not be created
             // here but reference pre-existing
-            InformationItem eligibilityRulesPreBureauRiskCategory = objFact.createInformationItem()
-                    .withId("preBureauRiskCategory_ii")
-                    .withTypeRef(
-                            DecisionConstants.FEEL_STRING)
-                    .withName(
-                            "Pre-Bureau Risk Category");
-            InformationItem eligibilityRulesPreBureauAffordability= objFact.createInformationItem()
-                    .withId("preBureauAffordability_ii")
-                    .withTypeRef(
-                            DecisionConstants.FEEL_NUMBER)
-                    .withName(
-                            "Pre-bureau affordability");
-            InformationItem eligibilityRulesApplicantAge = objFact.createInformationItem()
-                    .withId("applicantData.Age")
-                    .withTypeRef(
-                            DecisionConstants.FEEL_NUMBER)
-                    .withName(
-                            "Applicant data.Age");
-            BusinessKnowledgeModel eligibilityRules = objFact
+            BusinessKnowledgeModel eligibilityRulesBKM = objFact
                     .createBusinessKnowledgeModel()
                     .withId("eligibilityRules_bkm")
                     .withName("Eligibility rules")
@@ -397,62 +352,27 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withRequiredAuthority(productSpecKS))
                     .withEncapsulatedLogic(
                             objFact.createFunctionDefinition()
-                                    .withDecisionTable(
-                                            getEligibilityRulesDecisionTable())
-                                    .withFormalParameters(
-                                            eligibilityRulesPreBureauAffordability,
-                                            eligibilityRulesPreBureauRiskCategory,
-                                            eligibilityRulesApplicantAge));
+                                    .withDecisionTable(getEligibilityRulesDecisionTable())
+                                    .withFormalParameter("Pre-bureau affordability", FEEL_NUMBER)
+                                    .withFormalParameter("Pre-Bureau Risk Category", FEEL_STRING)
+                                    .withFormalParameter("Applicant data.Age", FEEL_NUMBER));
+                    // TODO Context
             
-            InformationItem routingRulesBankrupt = objFact.createInformationItem()
-                    .withId("routingRulesBankrupt_ii")
-                    .withTypeRef(DecisionConstants.FEEL_BOOLEAN)
-                    .withName("Bureau data . Bankrupt");
-            InformationItem routingRulesCreditScore = objFact.createInformationItem()
-                    .withId("routingRulesCreditScore_ii")
-                    .withTypeRef(DecisionConstants.FEEL_NUMBER)
-                    .withName("Bureau data . CreditScore");
-            InformationItem routingRulesPostBureauRiskCategory = objFact.createInformationItem()
-                    .withId("routingRulesPostBureauRiskCategory_ii")
-                    .withTypeRef(DecisionConstants.FEEL_NUMBER)
-                    .withName("Post-bureau risk category");
-            InformationItem routingRulesPostBureauAffordability= objFact.createInformationItem()
-                    .withId("routingRulesPostBureauAffordability_ii")
-                    .withTypeRef(DecisionConstants.FEEL_NUMBER)
-                    .withName("Post-bureau affordability");
-            BusinessKnowledgeModel routingRules = objFact.createBusinessKnowledgeModel()
+            BusinessKnowledgeModel routingRulesBKM = objFact.createBusinessKnowledgeModel()
                     .withId("routingRules_bkm")
                     .withName("Routing rules")
                     .withEncapsulatedLogic(objFact.createFunctionDefinition()
                             .withDecisionTable(getRoutingRulesDecisionTable())
-                            .withFormalParameter(routingRulesBankrupt)
-                                    .withFormalParameter(routingRulesCreditScore)
-                                    .withFormalParameter(
-                                            routingRulesPostBureauRiskCategory)
-                                    .withFormalParameter(
-                                            routingRulesPostBureauAffordability));
-            
-            BusinessKnowledgeModel installmentCalculation = getInstallmentCalculation();
+                            .withFormalParameter("Bankrupt", FEEL_BOOLEAN)
+                            .withFormalParameter("Crdit Score", FEEL_NUMBER)
+                            .withFormalParameter("Post-Bureau Risk Category", FEEL_NUMBER)
+                            .withFormalParameter("Post-Bureau Affordability", FEEL_NUMBER));
+            // TODO Context
 
-            InformationItem postBureauExistingCustomer = objFact
-                    .createInformationItem()
-                    .withId("postBureauExistingCustomer_ii")
-                    .withName("Existing Customer")
-                    .withTypeRef(
-                            ((ItemDefinition) applicantDataDef
-                                    .getItemComponentByName("ExistingCustomer"))
-                                    .getTypeRef());
-            InformationItem postBureauCreditScore = objFact.createInformationItem()
-                    .withId("postBureauCreditScore_ii")
-                    .withTypeRef(DecisionConstants.FEEL_NUMBER)
-                    .withName("Bureau data . CreditScore");
-            InformationItem postBureauApplicationRiskScore = objFact
-                    .createInformationItem()
-                    .withId("postBureauApplicationRiskScore_ii")
-                    .withName("￼Application Risk Score")
-                    .withTypeRef(FEEL_NUMBER);
-            DecisionTable postBureauRiskCategoryDecisionTable = getPostBureauRiskCategoryDecisionTable();
-            BusinessKnowledgeModel postBureauRiskCategory = objFact
+            BusinessKnowledgeModel installmentCalculationBKM = getInstallmentCalculation();
+
+            DecisionTable postBureauRiskCategoryDT = getPostBureauRiskCategoryDecisionTable();
+            BusinessKnowledgeModel postBureauRiskCategoryBKM = objFact
                     .createBusinessKnowledgeModel()
                     .withId("postBureauRiskCategoryTable_bkm")
                     .withName("Post-bureau risk category table")
@@ -462,21 +382,24 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                     .withEncapsulatedLogic(
                             objFact.createFunctionDefinition()
                                     .withDecisionTable(
-                                            postBureauRiskCategoryDecisionTable)
+                                            postBureauRiskCategoryDT)
                                     .withFormalParameter(
-                                            postBureauExistingCustomer)
-                                    .withFormalParameter(postBureauCreditScore)
-                                    .withFormalParameter(
-                                            postBureauApplicationRiskScore));
-
-            def.withBusinessKnowledgeModels(bureauCallTypeTable,
+                                            "Existing Customer",
+                                            ((ItemDefinition) applicantDataDef
+                                                    .getItemComponentByName("ExistingCustomer"))
+                                                    .getTypeRef())
+                                    .withFormalParameter("Application Risk Score",DecisionConstants.FEEL_NUMBER)
+                                    .withFormalParameter("Credit Score",FEEL_NUMBER));
+                    // TODO Context??
+            
+            def.withBusinessKnowledgeModels(bureauCallTypeBKM,
                     preBureauRiskCategoryTable, applicationRiskScoreModel,
                     creditContingencyFactorTable, affordabilityCalculation,
-                    eligibilityRules, routingRules, installmentCalculation,
-                    postBureauRiskCategory);
+                    eligibilityRulesBKM, routingRulesBKM, installmentCalculationBKM,
+                    postBureauRiskCategoryBKM);
 
             // build decisions
-            Decision applicationRiskScoreDecision = objFact
+            Decision applicationRiskScoreD = objFact
                     .createDecision()
                     .withId("applicationRiskScore_d")
                     .withName("Application risk score")
@@ -486,23 +409,24 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                             applicationRiskScoreModel))
                     .withInvocation(
                             objFact.createInvocation()
-                            .withCalledFunction(
-                                            getPreBureauRiskCategoryDecisionTable()
-                                                    .getId())
+                            .withCalledFunction(getPreBureauRiskCategoryDT().getId())
                             .withBinding(
                                      objFact.createBinding()
-                                             .withParameter(preBureauExistingCustomer)
-                                             .withLiteralExpression("Applicant data . ExistingCustomer"),
+                                             .withParameter("Age")
+                                             .withLiteralExpression("Applicant data . Age"),
                                      objFact.createBinding()
-                                             .withParameter(preBureauApplicationRiskScore)
-                                             .withLiteralExpression("Application risk score")))
+                                             .withParameter("Marital Status")
+                                             .withLiteralExpression("Applicant data . MaritalStatus"),
+                                     objFact.createBinding()
+                                             .withParameter("Employment Status")
+                                             .withLiteralExpression("Applicant data . EmploymentStatus")))
                   ;
 
 
             Decision preBureauRiskCategoryDecision = objFact.createDecision()
                     .withId("preBureauRiskCategory_d")
                     .withName("Pre-bureau risk category") // TODO Fig 66 has Risk
-                    .withInformationRequirements(applicationRiskScoreDecision,
+                    .withInformationRequirements(applicationRiskScoreD,
                             applicantDataInputData)
                     .withKnowledgeRequirements(
                             objFact.createKnowledgeRequirement()
@@ -515,19 +439,19 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                                     .getId())
                             .withBinding(
                                      objFact.createBinding()
-                                             .withParameter(applicantAge)
+                                             .withParameter("Age")
                                              .withLiteralExpression("Applicant data . Age"),
                                      objFact.createBinding()
-                                             .withParameter(maritalStatus)
+                                             .withParameter("MaritalStatus")
                                              .withLiteralExpression("Applicant data . MaritalStatus"),
                                      objFact.createBinding()
-                                             .withParameter(employmentStatus)
+                                             .withParameter("Employment Status")
                                              .withLiteralExpression("Applicant data . EmploymentStatus"))
                     );
             ;
             Decision requiredMonthlyInstallmentDecision = getRequiredMonthylInstallmentDecision(
                     requestedProduct, requestedProductDef,
-                    installmentCalculation);
+                    installmentCalculationBKM);
 
             Decision preBureauAffordabilityDecision = objFact
                     .createDecision()
@@ -552,7 +476,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     riskCategoryDef,
                                     requiredMonthlyInstallmentDef, true));
 
-            Decision eligibilityDecision = objFact.createDecision()
+            Decision eligibilityD = objFact.createDecision()
                     .withId("eligibility_d")
                     .withName("Eligibility")
                     .withInformationRequirements(
@@ -566,20 +490,20 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withRequiredInput(applicantDataInputData))
                     .withKnowledgeRequirements(
                             objFact.createKnowledgeRequirement()
-                                    .withRequiredKnowledge(eligibilityRules))
+                                    .withRequiredKnowledge(eligibilityRulesBKM))
                     .withInvocation(
                             objFact.createInvocation()
                                     .withCalledFunction(
-                                            eligibilityRules.getId())
+                                            eligibilityRulesBKM.getId())
                                     .withBinding(
                                              objFact.createBinding()
-                                                    .withParameter(eligibilityRulesApplicantAge)
+                                                    .withParameter("Applicant data.Age")
                                                     .withLiteralExpression("ApplicantData.Age"),
                                              objFact.createBinding()
-                                                     .withParameter(eligibilityRulesPreBureauRiskCategory)
+                                                     .withParameter("Pre-Bureau Risk Category")
                                                      .withLiteralExpression("Pre-bureau risk category"),
                                              objFact.createBinding()
-                                                     .withParameter(eligibilityRulesPreBureauAffordability)
+                                                     .withParameter("Pre-bureau affordability")
                                                      .withLiteralExpression("Pre-bureau affordability"))
                             );
 
@@ -587,7 +511,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                     .withId("bureauCallType_ii")
                     .withName("Bureau Call Type")
                     .withTypeRef(FEEL_STRING);
-            Decision bureauCallTypeDecision = objFact.createDecision()
+            Decision bureauCallTypeD = objFact.createDecision()
                     .withId("bureauCallType_d")
                     .withName("Bureau call type")
                     .withVariable(bureauCallType)
@@ -597,28 +521,23 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                             preBureauRiskCategoryTable))
                     .withKnowledgeRequirements(
                             objFact.createKnowledgeRequirement()
-                                    .withRequiredKnowledge(bureauCallTypeTable))
+                                    .withRequiredKnowledge(bureauCallTypeBKM))
                     .withInvocation(
                             objFact.createInvocation()
-                                    .withCalledFunction(
-                                            bureauCallTypeTable.getId())
+                                    .withCalledFunction(bureauCallTypeBKM.getId())
                                     .withBinding(
                                             objFact.createBinding()
-                                                    .withParameter(
-                                                            preBureauRiskCategoryDecision)
-                                                    .withLiteralExpression(
-                                                            "Pre-Bureau Risk Category")))
+                                                    .withParameter("Pre-Bureau Risk Category")
+                                                    .withLiteralExpression("Pre-Bureau Risk Category")))
                     ;
-            Decision strategyDecision = getStrategyDecision()
+            Decision strategyD = getStrategyDecision()
                     .withInformationRequirements(
                             objFact.createInformationRequirement()
-                                    .withRequiredDecision(eligibilityDecision),
+                                    .withRequiredDecision(eligibilityD),
                             objFact.createInformationRequirement()
-                                    .withRequiredDecision(
-                                            bureauCallTypeDecision));
+                                    .withRequiredDecision(bureauCallTypeD));
             
-            Decision adjudicationDecision = objFact
-                    .createDecision()
+            Decision adjudicationD = objFact.createDecision()
                     .withId("adjudication_d")
                     .withName("Adjudication")
                     .withAuthorityRequirements(
@@ -650,7 +569,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                     .withKnowledgeRequirements(
                             objFact.createKnowledgeRequirement()
                                     .withRequiredKnowledge(
-                                            postBureauRiskCategory))
+                                            postBureauRiskCategoryBKM))
                     .withAuthorityRequirements(
                             objFact.createAuthorityRequirement()
                                     .withRequiredAuthority(riskManagerKS))
@@ -658,17 +577,17 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                             .withCalledFunction(getPostBureauRiskCategoryDecisionTable().getId())
                             .withBinding(
                                     objFact.createBinding()
-                                            .withParameter(postBureauExistingCustomer)
+                                            .withParameter("Existing Customer")
                                             .withLiteralExpression("Applicant data . ExistingCustomer"),
                                     objFact.createBinding()
-                                            .withParameter(postBureauCreditScore)
+                                            .withParameter("Credit Score")
                                             .withLiteralExpression("Bureau data . CreditScore"),
                                     objFact.createBinding()
-                                            .withParameter(postBureauApplicationRiskScore)
+                                            .withParameter("￼Application Risk Score")
                                             .withLiteralExpression("Application risk score"))                                        
                             );
 
-            Decision routingDecision = objFact
+            Decision routingD = objFact
                     .createDecision()
                     .withId("routing_d")
                     .withName("Routing")
@@ -677,32 +596,32 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                             postBureauRiskCategoryDecision, bureauData)
                     .withAuthorityRequirements(
                             objFact.createAuthorityRequirement()
-                                    .withRequiredAuthority(routingRules))
+                                    .withRequiredAuthority(routingRulesBKM))
                     .withInvocation(objFact.createInvocation()
-                            .withCalledFunction(routingRules.getId())
+                            .withCalledFunction(routingRulesBKM.getId())
                             .withBinding(
                                     objFact.createBinding()
-                                            .withParameter(routingRulesBankrupt)
+                                            .withParameter("Bankrupt")
                                             .withLiteralExpression("Bureau data . Bankrupt"),
                                     objFact.createBinding()         
-                                            .withParameter(routingRulesCreditScore)
+                                            .withParameter("Credit Score")
                                             .withLiteralExpression("Bureau data . CreditScore"),
                                     objFact.createBinding()        
-                                            .withParameter(routingRulesPostBureauRiskCategory)
+                                            .withParameter("￼Post-Bureau Risk Category")
                                             .withLiteralExpression("Post-bureau risk category"),
                                     objFact.createBinding()                                 
-                                            .withParameter(routingRulesPostBureauAffordability)
+                                            .withParameter("Post-Bureau Affordability")
                                             .withLiteralExpression("Post-bureau affordability"))
                                    );
 
-            def.withDecisions(bureauCallTypeDecision, strategyDecision,
-                    eligibilityDecision, preBureauRiskCategoryDecision,
-                    applicationRiskScoreDecision,
+            def.withDecisions(bureauCallTypeD, strategyD,
+                    eligibilityD, preBureauRiskCategoryDecision,
+                    applicationRiskScoreD,
                     preBureauAffordabilityDecision,
                     postBureauAffordabilityDecision,
                     requiredMonthlyInstallmentDecision,
-                    postBureauRiskCategoryDecision, routingDecision,
-                    adjudicationDecision);
+                    postBureauRiskCategoryDecision, routingD,
+                    adjudicationD);
 
             TestHelper.assertSerializationProduced(def);
 
@@ -730,12 +649,9 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                 .withRequiredAuthority(affordabilityKS))
                 .withEncapsulatedLogic(
                         objFact.createFunctionDefinition()
-                                .withFormalParameter("Monthly Income",
-                                        FEEL_NUMBER)
-                                .withFormalParameter("Monthly Repayments",
-                                        FEEL_NUMBER)
-                                .withFormalParameter("Monthly Expenses",
-                                        FEEL_NUMBER)
+                                .withFormalParameter("Monthly Income", FEEL_NUMBER)
+                                .withFormalParameter("Monthly Repayments", FEEL_NUMBER)
+                                .withFormalParameter("Monthly Expenses", FEEL_NUMBER)
                                 .withFormalParameter(riskCategory)
                                 .withFormalParameter(
                                         "Required Monthly Installment",
@@ -759,14 +675,8 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                                                                 .withBinding(
                                                                                         objFact.createBinding()
                                                                                                 .withParameter(
-                                                                                                        objFact.createDmnElementReference()
-                                                                                                                .withHref(
-                                                                                                                        riskCategory
-                                                                                                                                .getId()))
-                                                                                                .withLiteralExpression(
-                                                                                                        objFact.createLiteralExpression()
-                                                                                                                .withText(
-                                                                                                                        "Risk Category")))),
+                                                                                                        "Risk Category")
+                                                                                                .withLiteralExpression("Risk Category"))),
                                                         objFact.createContextEntry()
                                                                 .withVariable(
                                                                         "Affordability")
@@ -797,54 +707,20 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                 .withCalledFunction(affordabilityCalculation.getId())
                 .withBinding(
                         objFact.createBinding()
-                                .withParameter(
-                                        objFact.createDmnElementReference()
-                                                .withHref(
-                                                        monthly.getItemComponentByName(
-                                                                "Income")
-                                                                .getId()))
-                                .withLiteralExpression(
-                                        objFact.createLiteralExpression()
-                                                .withText(
-                                                        "Applicant data . Monthly . Income")),
+                                .withParameter("￼Monthly Income")
+                                .withLiteralExpression("Applicant data . Monthly . Income"),
                         objFact.createBinding()
-                                .withParameter(
-                                        objFact.createDmnElementReference()
-                                                .withHref(
-                                                        monthly.getItemComponentByName(
-                                                                "Repayments")
-                                                                .getId()))
-                                .withLiteralExpression(
-                                        objFact.createLiteralExpression()
-                                                .withText(
-                                                        "Applicant data . Monthly . Repayments")),
+                                .withParameter("￼Monthly Repayments")
+                                .withLiteralExpression("Applicant data . Monthly . Repayments"),
                         objFact.createBinding()
-                                .withParameter(
-                                        objFact.createDmnElementReference()
-                                                .withHref(
-                                                        monthly.getItemComponentByName(
-                                                                "Expenses")
-                                                                .getId()))
-                                .withLiteralExpression(
-                                        objFact.createLiteralExpression()
-                                                .withText(
-                                                        "Applicant data . Monthly . Expenses")),
+                                .withParameter("Monthly Expenses")
+                                .withLiteralExpression("Applicant data . Monthly . Expenses"),
                         objFact.createBinding()
-                                .withParameter(
-                                        objFact.createDmnElementReference()
-                                                .withHref(
-                                                        riskCategoryDef.getId()))
+                                .withParameter("￼Risk Category")
                                 .withLiteralExpression(riskCategoryLE),
                         objFact.createBinding()
-                                .withParameter(
-                                        objFact.createDmnElementReference()
-                                                .withHref(
-                                                        requiredMonthlyInstallmentDef
-                                                                .getId()))
-                                .withLiteralExpression(
-                                        objFact.createLiteralExpression()
-                                                .withText(
-                                                        "Required monthly installment"))
+                                .withParameter("￼Required Monthly Installment")
+                                .withLiteralExpression("Required monthly installment")
                 );
     }
 
@@ -909,53 +785,17 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                 .withCalledFunction("Installment invocation")
                                 .withBinding(
                                         objFact.createBinding()
-                                                .withParameter(
-                                                        objFact.createDmnElementReference()
-                                                                .withHref(
-                                                                        requestedProductDef
-                                                                                .getItemComponentByName(
-                                                                                        "ProductType")
-                                                                                .getId()))
-                                                .withLiteralExpression(
-                                                        objFact.createLiteralExpression()
-                                                                .withText(
-                                                                        "Requested product . ProductType")),
+                                                .withParameter("Product Type")
+                                                .withLiteralExpression("Requested product . ProductType"),
                                         objFact.createBinding()
-                                                .withParameter(
-                                                        objFact.createDmnElementReference()
-                                                                .withHref(
-                                                                        requestedProductDef
-                                                                                .getItemComponentByName(
-                                                                                        "Rate")
-                                                                                .getId()))
-                                                .withLiteralExpression(
-                                                        objFact.createLiteralExpression()
-                                                                .withText(
-                                                                        "Requested product . Rate")),
+                                                .withParameter("Rate")
+                                                .withLiteralExpression("Requested product . Rate"),
                                         objFact.createBinding()
-                                                .withParameter(
-                                                        objFact.createDmnElementReference()
-                                                                .withHref(
-                                                                        requestedProductDef
-                                                                                .getItemComponentByName(
-                                                                                        "Term")
-                                                                                .getId()))
-                                                .withLiteralExpression(
-                                                        objFact.createLiteralExpression()
-                                                                .withText(
-                                                                        "Requested product . Term")),
+                                                .withParameter("Term")
+                                                .withLiteralExpression("Requested product . Term"),
                                         objFact.createBinding()
-                                                .withParameter(
-                                                        objFact.createDmnElementReference()
-                                                                .withHref(
-                                                                        requestedProductDef
-                                                                                .getItemComponentByName(
-                                                                                        "Amount")
-                                                                                .getId()))
-                                                .withLiteralExpression(
-                                                        objFact.createLiteralExpression()
-                                                                .withText(
-                                                                        "Requested product . Amount"))                                                                        
+                                                .withParameter("Amount")
+                                                .withLiteralExpression("Requested product . Amount")                                                                      
                         ));
     }
 
@@ -966,39 +806,21 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                 .withName("Installment calculation")
                 .withEncapsulatedLogic(
                         objFact.createFunctionDefinition()
-                                .withFormalParameters(
-                                        objFact.createInformationItem()
-                                                .withId("productType_p")
-                                                .withName("Product Type")
-                                                .withTypeRef(FEEL_STRING),
-                                        objFact.createInformationItem()
-                                                .withId("rate_p")
-                                                .withName("Rate")
-                                                .withTypeRef(FEEL_NUMBER),
-                                        objFact.createInformationItem()
-                                                .withId("term_p")
-                                                .withName("Term")
-                                                .withTypeRef(FEEL_NUMBER),
-                                        objFact.createInformationItem()
-                                                .withId("amount_p")
-                                                .withName("Amount")
-                                                .withTypeRef(FEEL_NUMBER))
+                                .withFormalParameter("Product Type",FEEL_STRING)
+                                .withFormalParameter("Rate",FEEL_NUMBER)
+                                .withFormalParameter("Term",FEEL_NUMBER)
+                                .withFormalParameter( "Amount", FEEL_NUMBER)
                                 .withContext(
                                         objFact.createContext()
                                                 .withContextEntry(
                                                         objFact.createContextEntry()
-                                                                .withVariable(
-                                                                        "Monthly Fee")
-                                                                .withLiteralExpression(
-                                                                        "if Product Type = \"STANDARD LOAN\" then 20.00\nelse if Product Type = \"SPECIAL LOAN\" then 25.00\n else null"),
+                                                                .withVariable("Monthly Fee")
+                                                                .withLiteralExpression("if Product Type = \"STANDARD LOAN\" then 20.00\nelse if Product Type = \"SPECIAL LOAN\" then 25.00\n else null"),
                                                         objFact.createContextEntry()
-                                                                .withVariable(
-                                                                        "Monthly Repayment")
-                                                                .withLiteralExpression(
-                                                                        "PMT(Rate, Term, Amount)"),
+                                                                .withVariable("Monthly Repayment")
+                                                                .withLiteralExpression("PMT(Rate, Term, Amount)"),
                                                         objFact.createContextEntry()
-                                                                .withLiteralExpression(
-                                                                        "Monthly Repayment + Monthly Fee"))
+                                                                .withLiteralExpression("Monthly Repayment + Monthly Fee"))
 
                                 ));
     }
@@ -1026,7 +848,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
         return converter.convert(jsonModel).getDecision(CH11_FIG74_DECISION_ID).getDecisionTable();
     }
 
-    protected DecisionTable getPreBureauRiskCategoryDecisionTable()
+    protected DecisionTable getPreBureauRiskCategoryDT()
             throws IOException {
         DecisionModel jsonModel = TestHelper
                 .getJsonModel(CH11_FIG76_JSON_RESOURCE);

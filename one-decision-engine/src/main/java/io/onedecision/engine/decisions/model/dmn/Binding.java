@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}expression" minOccurs="0"/&gt;
- *         &lt;element name="parameter" type="{http://www.omg.org/spec/DMN/20130901}tDMNElementReference"/&gt;
+ *         &lt;element name="parameter" type="{http://www.omg.org/spec/DMN/20130901}tInformationItem"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -54,7 +54,7 @@ public class Binding implements Serializable {
     @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
     protected JAXBElement<? extends Expression> expression;
     @XmlElement(required = true)
-    protected DmnElementReference parameter;
+    protected InformationItem parameter;
 
     /**
      * Gets the value of the expression property.
@@ -104,10 +104,10 @@ public class Binding implements Serializable {
      * 
      * @return
      *     possible object is
-     *     {@link DmnElementReference }
+     *     {@link InformationItem }
      *     
      */
-    public DmnElementReference getParameter() {
+    public InformationItem getParameter() {
         return parameter;
     }
 
@@ -116,10 +116,10 @@ public class Binding implements Serializable {
      * 
      * @param value
      *     allowed object is
-     *     {@link DmnElementReference }
+     *     {@link InformationItem }
      *     
      */
-    public void setParameter(DmnElementReference value) {
+    public void setParameter(InformationItem value) {
         this.parameter = value;
     }
 
@@ -138,20 +138,13 @@ public class Binding implements Serializable {
         return this;
     }
 
-    public Binding withParameter(DmnElementReference value) {
-        setParameter(value);
-        return this;
-    }
-
     public Binding withParameter(InformationItem item) {
-        setParameter(objFact.createDmnElementReference().withHref(item.getId()));
+        setParameter(item);
         return this;
     }
 
-    public Binding withParameter(Decision decision) {
-        setParameter(objFact.createDmnElementReference().withHref(
-                decision.getId()));
+    public Binding withParameter(String itemName) {
+        setParameter(objFact.createInformationItem().withName(itemName));
         return this;
     }
-
 }
