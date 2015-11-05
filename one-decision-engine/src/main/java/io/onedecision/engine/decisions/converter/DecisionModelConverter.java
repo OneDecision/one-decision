@@ -278,7 +278,7 @@ public class DecisionModelConverter implements
                 if (entry instanceof LiteralExpression) {
                     String val = (String) ((LiteralExpression) entry).getText()
                             .getContent().get(0);
-                    System.out.println("  match?: " + string + " = " + val);
+                    // System.out.println("  match?: " + string + " = " + val);
                     if (string.equals(val)) {
                         return entry;
                     }

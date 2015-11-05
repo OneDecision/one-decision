@@ -146,8 +146,7 @@ public class DecisionTable extends Expression {
     // NOTE: id is not part of 1.0 XSD (an oversight one would think)
     public Clause findClause(String id) {
         for (Clause clause : getClause()) {
-            System.out
-                    .println("  match?: " + id + " = " + clause.getId());
+            // System.out.println("  match?: " + id + " = " + clause.getId());
             if (id.equals(clause.getId())) {
                 return clause;
             }
