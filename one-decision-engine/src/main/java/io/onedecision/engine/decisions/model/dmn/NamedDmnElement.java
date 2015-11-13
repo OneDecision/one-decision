@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tNamedDMNElement">
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.omg.org/spec/DMN/20130901}tDMNElement">
+ *     &lt;restriction base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement">
  *       &lt;sequence>
  *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;any processContents='lax' namespace='##other' maxOccurs="unbounded" minOccurs="0"/>

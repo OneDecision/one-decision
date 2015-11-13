@@ -26,10 +26,10 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tDecisionRule"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="inputEntry" type="{http://www.omg.org/spec/DMN/20130901}tUnaryTests" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="outputEntry" type="{http://www.omg.org/spec/DMN/20130901}tLiteralExpression" maxOccurs="unbounded"/&gt;
+ *         &lt;element name="inputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tUnaryTests" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="outputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tLiteralExpression" maxOccurs="unbounded"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;

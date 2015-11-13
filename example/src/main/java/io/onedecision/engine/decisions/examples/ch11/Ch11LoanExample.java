@@ -29,23 +29,22 @@ import javax.xml.namespace.QName;
 
 public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
 
-    public static String DMN_EXAMPLES_URI = "http://www.omg.org/spec/DMN/examples/201xyyzz";
+    public static String DMN_EXAMPLES_URI = "http://www.omg.org/spec/DMN/examples/20151101/ch11example";
 
     public static final QName APPLICANT_DATA = new QName(DMN_EXAMPLES_URI,
-            "ApplicantData");
+            "ApplicantData", "ex");
 
     public static final QName BUREAU_DATA = new QName(DMN_EXAMPLES_URI,
-            "BureauData");
+            "BureauData", "ex");
 
     public static final QName REQUESTED_PRODUCT = new QName(DMN_EXAMPLES_URI,
-            "RequestedProduct");
+            "RequestedProduct", "ex");
 
     public static final QName RISK_CATEGORY = new QName(DMN_EXAMPLES_URI,
-            "RiskCategory");
+            "RiskCategory", "ex");
 
     public static final QName SUPPORTING_DOCUMENTS = new QName(
-            DMN_EXAMPLES_URI,
-            "SupportingDocs");
+            DMN_EXAMPLES_URI, "SupportingDocs", "ex");
 
     private static ObjectFactory objFact;
 
@@ -336,7 +335,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
             InformationItem riskCategory = objFact.createInformationItem()
                     .withId("riskCategory_ii")
                     .withName("Risk Category")
-                    .withTypeRef(FEEL_STRING);
+                    .withTypeRef(riskCategoryDef.getTypeRef());
             BusinessKnowledgeModel affordabilityCalculation = getAffordabilityCalculation(
                     affordabilityKS, creditContingencyFactorDecisionTable,
                     creditContingencyFactorTable, riskCategory)
@@ -409,7 +408,8 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                             applicationRiskScoreModel))
                     .withInvocation(
                             objFact.createInvocation()
-                            .withCalledFunction(getPreBureauRiskCategoryDT().getId())
+                                    .withCalledFunction(
+                                            applicationRiskScoreModel.getName())
                             .withBinding(
                                      objFact.createBinding()
                                              .withParameter("Age")
@@ -434,9 +434,9 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                             preBureauRiskCategoryTable))
                     .withInvocation(
                             objFact.createInvocation()
-                            .withCalledFunction(
-                                            getApplicationRiskScoreModelDecisionTable()
-                                                    .getId())
+                                    .withCalledFunction(
+                                            preBureauRiskCategoryTable
+                                                    .getName())
                             .withBinding(
                                      objFact.createBinding()
                                              .withParameter("Age")
@@ -494,7 +494,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                     .withInvocation(
                             objFact.createInvocation()
                                     .withCalledFunction(
-                                            eligibilityRulesBKM.getId())
+                                            eligibilityRulesBKM.getName())
                                     .withBinding(
                                              objFact.createBinding()
                                                     .withParameter("Applicant data.Age")
@@ -524,7 +524,8 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withRequiredKnowledge(bureauCallTypeBKM))
                     .withInvocation(
                             objFact.createInvocation()
-                                    .withCalledFunction(bureauCallTypeBKM.getId())
+                                    .withCalledFunction(
+                                            bureauCallTypeBKM.getName())
                                     .withBinding(
                                             objFact.createBinding()
                                                     .withParameter("Pre-Bureau Risk Category")
@@ -574,7 +575,8 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                             objFact.createAuthorityRequirement()
                                     .withRequiredAuthority(riskManagerKS))
                     .withInvocation(objFact.createInvocation()
-                            .withCalledFunction(getPostBureauRiskCategoryDecisionTable().getId())
+                                    .withCalledFunction(
+                                            postBureauRiskCategoryBKM.getName())
                             .withBinding(
                                     objFact.createBinding()
                                             .withParameter("Existing Customer")
@@ -598,7 +600,8 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                             objFact.createAuthorityRequirement()
                                     .withRequiredAuthority(routingRulesBKM))
                     .withInvocation(objFact.createInvocation()
-                            .withCalledFunction(routingRulesBKM.getId())
+                                    .withCalledFunction(
+                                            routingRulesBKM.getName())
                             .withBinding(
                                     objFact.createBinding()
                                             .withParameter("Bankrupt")
@@ -670,8 +673,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                                                 .withInvocation(
                                                                         objFact.createInvocation()
                                                                                 .withCalledFunction(
-                                                                                        creditContingencyFactorDecisionTable
-                                                                                                .getId())
+                                                                                        "(Monthly Income, Monthly Repayments, Monthly Expenses, Risk Category, Required Monthly Installment)")
                                                                                 .withBinding(
                                                                                         objFact.createBinding()
                                                                                                 .withParameter(
@@ -689,7 +691,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
 
 
     private Invocation getAffordabilityCalculationInvocation(
-            DmnElement affordabilityCalculation,
+            BusinessKnowledgeModel affordabilityCalculation,
             ItemDefinition applicantDataDef, DmnElement riskCategoryDef,
             DmnElement requiredMonthlyInstallmentDef, boolean isPreBureau) {
 
@@ -704,7 +706,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
         }
         return objFact
                 .createInvocation()
-                .withCalledFunction(affordabilityCalculation.getId())
+                .withCalledFunction(affordabilityCalculation.getName())
                 .withBinding(
                         objFact.createBinding()
                                 .withParameter("￼Monthly Income")
@@ -782,7 +784,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                 .withRequiredKnowledge(installmentCalculation))
                 .withInvocation(
                         objFact.createInvocation()
-                                .withCalledFunction("Installment invocation")
+                                .withCalledFunction("Installment calculation")
                                 .withBinding(
                                         objFact.createBinding()
                                                 .withParameter("Product Type")

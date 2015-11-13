@@ -27,9 +27,9 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tList"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}expression" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -48,7 +48,7 @@ public class List
     implements Serializable
 {
 
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
     protected java.util.List<JAXBElement<? extends Expression>> expression;
 
     /**

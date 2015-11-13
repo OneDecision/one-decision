@@ -23,10 +23,10 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tInputClause"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="inputExpression" type="{http://www.omg.org/spec/DMN/20130901}tLiteralExpression"/&gt;
- *         &lt;element name="inputValues" type="{http://www.omg.org/spec/DMN/20130901}tUnaryTests" minOccurs="0"/&gt;
+ *         &lt;element name="inputExpression" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tLiteralExpression"/&gt;
+ *         &lt;element name="inputValues" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tUnaryTests" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;

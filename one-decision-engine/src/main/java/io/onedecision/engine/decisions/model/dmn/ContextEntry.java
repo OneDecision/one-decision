@@ -29,8 +29,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20130901}tInformationItem" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}expression"/&gt;
+ *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -49,7 +49,7 @@ public class ContextEntry implements Serializable {
     private static final long serialVersionUID = -3212239049041408008L;
     private static ObjectFactory objFact = new ObjectFactory();
     protected InformationItem variable;
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class)
     protected JAXBElement<? extends Expression> expression;
 
     /**

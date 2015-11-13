@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}expression" minOccurs="0"/&gt;
- *         &lt;element name="parameter" type="{http://www.omg.org/spec/DMN/20130901}tInformationItem"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression" minOccurs="0"/&gt;
+ *         &lt;element name="parameter" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -51,7 +51,7 @@ public class Binding implements Serializable {
 
     private static ObjectFactory objFact = new ObjectFactory();
 
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
     protected JAXBElement<? extends Expression> expression;
     @XmlElement(required = true)
     protected InformationItem parameter;

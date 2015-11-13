@@ -25,10 +25,10 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tOutputClause"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="outputValues" type="{http://www.omg.org/spec/DMN/20130901}tUnaryTests" minOccurs="0"/&gt;
- *         &lt;element name="defaultOutputEntry" type="{http://www.omg.org/spec/DMN/20130901}tLiteralExpression" minOccurs="0"/&gt;
+ *         &lt;element name="outputValues" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tUnaryTests" minOccurs="0"/&gt;
+ *         &lt;element name="defaultOutputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tLiteralExpression" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *       &lt;attribute name="typeRef" type="{http://www.w3.org/2001/XMLSchema}QName" /&gt;

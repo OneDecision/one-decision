@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20130901}tDMNElementReference"/&gt;
+ *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *     &lt;/restriction&gt;

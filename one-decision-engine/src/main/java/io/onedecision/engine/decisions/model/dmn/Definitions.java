@@ -38,14 +38,14 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tDefinitions"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="import" type="{http://www.omg.org/spec/DMN/20130901}tImport" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20130901}tItemDefinition" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}drgElement" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}artifact" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="elementCollection" type="{http://www.omg.org/spec/DMN/20130901}tElementCollection" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}businessContextElement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="import" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tImport" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tItemDefinition" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}drgElement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}artifact" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="elementCollection" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tElementCollection" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}businessContextElement" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="expressionLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" default="http://www.omg.org/spec/FEEL/20140401" /&gt;
  *       &lt;attribute name="typeLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" default="http://www.omg.org/spec/FEEL/20140401" /&gt;
@@ -76,12 +76,12 @@ public class Definitions extends NamedElement implements Serializable {
     @XmlElement(name = "import")
     protected List<Import> imports;
     protected List<ItemDefinition> itemDefinition;
-    @XmlElementRef(name = "drgElement", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "drgElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
     protected List<JAXBElement<? extends DrgElement>> drgElement;
-    @XmlElementRef(name = "artifact", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "artifact", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
     protected List<JAXBElement<? extends Artifact>> artifact;
     protected List<ElementCollection> elementCollection;
-    @XmlElementRef(name = "businessContextElement", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "businessContextElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
     protected List<JAXBElement<? extends BusinessContextElement>> businessContextElement;
     @XmlAttribute(name = "expressionLanguage")
     @XmlSchemaType(name = "anyURI")

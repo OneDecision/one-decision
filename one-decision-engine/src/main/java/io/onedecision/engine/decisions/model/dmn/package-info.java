@@ -5,5 +5,5 @@
 // Generated on: 2015.10.30 at 01:30:38 PM GMT 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.omg.org/spec/DMN/20130901", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package io.onedecision.engine.decisions.model.dmn;

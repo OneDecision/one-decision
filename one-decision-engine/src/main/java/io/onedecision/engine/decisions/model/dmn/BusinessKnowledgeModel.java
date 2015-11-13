@@ -25,12 +25,12 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tBusinessKnowledgeModel"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tDRGElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDRGElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="encapsulatedLogic" type="{http://www.omg.org/spec/DMN/20130901}tFunctionDefinition" minOccurs="0"/&gt;
- *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20130901}tInformationItem" minOccurs="0"/&gt;
- *         &lt;element name="knowledgeRequirement" type="{http://www.omg.org/spec/DMN/20130901}tKnowledgeRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20130901}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="encapsulatedLogic" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tFunctionDefinition" minOccurs="0"/&gt;
+ *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" minOccurs="0"/&gt;
+ *         &lt;element name="knowledgeRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tKnowledgeRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;

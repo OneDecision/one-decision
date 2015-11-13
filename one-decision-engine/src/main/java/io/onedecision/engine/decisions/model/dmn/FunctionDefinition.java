@@ -30,10 +30,10 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tFunctionDefinition"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="formalParameter" type="{http://www.omg.org/spec/DMN/20130901}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20130901}expression" minOccurs="0"/&gt;
+ *         &lt;element name="formalParameter" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -53,7 +53,7 @@ public class FunctionDefinition extends Expression implements Serializable {
     private static final long serialVersionUID = -8208911742535485516L;
     private static final ObjectFactory objFact = new ObjectFactory();
     protected java.util.List<InformationItem> formalParameter;
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20130901", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
     protected JAXBElement<? extends Expression> expression;
 
     /**

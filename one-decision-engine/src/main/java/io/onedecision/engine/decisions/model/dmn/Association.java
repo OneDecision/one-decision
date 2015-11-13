@@ -24,12 +24,12 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tAssociation"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tArtifact"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tArtifact"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="sourceRef" type="{http://www.omg.org/spec/DMN/20130901}tDMNElementReference"/&gt;
- *         &lt;element name="targetRef" type="{http://www.omg.org/spec/DMN/20130901}tDMNElementReference"/&gt;
+ *         &lt;element name="sourceRef" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
+ *         &lt;element name="targetRef" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
  *       &lt;/sequence&gt;
- *       &lt;attribute name="associationDirection" type="{http://www.omg.org/spec/DMN/20130901}tAssociationDirection" default="None" /&gt;
+ *       &lt;attribute name="associationDirection" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tAssociationDirection" default="None" /&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;

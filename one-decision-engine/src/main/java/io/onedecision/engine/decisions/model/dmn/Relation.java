@@ -25,10 +25,10 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tRelation"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="column" type="{http://www.omg.org/spec/DMN/20130901}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="row" type="{http://www.omg.org/spec/DMN/20130901}tList" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="column" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="row" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tList" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;

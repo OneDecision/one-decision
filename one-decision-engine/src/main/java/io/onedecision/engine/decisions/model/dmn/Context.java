@@ -27,9 +27,9 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tContext"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="contextEntry" type="{http://www.omg.org/spec/DMN/20130901}tContextEntry" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="contextEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tContextEntry" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;

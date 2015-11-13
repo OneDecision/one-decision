@@ -55,6 +55,8 @@ public class DecisionModelFactory implements DecisionConstants,
         try {
             context = JAXBContext.newInstance(Definitions.class);
             Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
             // Since no @XmlRootElement generated for Definitions need to create
             // element wrapper here. See
             // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html

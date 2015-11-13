@@ -26,10 +26,10 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tInvocation"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20130901}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="calledFunction" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="binding" type="{http://www.omg.org/spec/DMN/20130901}tBinding" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="binding" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tBinding" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
