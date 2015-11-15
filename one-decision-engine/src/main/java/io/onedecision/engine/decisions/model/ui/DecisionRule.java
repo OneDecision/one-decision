@@ -13,6 +13,8 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.model.ui;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +31,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "OL_UI_RULE")
 @Component
-public class DecisionRule {
+public class DecisionRule implements Serializable {
+
+    private static final long serialVersionUID = -6779322287292907493L;
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionRule.class);
 

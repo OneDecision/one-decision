@@ -9,7 +9,6 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import io.onedecision.engine.decisions.api.DecisionConstants;
-import io.onedecision.engine.decisions.api.DecisionException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -457,7 +456,11 @@ public class Decision extends DrgElement implements
         } else if (expression.getValue() instanceof DecisionTable) {
             return (DecisionTable) expression.getValue(); 
         } else { 
-            throw new DecisionException("Expression is not a decision table"); 
+            System.err.println("Expression is not a decision table but a "
+                    + expression.getValue().getId());
+            return null;
+            // throw new
+            // DecisionException("Expression is not a decision table");
         }
     }
 

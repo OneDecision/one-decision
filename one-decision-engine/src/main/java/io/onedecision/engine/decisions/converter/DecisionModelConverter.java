@@ -151,7 +151,9 @@ public class DecisionModelConverter implements
 		for (DecisionInput input : source.getInputs()) {
             dt.getInputs().add(
                     objFact.createInputClause()
-                            .withId(toId(input.getName()))
+                            // TODO This is ok for a DT in isolation but larger
+                            // models can result in duplicate ids
+                            // .withId(toId(input.getName()))
                             .withLabel(input.getLabel())
                             .withInputExpression(
                                     objFact.createLiteralExpression()

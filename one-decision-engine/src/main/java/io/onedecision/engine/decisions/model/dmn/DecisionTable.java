@@ -318,7 +318,7 @@ public class DecisionTable extends Expression implements Serializable {
         return this;
     }
 
-    public DecisionTable withPreferedOrientation(DecisionTableOrientation value) {
+    public DecisionTable withPreferredOrientation(DecisionTableOrientation value) {
         setPreferredOrientation(value);
         return this;
     }

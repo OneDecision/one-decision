@@ -4,7 +4,7 @@
   "hitPolicy":"UNIQUE",
   "domainModelUri":"http://onedecision.io/loans",
   "inputs":[
-    {"name":"_72PreBureauRiskCategory", "label":"Pre-Bureau Risk Category"}
+    {"name":"Pre-Bureau Risk Category"}
   ],
   "outputs":[
     {"name":"Bureau Call Type"}
@@ -12,13 +12,13 @@
   "rules":[
     {
       "inputEntries":["\"HIGH\",\"MEDIUM\""],
-      "outputEntries":["FULL"]
+      "outputEntries":["\"FULL\""]
     },{
-      "inputEntries":["LOW"],
-      "outputEntries":["MINI"]
+      "inputEntries":["\"LOW\""],
+      "outputEntries":["\"MINI\""]
     },{
       "inputEntries":["\"VERY LOW\",\"DECLINE\""],
-      "outputEntries":["NONE"]
+      "outputEntries":["\"NONE\""]
     }
   ],
   "tenantId":"onedecision"

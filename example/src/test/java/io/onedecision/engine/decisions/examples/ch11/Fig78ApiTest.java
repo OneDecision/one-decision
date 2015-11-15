@@ -98,7 +98,7 @@ public class Fig78ApiTest implements ExamplesConstants {
                     .withItemDefinitions(applicantData, bureauData);
 
             DecisionTable dt = ch11LoanExample
-                    .getApplicationRiskScoreModelDecisionTable();
+                    .getApplicationRiskScoreModelDT();
 
             Decision d = objFact.createDecision()
                     .withId("Application risk score model")

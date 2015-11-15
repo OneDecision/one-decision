@@ -132,7 +132,7 @@ public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
             DecisionTable dt = objFact.createDecisionTable()
                     .withId("27002_dt")
                     .withHitPolicy(HitPolicy.UNIQUE)
-                    .withPreferedOrientation(
+                    .withPreferredOrientation(
                             DecisionTableOrientation.RULE_AS_COLUMN)
                     .withInputs(
                             objFact.createInputClause()

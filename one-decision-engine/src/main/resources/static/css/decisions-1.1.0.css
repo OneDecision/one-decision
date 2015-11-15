@@ -1,13 +1,23 @@
 [contenteditable]:hover {
   cursor: pointer;
 }
+.decision-table thead tr:last-child {
+	border-bottom: double 5px #ccc;
+}
+.expr-name.last-input {
+  border-right: double 5px #ccc;
+}
+.binding-expression input,
 .decision-name input,
 .expr-name input,
+.expression input,
+.information-item-name input,
+.parameter input,
 .rule input {
   border: none;
   cursor: pointer;
   text-overflow: ellipsis;
-	width: 200px;
+	width: 100%;
 }
 .expr input {
   border: none;
@@ -25,7 +35,8 @@ input:focus {
 .conclusion td {
   border-bottom: 1px solid #ccc;
 }
-.decision-name {
+.decision-name,
+.information-item-name {
   border: 1px solid #cccccc;
   border-top: 1px solid #cccccc !important;
 }
@@ -45,6 +56,17 @@ input:focus {
 .newConclusion {
 	border: none;
 	background-color: #fff !important;
+}
+.parameter {
+	background-color: #d6e3bc;
+  border-top: 1px solid #ccc !important;
+	border-right: 1px solid #ccc;
+}
+.parameter input {
+  background-color: #d6e3bc;
+}
+.table>thead>tr>th {
+  /*border-bottom: 1px solid #ccc;*/
 }
 .table-striped>tbody>tr:nth-child(odd)>td>input, 
 .table-striped>tbody>tr:nth-child(odd)>th>input {

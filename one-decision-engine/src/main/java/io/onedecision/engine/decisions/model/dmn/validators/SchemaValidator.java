@@ -88,7 +88,7 @@ public class SchemaValidator implements ErrorHandler {
 
         try {
             schemaFactory.newSchema(new StreamSource(
-                    getResourceAsStreamWrapper("schema/dmn.xsd")));
+                    getResourceAsStreamWrapper("schema/dmn11.xsd")));
         } catch (SAXException e1) {
             errors.reject("Cannot find / read schema",
                     "Exception: " + e1.getMessage());
