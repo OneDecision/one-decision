@@ -192,3 +192,16 @@ function formatXml(xml) {
 
   return formatted;
 }
+
+$(document).ready(function() {
+  console.info('Running ready handler');
+  
+  if (ractive.initCallbacks==undefined) ractive.initCallbacks = $.Callbacks();
+  ractive.initCallbacks.add(function() {
+//    ractive.applyBranding();
+    ractive.fetch();
+//    ractive.initControls();
+  });
+
+  if (ractive.initCallbacks!=undefined) ractive.initCallbacks.fire();
+});
