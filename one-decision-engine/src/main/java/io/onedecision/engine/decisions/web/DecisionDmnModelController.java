@@ -14,15 +14,18 @@
 package io.onedecision.engine.decisions.web;
 
 import io.onedecision.engine.decisions.api.DecisionException;
+import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.impl.TransformUtil;
+import io.onedecision.engine.decisions.model.dmn.BusinessKnowledgeModel;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.transform.TransformerConfigurationException;
@@ -106,21 +109,22 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         return "decisionModel";
     }
 
-    @RequestMapping(value = "/{definitionId}/{decisionId}", method = RequestMethod.GET, produces = { "text/html" })
+    @RequestMapping(value = "/{definitionId}/{drgElementId}", method = RequestMethod.GET, produces = { "text/html" })
     public String getDecisionForTenantHtml(
             @PathVariable("definitionId") String definitionId,
-            @PathVariable("decisionId") String decisionId,
+            @PathVariable("drgElementId") String drgElementId,
             @PathVariable("tenantId") String tenantId, Model model) {
         LOGGER.info(String.format(
                 "Seeking decision model %1$s.%2$s for tenant %3$s",
-                definitionId, decisionId, tenantId));
+                definitionId, drgElementId, tenantId));
 
         DmnModel dmnModel = getModelForTenant(definitionId, tenantId);
-        Decision decision = dmnModel.getDefinitions().getDecision(decisionId);
+        Decision decision = dmnModel.getDefinitions().getDecision(drgElementId);
         model.addAttribute("dmnModel", dmnModel);
         model.addAttribute("decision", decision);
         model.addAttribute("decisionHtml",
-                getTransformUtil().transform(dmnModel.getDefinitionXml()));
+                getTransformUtil().transform(dmnModel.getDefinitionXml(),
+                        Collections.singletonMap("drgElementId", drgElementId)));
 
         return "decision";
     }
@@ -147,7 +151,10 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
                 "Seeking decision model %1$s for tenant %2$s", id, tenantId));
 
         DmnModel model = repo.findOneForTenant(id, tenantId);
-        indexDecisions(model);
+        if (model == null) {
+            throw new DecisionNotFoundException(tenantId, id.toString());
+        }
+        indexModel(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model;
@@ -166,7 +173,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
                 tenantId));
 
         DmnModel model = repo.findByDefinitionId(definitionId, tenantId);
-        indexDecisions(model);
+        indexModel(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model;
@@ -267,10 +274,22 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         return createModelForTenant(dmnModel);
     }
 
-    protected void indexDecisions(DmnModel model) {
+    /**
+     * Experimental.
+     * 
+     * @param model
+     */
+    protected void indexModel(DmnModel model) {
+        model.setName(model.getDefinitions().getName());
+        model.setDescription(model.getDefinitions().getDescription());
         for (Decision d : model.getDefinitions().getDecisions()) {
             model.getDecisionIds().add(d.getId());
             model.getDecisionNames().add(d.getName());
+        }
+        for (BusinessKnowledgeModel bkm : model.getDefinitions()
+                .getBusinessKnowledgeModels()) {
+            model.getBusinessKnowledgeModelIds().add(bkm.getId());
+            model.getBusinessKnowledgeModelNames().add(bkm.getName());
         }
     }
 
@@ -290,7 +309,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     public DmnModel createModelForTenant(DmnModel model) {
         LOGGER.info(String.format("Creating decision model for tenant %1$s",
                 model.getTenantId()));
-        indexDecisions(model);
+        indexModel(model);
         return repo.save(model);
     }
 

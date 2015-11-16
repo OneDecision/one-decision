@@ -213,6 +213,17 @@ public class Definitions extends NamedElement implements Serializable {
         return null;
     }
     
+    public Set<BusinessKnowledgeModel> getBusinessKnowledgeModels() {
+        HashSet<BusinessKnowledgeModel> bkms = new HashSet<BusinessKnowledgeModel>();
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null
+                    && el.getValue() instanceof BusinessKnowledgeModel) {
+                bkms.add((BusinessKnowledgeModel) el.getValue());
+            }
+        }
+        return bkms;
+    }
+
     /**
      * Gets the value of the artifacts property.
      * 

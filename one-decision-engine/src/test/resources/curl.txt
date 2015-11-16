@@ -1,0 +1,1 @@
+curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/onedecision/decision-models/1

@@ -74,6 +74,9 @@ public class DmnModel  implements Serializable {
     private String originalFileName;
 
     @JsonProperty
+    private String description;
+
+    @JsonProperty
     private String deploymentMessage;
 
     @NotNull
@@ -98,8 +101,19 @@ public class DmnModel  implements Serializable {
     private List<String> decisionNames;
 
     @JsonProperty
+    @Embedded
+    private List<String> bkmIds;
+
+    @JsonProperty
+    @Embedded
+    private List<String> bkmNames;
+
+    @JsonProperty
     @Lob
     private byte[] image;
+
+    @JsonProperty
+    private boolean deleted;
 
     /**
      * The time the contact is created.
@@ -188,7 +202,15 @@ public class DmnModel  implements Serializable {
 		this.deploymentMessage = deploymentMessage;
 	}
 
-	public String getTenantId() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTenantId() {
 		return tenantId;
 	}
 
@@ -298,6 +320,34 @@ public class DmnModel  implements Serializable {
         this.decisionNames = decisionNames;
     }
 
+    public List<String> getBusinessKnowledgeModelIds() {
+        if (bkmIds == null) {
+            bkmIds = new ArrayList<String>();
+        }
+        return bkmIds;
+    }
+
+    public void setBusinessKnowledgeModelIds(List<String> bkmIds) {
+        this.bkmIds = bkmIds;
+    }
+
+    /**
+     * On creation the BKM names are read from the DMN file to allow ready
+     * retrieval later.
+     *
+     * @return Returns list of BKM names contained in the model.
+     */
+    public List<String> getBusinessKnowledgeModelNames() {
+        if (bkmNames == null) {
+            bkmNames = new ArrayList<String>();
+        }
+        return bkmNames;
+    }
+
+    public void setBusinessKnowledgeModelNames(List<String> bkmNames) {
+        this.bkmNames = bkmNames;
+    }
+
 	public byte[] getImage() {
 		return image;
 	}
@@ -306,7 +356,15 @@ public class DmnModel  implements Serializable {
 		this.image = image;
 	}
 
-	public Date getCreated() {
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Date getCreated() {
 		return created;
 	}
 

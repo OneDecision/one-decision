@@ -6,6 +6,7 @@
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
+  <xsl:param name="drgElementId"/>
   <xsl:output method="html" omit-xml-declaration="yes"/>
   
   <xsl:template match="/">
@@ -34,9 +35,16 @@
 		  }
 		</style></head><body> -->
 		
-		
-		<xsl:apply-templates select="//dmn:businessKnowledgeModel"/>
-		<xsl:apply-templates select="//dmn:decision"/>
+		<xsl:choose>
+		  <xsl:when test="$drgElementId">
+		    <xsl:apply-templates select="//dmn:businessKnowledgeModel[@id=$drgElementId]"/>
+		    <xsl:apply-templates select="//dmn:decision[@id=$drgElementId]"/>
+		  </xsl:when>
+		  <xsl:otherwise>
+		    <xsl:apply-templates select="//dmn:businessKnowledgeModel"/>
+		    <xsl:apply-templates select="//dmn:decision"/>
+		  </xsl:otherwise>
+		</xsl:choose>
     
 		<!-- </body></html> -->
 	</xsl:template>
