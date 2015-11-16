@@ -2,15 +2,14 @@
 @import url('//fonts.googleapis.com/css?family=Roboto:400italic,400,700');
 @font-face {
   font-family: 'barmenoregular';
-  src: url('fonts/barmeno_regular-webfont.eot');
-  src: url('fonts/barmeno_regular-webfont.eot?#iefix') format('embedded-opentype'),
-       url('fonts/barmeno_regular-webfont.woff') format('woff'),
-       url('fonts/barmeno_regular-webfont.ttf') format('truetype'),
-       url('fonts/barmeno_regular-webfont.svg#barmenoregular') format('svg');
+  src: url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.eot');
+  src: url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.woff') format('woff'),
+       url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.ttf') format('truetype'),
+       url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.svg#barmenoregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
-
 h1, h2, h3, h4, h5, h6 {
  font-family: 'barmenoregular';
 }

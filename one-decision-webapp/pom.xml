@@ -70,6 +70,12 @@
         <artifactId>ractive</artifactId>
         <version>0.7.1</version>
     </dependency>
+    <dependency>
+      <groupId>link.omny</groupId>
+		  <artifactId>fonts</artifactId>
+		  <version>1.0.0</version>
+		  <optional>true</optional>
+	  </dependency>
     <!-- TEST dependencies -->
     <dependency>
       <groupId>org.toxos.activiti</groupId>
