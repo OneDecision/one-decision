@@ -62,6 +62,8 @@ public class DecisionService implements DecisionConstants {
     private Map<String, String> cache = new HashMap<String, String>();
     private ScriptEngine jsEng;
 
+    private ScriptEngineManager sem;
+
     private static List<String> newArrayList(String... objects) {
         List<String> list = new ArrayList<String>();
         for (String s : objects) {
@@ -71,8 +73,7 @@ public class DecisionService implements DecisionConstants {
     }
 
     public DecisionService() {
-        ScriptEngineManager sem = new ScriptEngineManager();
-        jsEng = sem.getEngineByName("JavaScript");
+        sem = new ScriptEngineManager();
     }
 
 	public List<DelExpression> getDelExpressions() {
@@ -108,6 +109,7 @@ public class DecisionService implements DecisionConstants {
 
     protected Map<String, Object> execute(Decision d,
             String script, Map<String, Object> params) throws DecisionException {
+        jsEng = sem.getEngineByName("JavaScript");
         for (Entry<String, Object> o : params.entrySet()) {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("JSON input in Java: " + o);
