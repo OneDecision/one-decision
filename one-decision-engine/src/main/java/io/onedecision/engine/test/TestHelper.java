@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Assert;
+import org.springframework.validation.ObjectError;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -94,8 +95,12 @@ public class TestHelper {
         InputStream fis = null;
         try {
             fis = new FileInputStream(dmnFile);
-            DmnValidationErrors errors = new DmnValidationErrors();
+            DmnValidationErrors errors = new DmnValidationErrors(
+                    dmnFile.getName());
             getSchemaValidator().validate(fis, errors);
+            for (ObjectError error : errors.getAllErrors()) {
+                System.out.println("  error: " + error.getDefaultMessage());
+            }
             assertTrue(!errors.hasErrors());
         } finally {
             try {

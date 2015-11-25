@@ -219,7 +219,8 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
         InputStream fis = null;
         try {
             fis = new FileInputStream(dmnFile);
-            DmnValidationErrors errors = new DmnValidationErrors();
+            DmnValidationErrors errors = new DmnValidationErrors(
+                    dmnFile.getName());
             // schemaValidator.validate(fis, errors);
             assertTrue(!errors.hasErrors());
         } finally {

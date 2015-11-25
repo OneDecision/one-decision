@@ -133,6 +133,11 @@ public class FunctionDefinition extends Expression implements Serializable {
                 ctxt));
     }
 
+    public void setLiteralExpression(LiteralExpression le) {
+        setExpression(new JAXBElement(DecisionConstants.LITERAL_EXPRESSION,
+                LiteralExpression.class, le));
+    }
+
     public FunctionDefinition withFormalParameter(String name, QName type) {
         InformationItem item = objFact.createInformationItem().withName(name)
                 .withTypeRef(type);
@@ -162,6 +167,11 @@ public class FunctionDefinition extends Expression implements Serializable {
 
     public FunctionDefinition withExpression(JAXBElement<? extends Expression> value) {
         setExpression(value);
+        return this;
+    }
+
+    public FunctionDefinition withLiteralExpression(String text) {
+        setLiteralExpression(objFact.createLiteralExpression().withText(text));
         return this;
     }
 

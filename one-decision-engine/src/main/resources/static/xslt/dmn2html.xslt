@@ -10,30 +10,6 @@
   <xsl:output method="html" omit-xml-declaration="yes"/>
   
   <xsl:template match="/">
-
-    <!-- <html><head>
-		  <meta charset="utf-8"/>
-		  <title>One Decision</title>
-		  <link href="http://localhost:8090/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
-		  <link href="http://localhost:8090/webjars/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet"/>
-		  <link href="http://localhost:8090/css/one-decision-1.1.0.css" rel="stylesheet"/>
-		  <link href="http://localhost:8090/css/decisions-1.1.0.css" rel="stylesheet"/>
-		  <link rel="icon" type="image/png" href="http://localhost:8090/images/one-decision-icon-16x16.png"/>
-		<style>
-		  .input { 
-		    background-color: #ccccff !important;
-		  }
-		  .output { 
-        background-color: #ffcccc !important;
-      }
-      span.glyphicon-remove,
-		  td.add-rule,
-		  th.expr-action,
-		  tr.newConclusion,
-		  tr.newCondition { 
-		    display:none;
-		  }
-		</style></head><body> -->
 		
 		<xsl:choose>
 		  <xsl:when test="$drgElementId">
@@ -41,12 +17,15 @@
 		    <xsl:apply-templates select="//dmn:decision[@id=$drgElementId]"/>
 		  </xsl:when>
 		  <xsl:otherwise>
-		    <xsl:apply-templates select="//dmn:businessKnowledgeModel"/>
-		    <xsl:apply-templates select="//dmn:decision"/>
+		    <xsl:apply-templates select="//dmn:businessKnowledgeModel">
+		      <xsl:sort select="@name"/>
+		    </xsl:apply-templates>
+		    <xsl:apply-templates select="//dmn:decision">
+          <xsl:sort select="@name"/>
+        </xsl:apply-templates>
 		  </xsl:otherwise>
 		</xsl:choose>
     
-		<!-- </body></html> -->
 	</xsl:template>
 	
   <xsl:template match="dmn:binding">
@@ -72,16 +51,6 @@
 	    <xsl:apply-templates select=".//dmn:context"/>
 	    <xsl:apply-templates select=".//dmn:decisionTable"/>
 	  </xsl:element>
-  </xsl:template>
-
-  <xsl:template match="dmn:calledFunction">
-    <tr>
-      <td class="expression" colspan="2">
-        <xsl:element name="input">
-          <xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
-        </xsl:element>
-      </td>
-    </tr>
   </xsl:template>
 
   <xsl:template match="dmn:context">
@@ -283,7 +252,7 @@
          </tr>
        </thead>
        <tbody>
-         <xsl:apply-templates select="dmn:calledFunction"/>
+         <xsl:apply-templates select="dmn:literalExpression" mode="calledFunction"/>
          <xsl:apply-templates select="dmn:binding"/>
        </tbody>
      </xsl:element>
@@ -294,7 +263,7 @@
       <xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
       <xsl:attribute name="class">invocation table</xsl:attribute>
        <tbody>
-         <xsl:apply-templates select="dmn:calledFunction"/>
+         <xsl:apply-templates select="dmn:literalExpression" mode="calledFunction"/>
          <xsl:apply-templates select="dmn:binding"/>
        </tbody>
      </xsl:element>
@@ -306,6 +275,16 @@
     </xsl:element>
   </xsl:template>
   
+  <xsl:template match="dmn:literalExpression" mode="calledFunction">
+    <tr>
+      <td class="expression" colspan="2">
+        <xsl:element name="input">
+          <xsl:attribute name="value"><xsl:value-of select="dmn:text"/></xsl:attribute>
+        </xsl:element>
+      </td>
+    </tr>
+  </xsl:template>
+
   <xsl:template match="dmn:rule" mode="rule-as-column">
     <tr class="condition" data-condition="Select...">
       <th class="input">

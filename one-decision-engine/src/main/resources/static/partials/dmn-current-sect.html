@@ -26,7 +26,7 @@
           <div role="tabpanel" class="tab-pane active" id="notation">
             <h3>Decisions</h3>
             <ul>
-              {{#current.decisionNames:idx}}
+              {{#current.decisionNames.sort():idx}}
                 <li>
                   <div>
                     <span>{{.}} ({{current.decisionIds[idx]}})</span>
@@ -43,7 +43,7 @@
             </ul>
             <h3>Business Knowledge Models</h3>
             <ul>
-              {{#current.bkmNames:idx}}
+              {{#current.bkmNames.sort():idx}}
                 <li>
                   <div>
                     <span>{{.}} ({{current.bkmIds[idx]}})</span>

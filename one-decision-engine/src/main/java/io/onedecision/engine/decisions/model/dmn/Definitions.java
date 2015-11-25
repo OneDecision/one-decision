@@ -62,7 +62,7 @@ import javax.xml.namespace.QName;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
- "imports",
+    "imports",
     "itemDefinition",
     "drgElement",
     "artifact",

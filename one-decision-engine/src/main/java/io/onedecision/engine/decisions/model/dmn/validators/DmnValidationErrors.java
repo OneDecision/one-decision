@@ -29,7 +29,8 @@ public class DmnValidationErrors extends AbstractErrors {
     private List<FieldError> fieldErrors;
     private String objectName;
 
-    public DmnValidationErrors() {
+    public DmnValidationErrors(String objectName) {
+        this.objectName = objectName;
         globalErrors = new ArrayList<ObjectError>();
         fieldErrors = new ArrayList<FieldError>();
     }

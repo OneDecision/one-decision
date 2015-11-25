@@ -91,7 +91,7 @@ public class DecisionModelConverterTest implements ExamplesConstants {
         // http://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html
 
 		SchemaValidator schemaValidator = new SchemaValidator();
-		DmnValidationErrors errors = new DmnValidationErrors();
+        DmnValidationErrors errors = new DmnValidationErrors(dmnFile.getName());
 		schemaValidator.validate(new FileInputStream(dmnFile), errors);
 		assertEquals(0, errors.getErrorCount());
     }

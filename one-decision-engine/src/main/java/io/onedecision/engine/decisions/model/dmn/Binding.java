@@ -42,8 +42,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tBinding", propOrder = {
-    "expression",
-    "parameter"
+    "parameter",
+    "expression"
 })
 public class Binding implements Serializable {
 

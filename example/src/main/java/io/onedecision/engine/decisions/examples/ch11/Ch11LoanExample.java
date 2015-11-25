@@ -354,7 +354,6 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withFormalParameter("Pre-Bureau Affordability", FEEL_NUMBER)
                                     .withFormalParameter("Pre-Bureau Risk Category", FEEL_STRING)
                                     .withFormalParameter("Age", FEEL_NUMBER));
-                    // TODO Context
             
             BusinessKnowledgeModel routingRulesBKM = objFact.createBusinessKnowledgeModel()
                     .withId("routingRules_bkm")
@@ -433,9 +432,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                             preBureauRiskCategoryTable))
                     .withInvocation(
                             objFact.createInvocation()
-                                    .withCalledFunction(
-                                            preBureauRiskCategoryTable
-                                                    .getName())
+                                    .withCalledFunction(preBureauRiskCategoryTable.getName())
                             .withBinding(
                                      objFact.createBinding()
                                              .withParameter("Existing Customer")
@@ -489,8 +486,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withRequiredKnowledge(eligibilityRulesBKM))
                     .withInvocation(
                             objFact.createInvocation()
-                                    .withCalledFunction(
-                                            eligibilityRulesBKM.getName())
+                                    .withCalledFunction(eligibilityRulesBKM.getName())
                                     .withBinding(
                                              objFact.createBinding()
                                                     .withParameter("Age")
@@ -520,8 +516,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                     .withRequiredKnowledge(bureauCallTypeBKM))
                     .withInvocation(
                             objFact.createInvocation()
-                                    .withCalledFunction(
-                                            bureauCallTypeBKM.getName())
+                                    .withCalledFunction(bureauCallTypeBKM.getName())
                                     .withBinding(
                                             objFact.createBinding()
                                                     .withParameter("Pre-Bureau Risk Category")
@@ -571,8 +566,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                             objFact.createAuthorityRequirement()
                                     .withRequiredAuthority(riskManagerKS))
                     .withInvocation(objFact.createInvocation()
-                                    .withCalledFunction(
-                                            postBureauRiskCategoryBKM.getName())
+                                    .withCalledFunction(postBureauRiskCategoryBKM.getName())
                             .withBinding(
                                     objFact.createBinding()
                                             .withParameter("Existing Customer")
@@ -596,8 +590,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                             objFact.createAuthorityRequirement()
                                     .withRequiredAuthority(routingRulesBKM))
                     .withInvocation(objFact.createInvocation()
-                                    .withCalledFunction(
-                                            routingRulesBKM.getName())
+                                    .withCalledFunction(routingRulesBKM.getName())
                             .withBinding(
                                     objFact.createBinding()
                                             .withParameter("Bankrupt")
@@ -668,8 +661,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                                                         "Credit Contingency Factor")
                                                                 .withInvocation(
                                                                         objFact.createInvocation()
-                                                                                .withCalledFunction(
-                                                                                        "Credit contingency factor table")
+                                                                                .withCalledFunction("Credit contingency factor table")
                                                                                 .withBinding(
                                                                                         objFact.createBinding()
                                                                                                 .withParameter(
@@ -841,7 +833,10 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
         DecisionModel jsonModel = TestHelper
                 .getJsonModel(CH11_FIG74_JSON_RESOURCE);
 
-        return converter.convert(jsonModel).getDecision(CH11_FIG74_DECISION_ID).getDecisionTable();
+        DecisionTable eligibilityRulesDT = converter.convert(jsonModel).getDecision(CH11_FIG74_DECISION_ID).getDecisionTable();
+        eligibilityRulesDT.getOutputs().get(0).setOutputValues(
+                objFact.createUnaryTests().withUnaryTests("INELIGIBLE","ELIGIBLE"));
+        return eligibilityRulesDT;
     }
 
     protected DecisionTable getPreBureauRiskCategoryDT()
@@ -1083,11 +1078,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         "Credit Score")))
                 .withOutputs(
                         objFact.createOutputClause()
-                                .withName("Post Bureau Risk Category")
-                                .withOutputValues(
-                                        objFact.createUnaryTests()
-                                                .withUnaryTests("DECLINE",
-                                                        "REFER", "ACCEPT")))
+                                .withName("Post Bureau Risk Category"))
                 .withRules(
                         objFact.createDecisionRule()
                                 .withInputEntry(

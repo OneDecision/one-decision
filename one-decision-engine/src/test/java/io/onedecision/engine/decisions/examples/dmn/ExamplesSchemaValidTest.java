@@ -61,7 +61,7 @@ public class ExamplesSchemaValidTest {
 
 	@Test
 	public void testSchemaValid() {
-		DmnValidationErrors errors = new DmnValidationErrors();
+        DmnValidationErrors errors = new DmnValidationErrors(resourceName);
         InputStream is = null;
         try {
             is = getClass().getResourceAsStream(resourceName);
