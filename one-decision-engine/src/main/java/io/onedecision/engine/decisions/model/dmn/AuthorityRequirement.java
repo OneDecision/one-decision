@@ -16,18 +16,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tAuthorityRequirement complex type.
+ * <p>
+ * Java class for tAuthorityRequirement complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tAuthorityRequirement"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;choice&gt;
- *         &lt;element name="requiredDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
- *         &lt;element name="requiredInput" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
- *         &lt;element name="requiredAuthority" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
+ *         &lt;element name="requiredDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
+ *         &lt;element name="requiredInput" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
+ *         &lt;element name="requiredAuthority" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
  *       &lt;/choice&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -43,10 +46,11 @@ import javax.xml.bind.annotation.XmlType;
     "requiredAuthority"
 })
 public class AuthorityRequirement implements Serializable {
+
     private static final long serialVersionUID = -4682304898515499291L;
 
     private static ObjectFactory objFact = new ObjectFactory();
-    
+
     protected DmnElementReference requiredDecision;
     protected DmnElementReference requiredInput;
     protected DmnElementReference requiredAuthority;

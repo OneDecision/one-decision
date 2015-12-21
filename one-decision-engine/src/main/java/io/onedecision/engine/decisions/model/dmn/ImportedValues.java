@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tImportedValues"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tImport"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tImport"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="importedElement" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
@@ -35,17 +36,14 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tImportedValues", propOrder = {
     "importedElement"
 })
-public class ImportedValues
-    extends Import
-    implements Serializable
-{
+public class ImportedValues extends Import implements Serializable {
 
+    private static final long serialVersionUID = 1375538365362857217L;
     @XmlElement(required = true)
     protected String importedElement;
     @XmlAttribute(name = "expressionLanguage")

@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -41,9 +42,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlSeeAlso({
     ImportedValues.class
 })
-public class Import
-    implements Serializable
-{
+public class Import implements Serializable {
+
+    private static final long serialVersionUID = 274360653727026547L;
 
     @XmlAttribute(name = "namespace", required = true)
     @XmlSchemaType(name = "anyURI")

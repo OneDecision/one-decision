@@ -29,13 +29,13 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tItemDefinition"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tNamedElement"&gt;
  *       &lt;choice&gt;
  *         &lt;sequence&gt;
  *           &lt;element name="typeRef" type="{http://www.w3.org/2001/XMLSchema}QName"/&gt;
- *           &lt;element name="allowedValues" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tUnaryTests" minOccurs="0"/&gt;
+ *           &lt;element name="allowedValues" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tUnaryTests" minOccurs="0"/&gt;
  *         &lt;/sequence&gt;
- *         &lt;element name="itemComponent" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tItemDefinition" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="itemComponent" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tItemDefinition" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/choice&gt;
  *       &lt;attribute name="typeLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" /&gt;
  *       &lt;attribute name="isCollection" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" /&gt;
@@ -45,7 +45,6 @@ import javax.xml.namespace.QName;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tItemDefinition", propOrder = {
@@ -53,11 +52,9 @@ import javax.xml.namespace.QName;
     "allowedValues",
     "itemComponent"
 })
-public class ItemDefinition
-    extends NamedElement
-    implements Serializable
-{
+public class ItemDefinition extends NamedElement implements Serializable {
 
+    private static final long serialVersionUID = 2928103107027172138L;
     protected QName typeRef;
     protected UnaryTests allowedValues;
     protected List<ItemDefinition> itemComponent;

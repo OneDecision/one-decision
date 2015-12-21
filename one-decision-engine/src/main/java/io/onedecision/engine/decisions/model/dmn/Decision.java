@@ -23,28 +23,31 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tDecision complex type.
+ * <p>
+ * Java class for tDecision complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tDecision"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDRGElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDRGElement"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="question" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="allowedAnswers" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" minOccurs="0"/&gt;
- *         &lt;element name="informationRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="knowledgeRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tKnowledgeRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="supportedObjective" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="impactedPerformanceIndicator" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="decisionMaker" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="decisionOwner" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="usingProcess" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="usingTask" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression" minOccurs="0"/&gt;
+ *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tInformationItem" minOccurs="0"/&gt;
+ *         &lt;element name="informationRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tInformationRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="knowledgeRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tKnowledgeRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="supportedObjective" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="impactedPerformanceIndicator" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="decisionMaker" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="decisionOwner" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="usingProcess" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="usingTask" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}expression" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -72,8 +75,7 @@ import javax.xml.bind.annotation.XmlType;
     "expression"
 })
 public class Decision extends DrgElement implements
-        InformationRequirementReference,
-        Serializable {
+        InformationRequirementReference, Serializable {
 
     private static final long serialVersionUID = 4761130984661556080L;
     private static ObjectFactory objFact = new ObjectFactory();
@@ -89,7 +91,7 @@ public class Decision extends DrgElement implements
     protected java.util.List<DmnElementReference> decisionOwner;
     protected java.util.List<DmnElementReference> usingProcess;
     protected java.util.List<DmnElementReference> usingTask;
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
     protected JAXBElement<? extends Expression> expression;
 
     /**
@@ -670,12 +672,14 @@ public class Decision extends DrgElement implements
         return this;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Decision withDecisionTable(DecisionTable dt) {
         setExpression(new JAXBElement(DecisionConstants.DECISION_TABLE,
                 DecisionTable.class, dt));
         return this;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Decision withInvocation(Invocation invocation) {
         setExpression(new JAXBElement(DecisionConstants.INVOCATION,
                 Invocation.class, invocation));

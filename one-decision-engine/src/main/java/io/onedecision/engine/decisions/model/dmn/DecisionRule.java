@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,17 +20,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tDecisionRule complex type.
+ * <p>
+ * Java class for tDecisionRule complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tDecisionRule"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="inputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tUnaryTests" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="outputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tLiteralExpression" maxOccurs="unbounded"/&gt;
+ *         &lt;element name="inputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tUnaryTests" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="outputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tLiteralExpression" maxOccurs="unbounded"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -44,11 +48,10 @@ import javax.xml.bind.annotation.XmlType;
     "inputEntry",
     "outputEntry"
 })
-public class DecisionRule
-    extends DmnElement
-    implements Serializable
-{
+public class DecisionRule extends DmnElement implements Serializable {
 
+    private static final long serialVersionUID = -8138228148820515219L;
+    private static ObjectFactory objFact = new ObjectFactory();
     protected List<UnaryTests> inputEntry;
     @XmlElement(required = true)
     protected List<LiteralExpression> outputEntry;
@@ -127,10 +130,27 @@ public class DecisionRule
         return this;
     }
 
+    public DecisionRule withInputEntry(String... values) {
+        if (values != null) {
+            withInputEntry(objFact.createUnaryTests().withUnaryTests(values));
+        }
+        return this;
+    }
+
     public DecisionRule withOutputEntry(LiteralExpression... values) {
         if (values!= null) {
             for (LiteralExpression value: values) {
                 getOutputEntry().add(value);
+            }
+        }
+        return this;
+    }
+
+    public DecisionRule withOutputEntry(String... values) {
+        if (values!= null) {
+            for (String value: values) {
+                withOutputEntry(objFact.createLiteralExpression().withText(
+                        value));
             }
         }
         return this;

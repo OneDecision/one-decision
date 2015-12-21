@@ -31,21 +31,24 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tDefinitions complex type.
+ * <p>
+ * Java class for tDefinitions complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tDefinitions"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tNamedElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="import" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tImport" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tItemDefinition" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}drgElement" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}artifact" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="elementCollection" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tElementCollection" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}businessContextElement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="import" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tImport" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tItemDefinition" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}drgElement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}artifact" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="elementCollection" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tElementCollection" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}businessContextElement" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="expressionLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" default="http://www.omg.org/spec/FEEL/20140401" /&gt;
  *       &lt;attribute name="typeLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" default="http://www.omg.org/spec/FEEL/20140401" /&gt;
@@ -58,16 +61,15 @@ import javax.xml.namespace.QName;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
     "imports",
-    "itemDefinition",
-    "drgElement",
-    "artifact",
+    "itemDefinitions",
+    "drgElements",
+    "artifacts",
     "elementCollection",
-    "businessContextElement"
+    "businessContextElements"
 })
 public class Definitions extends NamedElement implements Serializable {
 
@@ -75,14 +77,14 @@ public class Definitions extends NamedElement implements Serializable {
 
     @XmlElement(name = "import")
     protected List<Import> imports;
-    protected List<ItemDefinition> itemDefinition;
-    @XmlElementRef(name = "drgElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends DrgElement>> drgElement;
-    @XmlElementRef(name = "artifact", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends Artifact>> artifact;
+    protected List<ItemDefinition> itemDefinitions;
+    @XmlElementRef(name = "drgElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
+    protected List<JAXBElement<? extends DrgElement>> drgElements;
+    @XmlElementRef(name = "artifact", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
+    protected List<JAXBElement<? extends Artifact>> artifacts;
     protected List<ElementCollection> elementCollection;
-    @XmlElementRef(name = "businessContextElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends BusinessContextElement>> businessContextElement;
+    @XmlElementRef(name = "businessContextElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
+    protected List<JAXBElement<? extends BusinessContextElement>> businessContextElements;
     @XmlAttribute(name = "expressionLanguage")
     @XmlSchemaType(name = "anyURI")
     protected String expressionLanguage;
@@ -149,10 +151,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<ItemDefinition> getItemDefinitions() {
-        if (itemDefinition == null) {
-            itemDefinition = new ArrayList<ItemDefinition>();
+        if (itemDefinitions == null) {
+            itemDefinitions = new ArrayList<ItemDefinition>();
         }
-        return this.itemDefinition;
+        return this.itemDefinitions;
     }
 
     /**
@@ -167,7 +169,7 @@ public class Definitions extends NamedElement implements Serializable {
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDRGElements().add(newItem);
+     *    getDrgElements().add(newItem);
      * </pre>
      * 
      * 
@@ -182,10 +184,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends DrgElement>> getDrgElements() {
-        if (drgElement == null) {
-            drgElement = new ArrayList<JAXBElement<? extends DrgElement>>();
+        if (drgElements == null) {
+            drgElements = new ArrayList<JAXBElement<? extends DrgElement>>();
         }
-        return this.drgElement;
+        return this.drgElements;
     }
 
     /**
@@ -228,15 +230,16 @@ public class Definitions extends NamedElement implements Serializable {
      * Gets the value of the artifacts property.
      * 
      * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the artifact property.
+     * This accessor method returns a reference to the live list, not a
+     * snapshot. Therefore any modification you make to the returned list will
+     * be present inside the JAXB object. This is why there is not a
+     * <CODE>set</CODE> method for the artifact property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
+     * 
      * <pre>
-     *    getArtifact().add(newItem);
+     * getArtifacts().add(newItem);
      * </pre>
      * 
      * 
@@ -249,10 +252,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends Artifact>> getArtifacts() {
-        if (artifact == null) {
-            artifact = new ArrayList<JAXBElement<? extends Artifact>>();
+        if (artifacts == null) {
+            artifacts = new ArrayList<JAXBElement<? extends Artifact>>();
         }
-        return this.artifact;
+        return this.artifacts;
     }
 
     /**
@@ -309,10 +312,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends BusinessContextElement>> getBusinessContextElements() {
-        if (businessContextElement == null) {
-            businessContextElement = new ArrayList<JAXBElement<? extends BusinessContextElement>>();
+        if (businessContextElements == null) {
+            businessContextElements = new ArrayList<JAXBElement<? extends BusinessContextElement>>();
         }
-        return this.businessContextElement;
+        return this.businessContextElements;
     }
 
     /**
@@ -475,7 +478,7 @@ public class Definitions extends NamedElement implements Serializable {
         return this;
     }
 
-    public Definitions withDRGElements(JAXBElement<? extends DrgElement> ... values) {
+    public Definitions withDrgElements(JAXBElement<? extends DrgElement> ... values) {
         if (values!= null) {
             for (JAXBElement<? extends DrgElement> value: values) {
                 getDrgElements().add(value);
@@ -491,34 +494,37 @@ public class Definitions extends NamedElement implements Serializable {
         return this;
     }
     
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void withDecisions(Decision... decisions) {
         for (Decision d : decisions) {
-            withDRGElements(new JAXBElement(new QName(
+            withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "decision"),
                     Decision.class, d));
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void withBusinessKnowledgeModels(BusinessKnowledgeModel... bkms) {
         for (BusinessKnowledgeModel bkm : bkms) {
-            withDRGElements(new JAXBElement(new QName(
+            withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "businessKnowledgeModel"),
                     BusinessKnowledgeModel.class, bkm));
         }
     }
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void withInputData(InputData... data) {
         for (InputData id : data) {
-            withDRGElements(new JAXBElement(new QName(
+            withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "inputData"),
                     InputData.class, id));
         }
     }
     
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void withKnowledgeSources(KnowledgeSource... sources) {
         for (KnowledgeSource ks : sources) {
-            withDRGElements(new JAXBElement(new QName(
+            withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "knowledgeSource"),
                     KnowledgeSource.class, ks));
         }
@@ -552,15 +558,6 @@ public class Definitions extends NamedElement implements Serializable {
     public Definitions withElementCollections(Collection<ElementCollection> values) {
         if (values!= null) {
             getElementCollections().addAll(values);
-        }
-        return this;
-    }
-
-    public Definitions withBusinessContextElements(JAXBElement<? extends BusinessContextElement> ... values) {
-        if (values!= null) {
-            for (JAXBElement<? extends BusinessContextElement> value: values) {
-                getBusinessContextElements().add(value);
-            }
         }
         return this;
     }

@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -24,12 +25,12 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tAssociation"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tArtifact"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tArtifact"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="sourceRef" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
- *         &lt;element name="targetRef" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
+ *         &lt;element name="sourceRef" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
+ *         &lt;element name="targetRef" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
  *       &lt;/sequence&gt;
- *       &lt;attribute name="associationDirection" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tAssociationDirection" default="None" /&gt;
+ *       &lt;attribute name="associationDirection" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tAssociationDirection" default="None" /&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
@@ -43,11 +44,9 @@ import javax.xml.bind.annotation.XmlType;
     "sourceRef",
     "targetRef"
 })
-public class Association
-    extends Artifact
-    implements Serializable
-{
+public class Association extends Artifact implements Serializable {
 
+    private static final long serialVersionUID = -6913685878772869492L;
     @XmlElement(required = true)
     protected DmnElementReference sourceRef;
     @XmlElement(required = true)

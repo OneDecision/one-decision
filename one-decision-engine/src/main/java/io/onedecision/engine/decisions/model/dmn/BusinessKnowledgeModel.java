@@ -12,25 +12,29 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tBusinessKnowledgeModel complex type.
+ * <p>
+ * Java class for tBusinessKnowledgeModel complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tBusinessKnowledgeModel"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDRGElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDRGElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="encapsulatedLogic" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tFunctionDefinition" minOccurs="0"/&gt;
- *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" minOccurs="0"/&gt;
- *         &lt;element name="knowledgeRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tKnowledgeRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="encapsulatedLogic" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tFunctionDefinition" minOccurs="0"/&gt;
+ *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tInformationItem" minOccurs="0"/&gt;
+ *         &lt;element name="knowledgeRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tKnowledgeRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -47,11 +51,9 @@ import javax.xml.bind.annotation.XmlType;
     "knowledgeRequirement",
     "authorityRequirement"
 })
-public class BusinessKnowledgeModel
-    extends DrgElement
-    implements Serializable
-{
+public class BusinessKnowledgeModel extends DrgElement implements Serializable {
 
+    private static final long serialVersionUID = -8135071782689594021L;
     protected FunctionDefinition encapsulatedLogic;
     protected InformationItem variable;
     protected List<KnowledgeRequirement> knowledgeRequirement;

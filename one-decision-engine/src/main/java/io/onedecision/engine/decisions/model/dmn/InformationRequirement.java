@@ -16,9 +16,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tInformationRequirement complex type.
+ * <p>
+ * Java class for tInformationRequirement complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tInformationRequirement"&gt;
@@ -26,15 +29,14 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;choice&gt;
- *           &lt;element name="requiredDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
- *           &lt;element name="requiredInput" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
+ *           &lt;element name="requiredDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
+ *           &lt;element name="requiredInput" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
  *         &lt;/choice&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)

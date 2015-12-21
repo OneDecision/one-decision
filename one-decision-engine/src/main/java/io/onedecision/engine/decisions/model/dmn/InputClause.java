@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,17 +17,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tInputClause complex type.
+ * <p>
+ * Java class for tInputClause complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tInputClause"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="inputExpression" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tLiteralExpression"/&gt;
- *         &lt;element name="inputValues" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tUnaryTests" minOccurs="0"/&gt;
+ *         &lt;element name="inputExpression" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tLiteralExpression"/&gt;
+ *         &lt;element name="inputValues" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tUnaryTests" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -34,18 +38,16 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tInputClause", propOrder = {
     "inputExpression",
     "inputValues"
 })
-public class InputClause
-    extends DmnElement
-    implements Serializable
-{
+public class InputClause extends DmnElement implements Serializable {
 
+    private static final long serialVersionUID = -3616898282041555513L;
+    private static ObjectFactory objFact = new ObjectFactory();
     @XmlElement(required = true)
     protected LiteralExpression inputExpression;
     protected UnaryTests inputValues;
@@ -103,8 +105,19 @@ public class InputClause
         return this;
     }
 
+    public InputClause withInputExpression(String value) {
+        setInputExpression(objFact.createLiteralExpression().withText(value));
+        return this;
+    }
+
     public InputClause withInputValues(UnaryTests value) {
         setInputValues(value);
+        return this;
+    }
+
+    public InputClause withInputValues(String... unaryTests) {
+        setInputValues(objFact.createUnaryTests().withUnaryTests("Business",
+                "Private"));
         return this;
     }
 
@@ -131,5 +144,6 @@ public class InputClause
         setLabel(value);
         return this;
     }
+
 
 }

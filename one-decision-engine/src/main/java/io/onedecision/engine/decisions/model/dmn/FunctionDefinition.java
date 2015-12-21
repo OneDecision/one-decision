@@ -23,17 +23,20 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tFunctionDefinition complex type.
+ * <p>
+ * Java class for tFunctionDefinition complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tFunctionDefinition"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="formalParameter" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression" minOccurs="0"/&gt;
+ *         &lt;element name="formalParameter" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}expression" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -53,7 +56,7 @@ public class FunctionDefinition extends Expression implements Serializable {
     private static final long serialVersionUID = -8208911742535485516L;
     private static final ObjectFactory objFact = new ObjectFactory();
     protected java.util.List<InformationItem> formalParameter;
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
     protected JAXBElement<? extends Expression> expression;
 
     /**
@@ -123,16 +126,19 @@ public class FunctionDefinition extends Expression implements Serializable {
         this.expression = value;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void setDecisionTable(DecisionTable dt) {
         setExpression(new JAXBElement(DecisionConstants.DECISION_TABLE,
                 DecisionTable.class, dt));
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void setContext(Context ctxt) {
         setExpression(new JAXBElement(DecisionConstants.CONTEXT, Context.class,
                 ctxt));
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void setLiteralExpression(LiteralExpression le) {
         setExpression(new JAXBElement(DecisionConstants.LITERAL_EXPRESSION,
                 LiteralExpression.class, le));

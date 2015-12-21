@@ -11,6 +11,7 @@ package io.onedecision.engine.decisions.model.dmn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,16 +21,19 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tList complex type.
+ * <p>
+ * Java class for tList complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tList"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}expression" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -43,12 +47,10 @@ import javax.xml.namespace.QName;
 @XmlType(name = "tList", propOrder = {
     "expression"
 })
-public class List
-    extends Expression
-    implements Serializable
-{
+public class List extends Expression implements Serializable {
 
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
+    private static final long serialVersionUID = -1035070702830150876L;
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
     protected java.util.List<JAXBElement<? extends Expression>> expression;
 
     /**

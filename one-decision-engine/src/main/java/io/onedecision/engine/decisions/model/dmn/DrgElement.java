@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -23,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tDRGElement"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tNamedElement"&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
@@ -40,11 +41,9 @@ import javax.xml.bind.annotation.XmlType;
     InputData.class,
     KnowledgeSource.class
 })
-public class DrgElement
-    extends NamedElement
-    implements Serializable
-{
+public class DrgElement extends NamedElement implements Serializable {
 
+    private static final long serialVersionUID = -7746588678579419013L;
 
     @Override
     public DrgElement withName(String value) {

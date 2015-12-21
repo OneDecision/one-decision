@@ -251,9 +251,9 @@ public class DmnElement implements Serializable {
     @XmlType(name = "", propOrder = {
         "any"
     })
-    public static class ExtensionElements
-        implements Serializable
-    {
+    public static class ExtensionElements implements Serializable {
+
+        private static final long serialVersionUID = 2538437258137198795L;
 
         @XmlAnyElement(lax = true)
         protected List<Object> any;

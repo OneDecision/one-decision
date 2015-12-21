@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xsl:stylesheet [ <!ENTITY nbsp "&#160;"> ]>
 <xsl:stylesheet version="1.0" 
-  xmlns="http://www.omg.org/spec/DMN/20151101/dmn11.xsd"
-  xmlns:dmn="http://www.omg.org/spec/DMN/20151101/dmn11.xsd"
+  xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+  xmlns:dmn="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 

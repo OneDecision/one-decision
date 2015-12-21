@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -25,9 +26,9 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tElementCollection"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tNamedElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="drgElement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="drgElement" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -41,10 +42,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "tElementCollection", propOrder = {
     "drgElement"
 })
-public class ElementCollection
-    extends NamedElement
-    implements Serializable
-{
+public class ElementCollection extends NamedElement implements Serializable {
+
+    private static final long serialVersionUID = 1939324761839971265L;
 
     protected List<DmnElementReference> drgElement;
 

@@ -12,23 +12,27 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tOrganizationUnit complex type.
+ * <p>
+ * Java class for tOrganizationUnit complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tOrganizationUnit"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tBusinessContextElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tBusinessContextElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="decisionMade" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="decisionOwned" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="decisionMade" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="decisionOwned" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -36,18 +40,16 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tOrganizationUnit", propOrder = {
     "decisionMade",
     "decisionOwned"
 })
-public class OrganizationUnit
-    extends BusinessContextElement
-    implements Serializable
-{
+public class OrganizationUnit extends BusinessContextElement implements
+        Serializable {
 
+    private static final long serialVersionUID = -7694760744329936411L;
     protected List<DmnElementReference> decisionMade;
     protected List<DmnElementReference> decisionOwned;
 

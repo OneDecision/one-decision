@@ -11,6 +11,7 @@ package io.onedecision.engine.decisions.model.dmn;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -18,17 +19,20 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tRelation complex type.
+ * <p>
+ * Java class for tRelation complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tRelation"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="column" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="row" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tList" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="column" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tInformationItem" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="row" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tList" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -36,18 +40,15 @@ import javax.xml.namespace.QName;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tRelation", propOrder = {
     "column",
     "row"
 })
-public class Relation
-    extends Expression
-    implements Serializable
-{
+public class Relation extends Expression implements Serializable {
 
+    private static final long serialVersionUID = 1725960448223484094L;
     protected java.util.List<InformationItem> column;
     protected java.util.List<io.onedecision.engine.decisions.model.dmn.List> row;
 

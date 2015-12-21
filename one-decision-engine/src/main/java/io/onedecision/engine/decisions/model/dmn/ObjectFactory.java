@@ -31,33 +31,64 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _DMNElement_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "DMNElement");
-    private final static QName _NamedElement_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "namedElement");
-    private final static QName _Definitions_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "definitions");
-    private final static QName _Import_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "import");
-    private final static QName _ElementCollection_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "elementCollection");
-    private final static QName _DrgElement_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "drgElement");
-    private final static QName _Decision_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "decision");
-    private final static QName _BusinessContextElement_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "businessContextElement");
-    private final static QName _PerformanceIndicator_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "performanceIndicator");
-    private final static QName _OrganizationUnit_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "organizationUnit");
-    private final static QName _BusinessKnowledgeModel_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "businessKnowledgeModel");
-    private final static QName _InputData_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "inputData");
-    private final static QName _KnowledgeSource_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "knowledgeSource");
-    private final static QName _Expression_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "expression");
-    private final static QName _ItemDefinition_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "itemDefinition");
-    private final static QName _LiteralExpression_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "literalExpression");
-    private final static QName _Invocation_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "invocation");
-    private final static QName _InformationItem_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "informationItem");
-    private final static QName _DecisionTable_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "decisionTable");
-    private final static QName _Artifact_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "artifact");
-    private final static QName _TextAnnotation_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "textAnnotation");
-    private final static QName _Association_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "association");
-    private final static QName _Context_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "context");
-    private final static QName _FunctionDefinition_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "functionDefinition");
-    private final static QName _Relation_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "relation");
-    private final static QName _List_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "list");
-    private final static QName _DecisionService_QNAME = new QName("http://www.omg.org/spec/DMN/20151101/dmn11.xsd", "decisionService");
+    private final static QName _DMNElement_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "DMNElement");
+    private final static QName _NamedElement_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "namedElement");
+    private final static QName _Definitions_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "definitions");
+    private final static QName _Import_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "import");
+    private final static QName _ElementCollection_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "elementCollection");
+    private final static QName _DrgElement_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "drgElement");
+    private final static QName _Decision_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "decision");
+    private final static QName _BusinessContextElement_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd",
+            "businessContextElement");
+    private final static QName _PerformanceIndicator_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd",
+            "performanceIndicator");
+    private final static QName _OrganizationUnit_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "organizationUnit");
+    private final static QName _BusinessKnowledgeModel_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd",
+            "businessKnowledgeModel");
+    private final static QName _InputData_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "inputData");
+    private final static QName _KnowledgeSource_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "knowledgeSource");
+    private final static QName _Expression_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "expression");
+    private final static QName _ItemDefinition_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "itemDefinition");
+    private final static QName _LiteralExpression_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "literalExpression");
+    private final static QName _Invocation_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "invocation");
+    private final static QName _InformationItem_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "informationItem");
+    private final static QName _DecisionTable_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "decisionTable");
+    private final static QName _Artifact_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "artifact");
+    private final static QName _TextAnnotation_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "textAnnotation");
+    private final static QName _Association_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "association");
+    private final static QName _Context_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "context");
+    private final static QName _FunctionDefinition_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd",
+            "functionDefinition");
+    private final static QName _Relation_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "relation");
+    private final static QName _List_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "list");
+    private final static QName _DecisionService_QNAME = new QName(
+            "http://www.omg.org/spec/DMN/20151101/dmn.xsd", "decisionService");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: io.onedecision.engine.decisions.model.dmn
@@ -382,7 +413,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link DmnElement }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "DMNElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "DMNElement")
     public JAXBElement<DmnElement> createDMNElement(DmnElement value) {
         return new JAXBElement<DmnElement>(_DMNElement_QNAME, DmnElement.class, null, value);
     }
@@ -391,7 +422,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link NamedElement }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "namedElement", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "DMNElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "namedElement", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "DMNElement")
     public JAXBElement<NamedElement> createNamedElement(NamedElement value) {
         return new JAXBElement<NamedElement>(_NamedElement_QNAME, NamedElement.class, null, value);
     }
@@ -400,7 +431,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Definitions }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "definitions", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "namedElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "definitions", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "namedElement")
     public JAXBElement<Definitions> createDefinitions(Definitions value) {
         return new JAXBElement<Definitions>(_Definitions_QNAME, Definitions.class, null, value);
     }
@@ -409,7 +440,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Import }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "import")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "import")
     public JAXBElement<Import> createImport(Import value) {
         return new JAXBElement<Import>(_Import_QNAME, Import.class, null, value);
     }
@@ -418,7 +449,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link ElementCollection }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "elementCollection", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "namedElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "elementCollection", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "namedElement")
     public JAXBElement<ElementCollection> createElementCollection(ElementCollection value) {
         return new JAXBElement<ElementCollection>(_ElementCollection_QNAME, ElementCollection.class, null, value);
     }
@@ -427,7 +458,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link DrgElement }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "drgElement", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "namedElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "drgElement", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "namedElement")
     public JAXBElement<DrgElement> createDrgElement(DrgElement value) {
         return new JAXBElement<DrgElement>(_DrgElement_QNAME, DrgElement.class, null, value);
     }
@@ -436,7 +467,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Decision }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "decision", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "drgElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "decision", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "drgElement")
     public JAXBElement<Decision> createDecision(Decision value) {
         return new JAXBElement<Decision>(_Decision_QNAME, Decision.class, null, value);
     }
@@ -445,7 +476,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link BusinessContextElement }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "businessContextElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "businessContextElement")
     public JAXBElement<BusinessContextElement> createBusinessContextElement(BusinessContextElement value) {
         return new JAXBElement<BusinessContextElement>(_BusinessContextElement_QNAME, BusinessContextElement.class, null, value);
     }
@@ -454,7 +485,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link PerformanceIndicator }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "performanceIndicator", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "businessContextElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "performanceIndicator", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "businessContextElement")
     public JAXBElement<PerformanceIndicator> createPerformanceIndicator(PerformanceIndicator value) {
         return new JAXBElement<PerformanceIndicator>(_PerformanceIndicator_QNAME, PerformanceIndicator.class, null, value);
     }
@@ -463,7 +494,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link OrganizationUnit }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "organizationUnit", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "businessContextElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "organizationUnit", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "businessContextElement")
     public JAXBElement<OrganizationUnit> createOrganizationUnit(OrganizationUnit value) {
         return new JAXBElement<OrganizationUnit>(_OrganizationUnit_QNAME, OrganizationUnit.class, null, value);
     }
@@ -472,7 +503,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link BusinessKnowledgeModel }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "businessKnowledgeModel", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "drgElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "businessKnowledgeModel", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "drgElement")
     public JAXBElement<BusinessKnowledgeModel> createBusinessKnowledgeModel(BusinessKnowledgeModel value) {
         return new JAXBElement<BusinessKnowledgeModel>(_BusinessKnowledgeModel_QNAME, BusinessKnowledgeModel.class, null, value);
     }
@@ -481,7 +512,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link InputData }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "inputData", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "drgElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "inputData", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "drgElement")
     public JAXBElement<InputData> createInputData(InputData value) {
         return new JAXBElement<InputData>(_InputData_QNAME, InputData.class, null, value);
     }
@@ -490,7 +521,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link KnowledgeSource }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "knowledgeSource", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "drgElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "knowledgeSource", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "drgElement")
     public JAXBElement<KnowledgeSource> createKnowledgeSource(KnowledgeSource value) {
         return new JAXBElement<KnowledgeSource>(_KnowledgeSource_QNAME, KnowledgeSource.class, null, value);
     }
@@ -499,7 +530,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Expression }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "expression")
     public JAXBElement<Expression> createExpression(Expression value) {
         return new JAXBElement<Expression>(_Expression_QNAME, Expression.class, null, value);
     }
@@ -508,7 +539,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link ItemDefinition }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "itemDefinition", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "namedElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "itemDefinition", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "namedElement")
     public JAXBElement<ItemDefinition> createItemDefinition(ItemDefinition value) {
         return new JAXBElement<ItemDefinition>(_ItemDefinition_QNAME, ItemDefinition.class, null, value);
     }
@@ -517,7 +548,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link LiteralExpression }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "literalExpression", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "literalExpression", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "expression")
     public JAXBElement<LiteralExpression> createLiteralExpression(LiteralExpression value) {
         return new JAXBElement<LiteralExpression>(_LiteralExpression_QNAME, LiteralExpression.class, null, value);
     }
@@ -526,7 +557,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Invocation }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "invocation", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "invocation", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "expression")
     public JAXBElement<Invocation> createInvocation(Invocation value) {
         return new JAXBElement<Invocation>(_Invocation_QNAME, Invocation.class, null, value);
     }
@@ -535,7 +566,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link InformationItem }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "informationItem", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "namedElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "informationItem", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "namedElement")
     public JAXBElement<InformationItem> createInformationItem(InformationItem value) {
         return new JAXBElement<InformationItem>(_InformationItem_QNAME, InformationItem.class, null, value);
     }
@@ -544,7 +575,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link DecisionTable }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "decisionTable", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "decisionTable", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "expression")
     public JAXBElement<DecisionTable> createDecisionTable(DecisionTable value) {
         return new JAXBElement<DecisionTable>(_DecisionTable_QNAME, DecisionTable.class, null, value);
     }
@@ -553,7 +584,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Artifact }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "artifact", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "DMNElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "artifact", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "DMNElement")
     public JAXBElement<Artifact> createArtifact(Artifact value) {
         return new JAXBElement<Artifact>(_Artifact_QNAME, Artifact.class, null, value);
     }
@@ -562,7 +593,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link TextAnnotation }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "textAnnotation", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "artifact")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "textAnnotation", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "artifact")
     public JAXBElement<TextAnnotation> createTextAnnotation(TextAnnotation value) {
         return new JAXBElement<TextAnnotation>(_TextAnnotation_QNAME, TextAnnotation.class, null, value);
     }
@@ -571,7 +602,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Association }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "association", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "artifact")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "association", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "artifact")
     public JAXBElement<Association> createAssociation(Association value) {
         return new JAXBElement<Association>(_Association_QNAME, Association.class, null, value);
     }
@@ -580,7 +611,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Context }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "context", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "context", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "expression")
     public JAXBElement<Context> createContext(Context value) {
         return new JAXBElement<Context>(_Context_QNAME, Context.class, null, value);
     }
@@ -589,7 +620,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link FunctionDefinition }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "functionDefinition", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "functionDefinition", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "expression")
     public JAXBElement<FunctionDefinition> createFunctionDefinition(FunctionDefinition value) {
         return new JAXBElement<FunctionDefinition>(_FunctionDefinition_QNAME, FunctionDefinition.class, null, value);
     }
@@ -598,7 +629,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link Relation }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "relation", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "relation", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "expression")
     public JAXBElement<Relation> createRelation(Relation value) {
         return new JAXBElement<Relation>(_Relation_QNAME, Relation.class, null, value);
     }
@@ -607,7 +638,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link List }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "list", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "expression")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "list", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "expression")
     public JAXBElement<List> createList(List value) {
         return new JAXBElement<List>(_List_QNAME, List.class, null, value);
     }
@@ -616,7 +647,7 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link DecisionService }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", name = "decisionService", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", substitutionHeadName = "namedElement")
+    @XmlElementDecl(namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", name = "decisionService", substitutionHeadNamespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", substitutionHeadName = "namedElement")
     public JAXBElement<DecisionService> createDecisionService(DecisionService value) {
         return new JAXBElement<DecisionService>(_DecisionService_QNAME, DecisionService.class, null, value);
     }

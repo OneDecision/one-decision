@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,16 +18,19 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tItemComponent complex type.
+ * <p>
+ * Java class for tItemComponent complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tItemComponent"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference"/&gt;
+ *         &lt;element name="itemDefinition" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *     &lt;/restriction&gt;
@@ -40,10 +44,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "tItemComponent", propOrder = {
     "itemDefinition"
 })
-public class ItemComponent
-    implements Serializable
-{
+public class ItemComponent implements Serializable {
 
+    private static final long serialVersionUID = 9222597099314142456L;
     @XmlElement(required = true)
     protected DmnElementReference itemDefinition;
     @XmlAttribute(name = "name", required = true)

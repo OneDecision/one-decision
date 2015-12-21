@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -25,9 +26,9 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tPerformanceIndicator"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tBusinessContextElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tBusinessContextElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="impactingDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="impactingDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -41,11 +42,10 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "tPerformanceIndicator", propOrder = {
     "impactingDecision"
 })
-public class PerformanceIndicator
-    extends BusinessContextElement
-    implements Serializable
-{
+public class PerformanceIndicator extends BusinessContextElement implements
+        Serializable {
 
+    private static final long serialVersionUID = 3513821067854117620L;
     protected List<DmnElementReference> impactingDecision;
 
     /**

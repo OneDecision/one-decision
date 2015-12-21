@@ -19,17 +19,20 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tLiteralExpression complex type.
+ * <p>
+ * Java class for tLiteralExpression complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tLiteralExpression"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tExpression"&gt;
  *       &lt;choice minOccurs="0"&gt;
  *         &lt;element name="text" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="importedValues" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tImportedValues"/&gt;
+ *         &lt;element name="importedValues" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tImportedValues"/&gt;
  *       &lt;/choice&gt;
  *       &lt;attribute name="expressionLanguage" type="{http://www.w3.org/2001/XMLSchema}anyURI" /&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
@@ -37,7 +40,6 @@ import javax.xml.namespace.QName;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)

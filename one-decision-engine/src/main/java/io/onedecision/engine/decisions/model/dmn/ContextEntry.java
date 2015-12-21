@@ -20,17 +20,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tContextEntry complex type.
+ * <p>
+ * Java class for tContextEntry complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tContextEntry"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" minOccurs="0"/&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression"/&gt;
+ *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tInformationItem" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}expression"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -49,7 +52,7 @@ public class ContextEntry implements Serializable {
     private static final long serialVersionUID = -3212239049041408008L;
     private static ObjectFactory objFact = new ObjectFactory();
     protected InformationItem variable;
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class)
     protected JAXBElement<? extends Expression> expression;
 
     /**
@@ -134,12 +137,14 @@ public class ContextEntry implements Serializable {
         return this;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public ContextEntry withLiteralExpression(LiteralExpression le) {
         setExpression(new JAXBElement(DecisionConstants.LITERAL_EXPRESSION,
                 LiteralExpression.class, le));
         return this;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public ContextEntry withInvocation(Invocation invocation) {
         setExpression(new JAXBElement(DecisionConstants.INVOCATION,
                 Invocation.class, invocation));

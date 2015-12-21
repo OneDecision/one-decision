@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -26,12 +27,12 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tDecisionService"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tNamedElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="outputDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded"/&gt;
- *         &lt;element name="encapsulatedDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="inputDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
- *         &lt;element name="inputData" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="outputDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded"/&gt;
+ *         &lt;element name="encapsulatedDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="inputDecision" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="inputData" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -48,11 +49,9 @@ import javax.xml.bind.annotation.XmlType;
     "inputDecision",
     "inputData"
 })
-public class DecisionService
-    extends NamedElement
-    implements Serializable
-{
+public class DecisionService extends NamedElement implements Serializable {
 
+    private static final long serialVersionUID = -6573858175169625919L;
     @XmlElement(required = true)
     protected List<DmnElementReference> outputDecision;
     protected List<DmnElementReference> encapsulatedDecision;

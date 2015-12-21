@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -25,7 +26,7 @@ import javax.xml.namespace.QName;
  * <pre>
  * &lt;complexType name="tExpression"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElement"&gt;
  *       &lt;attribute name="typeRef" type="{http://www.w3.org/2001/XMLSchema}QName" /&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -46,10 +47,9 @@ import javax.xml.namespace.QName;
     Relation.class,
     List.class
 })
-public class Expression
-    extends DmnElement
-    implements Serializable
-{
+public class Expression extends DmnElement implements Serializable {
+
+    private static final long serialVersionUID = -3229910130526642160L;
 
     @XmlAttribute(name = "typeRef")
     protected QName typeRef;

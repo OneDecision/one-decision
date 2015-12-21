@@ -16,23 +16,25 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tInputData complex type.
+ * <p>
+ * Java class for tInputData complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tInputData"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDRGElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDRGElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tInformationItem" minOccurs="0"/&gt;
+ *         &lt;element name="variable" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tInformationItem" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)

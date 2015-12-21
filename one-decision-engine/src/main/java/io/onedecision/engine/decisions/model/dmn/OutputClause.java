@@ -18,17 +18,20 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tOutputClause complex type.
+ * <p>
+ * Java class for tOutputClause complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tOutputClause"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="outputValues" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tUnaryTests" minOccurs="0"/&gt;
- *         &lt;element name="defaultOutputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tLiteralExpression" minOccurs="0"/&gt;
+ *         &lt;element name="outputValues" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tUnaryTests" minOccurs="0"/&gt;
+ *         &lt;element name="defaultOutputEntry" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tLiteralExpression" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *       &lt;attribute name="typeRef" type="{http://www.w3.org/2001/XMLSchema}QName" /&gt;
@@ -48,6 +51,7 @@ import javax.xml.namespace.QName;
 public class OutputClause extends DmnElement implements Serializable {
 
     private static final long serialVersionUID = -4640596164464458038L;
+    private static ObjectFactory objFact = new ObjectFactory();
     protected UnaryTests outputValues;
     protected LiteralExpression defaultOutputEntry;
     @XmlAttribute(name = "name")
@@ -153,6 +157,11 @@ public class OutputClause extends DmnElement implements Serializable {
 
     public OutputClause withOutputValues(UnaryTests value) {
         setOutputValues(value);
+        return this;
+    }
+
+    public OutputClause withOutputValues(String... unaryTests) {
+        setOutputValues(objFact.createUnaryTests().withUnaryTests(unaryTests));
         return this;
     }
 

@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -16,14 +17,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tTextAnnotation complex type.
+ * <p>
+ * Java class for tTextAnnotation complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tTextAnnotation"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tArtifact"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tArtifact"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="text" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
@@ -34,17 +38,14 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tTextAnnotation", propOrder = {
     "text"
 })
-public class TextAnnotation
-    extends Artifact
-    implements Serializable
-{
+public class TextAnnotation extends Artifact implements Serializable {
 
+    private static final long serialVersionUID = -2087295544353124266L;
     protected String text;
     @XmlAttribute(name = "textFormat")
     protected String textFormat;

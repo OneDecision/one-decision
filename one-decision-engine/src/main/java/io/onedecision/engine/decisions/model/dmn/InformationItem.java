@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,14 +18,17 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tInformationItem complex type.
+ * <p>
+ * Java class for tInformationItem complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tInformationItem"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tNamedElement"&gt;
  *       &lt;attribute name="typeRef" type="{http://www.w3.org/2001/XMLSchema}QName" /&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -32,15 +36,12 @@ import javax.xml.namespace.QName;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tInformationItem")
-public class InformationItem
-    extends NamedElement
-    implements Serializable
-{
+public class InformationItem extends NamedElement implements Serializable {
 
+    private static final long serialVersionUID = -413774519889634863L;
     @XmlAttribute(name = "typeRef")
     protected QName typeRef;
 

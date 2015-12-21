@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -25,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tBusinessContextElement"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tNamedElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tNamedElement"&gt;
  *       &lt;attribute name="URI" type="{http://www.w3.org/2001/XMLSchema}anyURI" /&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
@@ -41,11 +42,10 @@ import javax.xml.bind.annotation.XmlType;
     PerformanceIndicator.class,
     OrganizationUnit.class
 })
-public class BusinessContextElement
-    extends NamedElement
-    implements Serializable
-{
+public class BusinessContextElement extends NamedElement implements
+        Serializable {
 
+    private static final long serialVersionUID = 7955845236575309147L;
     @XmlAttribute(name = "URI")
     @XmlSchemaType(name = "anyURI")
     protected String uri;

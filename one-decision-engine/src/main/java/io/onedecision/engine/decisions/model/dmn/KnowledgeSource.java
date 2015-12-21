@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -20,18 +21,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for tKnowledgeSource complex type.
+ * <p>
+ * Java class for tKnowledgeSource complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tKnowledgeSource"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDRGElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDRGElement"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="authorityRequirement" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tAuthorityRequirement" maxOccurs="unbounded" minOccurs="0"/&gt;
  *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
- *         &lt;element name="owner" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElementReference" minOccurs="0"/&gt;
+ *         &lt;element name="owner" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElementReference" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="locationURI" type="{http://www.w3.org/2001/XMLSchema}anyURI" /&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
@@ -40,7 +44,6 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;/complexType&gt;
  * </pre>
  * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tKnowledgeSource", propOrder = {
@@ -48,11 +51,9 @@ import javax.xml.bind.annotation.XmlType;
     "type",
     "owner"
 })
-public class KnowledgeSource
-    extends DrgElement
-    implements Serializable
-{
+public class KnowledgeSource extends DrgElement implements Serializable {
 
+    private static final long serialVersionUID = 1147630290196054710L;
     protected List<AuthorityRequirement> authorityRequirement;
     protected String type;
     protected DmnElementReference owner;

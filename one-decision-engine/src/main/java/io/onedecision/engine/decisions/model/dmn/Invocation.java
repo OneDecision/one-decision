@@ -23,24 +23,26 @@ import javax.xml.namespace.QName;
 
 
 /**
- * <p>Java class for tInvocation complex type.
+ * <p>
+ * Java class for tInvocation complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>
+ * The following schema fragment specifies the expected content contained within
+ * this class.
  * 
  * <pre>
  * &lt;complexType name="tInvocation"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tExpression"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tExpression"&gt;
  *       &lt;sequence&gt;
- *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}expression" minOccurs="0"/&gt;
- *         &lt;element name="binding" type="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tBinding" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element ref="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}expression" minOccurs="0"/&gt;
+ *         &lt;element name="binding" type="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tBinding" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;anyAttribute processContents='lax' namespace='##other'/&gt;
  *     &lt;/extension&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -54,7 +56,7 @@ public class Invocation extends Expression implements Serializable {
 
     private static ObjectFactory objFact = new ObjectFactory();
     
-    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd", type = JAXBElement.class, required = false)
+    @XmlElementRef(name = "expression", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
     protected JAXBElement<? extends Expression> expression;
     protected java.util.List<Binding> binding;
 
@@ -130,6 +132,7 @@ public class Invocation extends Expression implements Serializable {
         return this;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public Invocation withCalledFunction(String le) {
         setExpression(new JAXBElement(DecisionConstants.LITERAL_EXPRESSION,
                 LiteralExpression.class, objFact.createLiteralExpression()
