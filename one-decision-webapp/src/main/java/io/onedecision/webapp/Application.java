@@ -13,6 +13,9 @@
  *******************************************************************************/
 package io.onedecision.webapp;
 
+//import io.onedecision.engine.decisions.impl.LocationHeaderInterceptor;
+import io.onedecision.engine.decisions.impl.RedirectingAuthenticationSuccessHandler;
+
 import java.util.Arrays;
 
 import javax.sql.DataSource;
@@ -35,7 +38,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -67,9 +70,14 @@ public class Application extends WebMvcConfigurerAdapter {
 		}
     }
 
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new LocationHeaderInterceptor())
+//                .addPathPatterns("/**");
+//    }
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("forward:/index.html");
         registry.addViewController("/login").setViewName("login");
     }
 
@@ -92,7 +100,7 @@ public class Application extends WebMvcConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
 					.antMatchers("/css/**", "/data/**", "/docs/**",
-							"/fonts/**", "/images/**", "/js/**", "/webjars/**")
+                            "/fonts/**", "/images/**", "/js/**", "/webjars/**")
 							.permitAll()
 	                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 	                .antMatchers("/*.html", "/users/**")
@@ -101,8 +109,10 @@ public class Application extends WebMvcConfigurerAdapter {
                     	.hasRole("admin")
                     .anyRequest().authenticated()  
                     .and().formLogin()
-                    	.loginPage("/login").failureUrl("/login?error")
-                    .successHandler(getSuccessHandler()).permitAll()
+                        .loginPage("/login")
+                    	.failureUrl("/login?error")
+                        .successHandler(getSuccessHandler())
+                        .permitAll()
                     .and().csrf().disable().httpBasic();
 
             // Allow frames
@@ -112,8 +122,9 @@ public class Application extends WebMvcConfigurerAdapter {
         }
 
         private AuthenticationSuccessHandler getSuccessHandler() {
-            SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler(
+            RedirectingAuthenticationSuccessHandler successHandler = new RedirectingAuthenticationSuccessHandler(
                     "/");
+            successHandler.setDefaultTargetUrl("/index.html");
             successHandler.setTargetUrlParameter("redirect");
             return successHandler;
         }

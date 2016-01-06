@@ -51,8 +51,8 @@
         <fieldset>
           <input type="text" id="username" name="username" placeholder="Username" required/>
           <input type="password" id="password" name="password" placeholder="Password" required/>
-          <input type="hidden" id="_csrf" name="_csrf" value="{{csrfToken}}" />
-          <input type="hidden" id="redirect" name="redirect" value="index.html" />
+		      {{! If populated (eg by JS) on successful login user will be shown this page }}
+          <input type="hidden" id="redirect" name="redirect"/>
           <input type="button" id="login" onclick="ractive.login()" value="Login" class="btn btn-primary" />
         </fieldset>
         <p>If you are running the quick-start application you may login as <em>admin/onedecision</em></p> 
@@ -62,7 +62,7 @@
   <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
   <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
-  <script src="/webjars/ractive/0.7.1/ractive.min.js"></script>
+  <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
   <script src="js/one-decision-1.1.0.js"></script>
   <script src="js/one-decision-login-1.1.0.js"></script>
 </body>

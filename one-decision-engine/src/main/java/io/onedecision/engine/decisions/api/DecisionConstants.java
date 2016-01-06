@@ -4,7 +4,7 @@ import javax.xml.namespace.QName;
 
 public interface DecisionConstants {
 
-    static String DMN_URI = "http://www.omg.org/spec/DMN/20151101/dmn11.xsd";
+    static String DMN_URI = "http://www.omg.org/spec/DMN/20151101/dmn.xsd";
 
     static String EXPR_FEEL_URI = "http://www.omg.org/spec/FEEL/20140401";
 

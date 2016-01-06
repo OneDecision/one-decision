@@ -13,29 +13,17 @@
  *******************************************************************************/
 var ractive = new OneDecisionApp({
   el: 'container',
-  
-  // If two-way data binding is enabled, whether to only update data based on 
-  // text inputs on change and blur events, rather than any event (such as key
-  // events) that may result in new data
   lazy: true,
-  
   template: '#template',
-
-  // Initialize some data
   data: {
-    contacts: [],
-    //saveObserver:false,
-    username: localStorage['username'],
-    age: function(timeString) {
-      return i18n.getAgeString(new Date(timeString))
-    },
-    formatDate: function(timeString) {
-      return new Date(timeString).toLocaleDateString(navigator.languages);
-    },
     stdPartials: [
+      { "name": "poweredBy", "url": "/partials/powered-by.html"},
+      { "name": "profileArea", "url": "/partials/profile-area.html"},
+      { "name": "sidebar", "url": "/partials/sidebar.html"},
+      { "name": "titleArea", "url": "/partials/title-area.html"},
     ],
-    tenant: { id: 'onedecision' },
-    title: "Decision",
+    tenant: { id: "onedecision" },
+    title: "Home",
     username: localStorage['username']
   },
   oninit: function() {
@@ -43,4 +31,8 @@ var ractive = new OneDecisionApp({
     this.ajaxSetup();
     this.loadStandardPartials(this.get('stdPartials'));
   }
+});
+
+$(document).ready(function() {
+  console.info('Running ready handler');
 });
