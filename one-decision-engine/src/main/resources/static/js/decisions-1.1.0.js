@@ -17,7 +17,7 @@ var ractive = new OneDecisionApp({
   template: '#template',
   data: {
     decisionTemplate: { 
-      "decisionId":"A new decision",
+      "decisionName":"A new decision",
       "hitPolicy":"U",
       "domainModelUri":null,
       "inputs":[{name: "Select..."},{name:"Select..."}],

@@ -51,10 +51,21 @@ public class DecisionControllerTest implements ExamplesConstants {
     @Test
     public void testDecisionViaController() throws IOException,
             DecisionException {
-        dmnModel = ((DecisionDmnModelController) decisionEngine
-                .getRepositoryService()).handleFileUpload(TENANT_ID,
+
+        DecisionDmnModelController svc = (DecisionDmnModelController) decisionEngine
+                .getRepositoryService();
+
+        assertEquals(
+                "Test environment should not contain any decisions at start",
+                0, svc.listForTenant(TENANT_ID).size());
+
+        dmnModel = svc.handleFileUpload(TENANT_ID,
                 null/* no deployment message */,
                 MockMultipartFileUtil.newInstance(ARR_DMN_RESOURCE));
+
+        assertEquals(
+                "Test environment should now contain 1 decisions",
+                1, svc.listForTenant(TENANT_ID).size());
 
         Map<String, Object> vars = new HashMap<String, Object>();
         String applicantVal = "{\"age\":18,\"health\":\"Good\"}";

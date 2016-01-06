@@ -89,7 +89,9 @@ public class DmnLifecycleTest implements ExamplesConstants {
         assertEquals(dmnModel.getDefinitionXml(), model2.getDefinitionXml());
 
         // Delete
-        svc.deleteModelForTenant(dmnModel.getId(), TENANT_ID);
+        svc.deleteModelForTenant(dmnModel.getShortId(), TENANT_ID);
+        models = svc.listForTenant(TENANT_ID);
+        assertEquals(0, models.size());
     }
 
     @Test
@@ -114,6 +116,8 @@ public class DmnLifecycleTest implements ExamplesConstants {
                 .getDefinitionXml());
 
         // Delete
-        svc.deleteModelForTenant(dmnModel.getId(), TENANT_ID);
+        svc.deleteModelForTenant(dmnModel.getShortId(), TENANT_ID);
+        models = svc.listForTenant(TENANT_ID);
+        assertEquals(0, models.size());
     }
 }

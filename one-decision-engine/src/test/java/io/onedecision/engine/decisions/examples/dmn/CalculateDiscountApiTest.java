@@ -91,15 +91,15 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
         if (dm == null) {
             // build item definitions
             ItemDefinition customerCategoryDef = objFact.createItemDefinition()
-                    .withId("customerCategory")
-                    .withName("Customer Category")
+                    .withName("customerCategory")
+                    .withLabel("Customer Category")
                     .withTypeRef(DecisionConstants.FEEL_STRING);
             ItemDefinition orderSizeDef = objFact.createItemDefinition()
-                    .withId("orderSize")
-                    .withName("Order Size")
+                    .withName("orderSize")
+                    .withLabel("Order Size")
                     .withTypeRef(DecisionConstants.FEEL_NUMBER);
             ItemDefinition totalPriceDef = objFact.createItemDefinition()
-                    .withId("totalOrderPrice")
+                    .withName("totalOrderPrice")
                     .withTypeRef(DecisionConstants.FEEL_NUMBER);
             
             // build definitions container
@@ -116,16 +116,16 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
 
             // build expressions
             UnaryTests orderSizeSmall = objFact.createUnaryTests()
-                    .withId("27002_dt_i2_ie_1")
+            // .withId("27002_dt_i2_ie_1")
                     .withText("< 500");
             UnaryTests orderSizeLarge = objFact.createUnaryTests()
-                    .withId("27002_dt_i2_ie_2")
+            // .withId("27002_dt_i2_ie_2")
                     .withText(">= 500");
             UnaryTests customerCategoryOther = objFact.createUnaryTests()
-                    .withId("27002_dt_i1_ie_1")
+            // .withId("27002_dt_i1_ie_1")
                     .withText("!= \"gold\"");
             UnaryTests customerCategoryGold = objFact.createUnaryTests()
-                    .withId("27002_dt_i1_ie_2")
+            // .withId("27002_dt_i1_ie_2")
                     .withText("== \"gold\"");
             LiteralExpression totalPrice = objFact.createLiteralExpression()
                     .withText("orderSize * totalOrderPrice");
@@ -135,11 +135,11 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
 
             // build decision table from expressions
             DecisionTable dt = objFact.createDecisionTable()
-                    .withId("27002_dt")
+                    // .withId("27002_dt")
                     .withHitPolicy(HitPolicy.FIRST)
                     .withInputs(
                             objFact.createInputClause()
-                                    .withId("27002_dt_i1")
+                                    // .withId("27002_dt_i1")
                                     .withInputExpression(
                                             objFact.createLiteralExpression()
                                                     .withId("27002_dt_i1_ie")
@@ -154,7 +154,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                                             "== \"gold\"")
                                     ),
                             objFact.createInputClause()
-                                    .withId("27002_dt_i2")
+                                    // .withId("27002_dt_i2")
                                     .withInputExpression(
                                             objFact.createLiteralExpression()
                                                     .withId("27002_dt_i2_ie")
@@ -166,7 +166,9 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
                                                     .withUnaryTests("< 500",
                                                             ">= 500")))
                     .withOutputs(
-                            objFact.createOutputClause().withId("27002_dt_o1"))
+                            objFact.createOutputClause()
+                    // .withId("27002_dt_o1")
+                                    .withName("totalOrderPrice"))
                     .withRules(
                             objFact.createDecisionRule()
                                     .withInputEntry(customerCategoryOther)

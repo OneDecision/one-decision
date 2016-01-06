@@ -95,7 +95,7 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
 
     @Test
     @Ignore
-    // currently failing
+    // TODO currently failing
     public void testApplicantRiskRatingWithBadParams() {
         RuntimeService svc = decisionRule.getDecisionEngine()
                 .getRuntimeService();

@@ -1,8 +1,9 @@
 <section id="decisionsSect">
   <h2>
     <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the decision model table"></a>
-    <span>Decisions</span>
-    <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new decision model"></a>
+    <span>Decision Models</span>
+    <a class="clickable glyphicon glyphicon-cloud-upload" aria-hidden="true" on-click="showUpload()" title="Upload a new decision model"></a>
+    <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="create()" title="Add a new decision model"></a>
     <a class="clickable glyphicon glyphicon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
     <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
     <a class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching decisions"></a>

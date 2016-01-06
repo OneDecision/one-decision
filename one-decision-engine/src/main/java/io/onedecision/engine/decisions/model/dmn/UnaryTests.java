@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  * <pre>
  * &lt;complexType name="tUnaryTests"&gt;
  *   &lt;complexContent&gt;
- *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn11.xsd}tDMNElement"&gt;
+ *     &lt;extension base="{http://www.omg.org/spec/DMN/20151101/dmn.xsd}tDMNElement"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="text" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;

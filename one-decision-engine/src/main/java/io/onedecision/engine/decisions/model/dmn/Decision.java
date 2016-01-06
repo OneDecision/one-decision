@@ -453,17 +453,19 @@ public class Decision extends DrgElement implements
     }
 
     public DecisionTable getDecisionTable() {
-        if (expression == null) { 
+        if (expression == null || expression.getValue() == null) {
             return null; 
         } else if (expression.getValue() instanceof DecisionTable) {
             return (DecisionTable) expression.getValue(); 
         } else { 
-            System.err.println("Expression is not a decision table but a "
-                    + expression.getValue().getId());
             return null;
-            // throw new
-            // DecisionException("Expression is not a decision table");
         }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void setDecisionTable(DecisionTable dt) {
+        setExpression(new JAXBElement(DecisionConstants.DECISION_TABLE,
+                DecisionTable.class, dt));
     }
 
     /**
@@ -672,10 +674,8 @@ public class Decision extends DrgElement implements
         return this;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Decision withDecisionTable(DecisionTable dt) {
-        setExpression(new JAXBElement(DecisionConstants.DECISION_TABLE,
-                DecisionTable.class, dt));
+        setDecisionTable(dt);
         return this;
     }
 

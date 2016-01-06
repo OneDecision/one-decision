@@ -53,6 +53,9 @@ public class DecisionService implements DecisionConstants, RuntimeService {
 
 	protected List<DelExpression> compilers;
 
+    /**
+     * Cache scripts, keyed by decision id.
+     */
     private Map<String, String> cache = new HashMap<String, String>();
     private ScriptEngine jsEng;
 
@@ -167,7 +170,11 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         sb.append("var " + getRootObject(d.getInformationItem().getId())
                     + " = {};\n");
 
-        return getScript(sb, d);
+        if (cache.containsKey(d.getId())) {
+            return cache.get(d.getId());
+        } else {
+            return getScript(sb, d);
+        }
     }
 
     protected String getRootObject(String text) {
@@ -179,17 +186,14 @@ public class DecisionService implements DecisionConstants, RuntimeService {
 
     protected String getScript(StringBuilder sb, Decision d) {
         DecisionTable dt = d.getDecisionTable();
-        if (cache.containsKey(dt.getId())) {
-            return cache.get(dt.getId());
-        }
 
         // Rhino _and_ Nashorn compatible way to enable access to println
         sb.append("var System = java.lang.System;\n");
 
-        sb.append(createFunctionName(dt.getId())).append("();\n\n");
-        
-        sb.append("function ").append(createFunctionName(dt.getId()))
-                .append("() {\n");
+        String functionName = createFunctionName(d.getName());
+        sb.append(functionName).append("();\n\n");
+        sb.append("function ").append(functionName).append("() {\n");
+
         int ruleIdx = 0;
         for (DecisionRule rule : dt.getRules()) {
             ruleIdx++;
@@ -222,8 +226,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                 if (ex instanceof LiteralExpression) {
                     LiteralExpression le = (LiteralExpression) ex;
                     sb.append("  ");
-                    sb.append(dt.getOutputs().get(i)
-                            .getId());
+                    sb.append(IdHelper.toIdentifier(dt.getOutputs().get(i).getName()));
                     if (isLiteral(le.getText())) {
                         sb.append(" = ");
                     }
@@ -261,6 +264,9 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(sb.toString());
         }
+        synchronized (cache) {
+            cache.put(d.getId(), sb.toString());
+        }
         return sb.toString();
     }
 
@@ -276,9 +282,9 @@ public class DecisionService implements DecisionConstants, RuntimeService {
 
     protected String createFunctionName(String id) {
         if (Character.isDigit(id.charAt(0))) {
-            return "_" + id;
+            return "_" + IdHelper.toIdentifier(id);
         } else {
-            return id;
+            return IdHelper.toIdentifier(id);
         }
     }
 

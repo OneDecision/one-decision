@@ -27,11 +27,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface DecisionDmnModelRepository extends
         CrudRepository<DmnModel, Long> {
 
-    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.id = :id")
+    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.id = :id AND d.deleted = false")
     DmnModel findOneForTenant(@Param("id") Long id,
             @Param("tenantId") String tenantId);
 
-    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.definitionId = :definitionId")
+    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.definitionId = :definitionId AND d.deleted = false")
     DmnModel findByDefinitionId(@Param("definitionId") String definitionId,
             @Param("tenantId") String tenantId);
 

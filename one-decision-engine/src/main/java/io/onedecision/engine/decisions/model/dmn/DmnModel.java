@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -43,10 +43,15 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import org.springframework.hateoas.Identifiable;
+import org.springframework.hateoas.Link;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -57,14 +62,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "OL_DMN_MODEL")
-public class DmnModel  implements Serializable {
+public class DmnModel implements Serializable, Identifiable<Link> {
     private static final long serialVersionUID = 3333702300975742216L;
+    
+    private static final ObjectFactory objFact = new ObjectFactory();
+
+    public static DmnModel newModel() {
+        DmnModel model = new DmnModel(objFact.createDefinitions()
+                .withId(UUID.randomUUID().toString())
+                .withName("New decision model"), "-unknown-tenant-");
+        return model; 
+    }
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty
-    private Long id;
+    private Long shortId;
+
+    // @JsonProperty
+    private transient List<Link> links;
 
     @NotNull
     @JsonProperty
@@ -92,21 +109,21 @@ public class DmnModel  implements Serializable {
     @Lob
     private String definitionXml;
 
-    @JsonProperty
-    @Embedded
-    private List<String> decisionIds;
-
-    @JsonProperty
-    @Embedded
-    private List<String> decisionNames;
-
-    @JsonProperty
-    @Embedded
-    private List<String> bkmIds;
-
-    @JsonProperty
-    @Embedded
-    private List<String> bkmNames;
+    // @JsonProperty
+    // @Embedded
+    // private List<String> decisionIds;
+    //
+    // @JsonProperty
+    // @Embedded
+    // private List<String> decisionNames;
+    //
+    // @JsonProperty
+    // @Embedded
+    // private List<String> bkmIds;
+    //
+    // @JsonProperty
+    // @Embedded
+    // private List<String> bkmNames;
 
     @JsonProperty
     @Lob
@@ -137,6 +154,7 @@ public class DmnModel  implements Serializable {
 
     public DmnModel() {
         created = new Date();
+        links = new ArrayList<Link>();
     }
 
     public DmnModel(Definitions model, String tenantId) {
@@ -170,35 +188,75 @@ public class DmnModel  implements Serializable {
         setDeploymentMessage(deploymentMessage);
     }
 
-	public Long getId() {
-		return id;
+    @JsonIgnore
+    public Link getId() {
+        return getLink(Link.REL_SELF);
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+    public void addLink(Link link) {
+        links.add(link);
+    }
+
+    /**
+     * Returns the link with the given rel.
+     * 
+     * @param rel
+     * @return the link with the given rel or {@literal null} if none found.
+     */
+    public Link getLink(String rel) {
+        for (Link link : links) {
+            if (link.getRel().equals(rel)) {
+                return link;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns all {@link Link}s contained in this resource.
+     * 
+     * @return
+     */
+    @XmlElement(name = "link", namespace = Link.ATOM_NAMESPACE)
+    @JsonProperty("links")
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    @JsonProperty("links")
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
+    public Long getShortId() {
+        return shortId;
+    }
+
+    public void setShortId(Long id) {
+        this.shortId = id;
 	}
 
-	public String getName() {
+    public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+    public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getOriginalFileName() {
+    public String getOriginalFileName() {
 		return originalFileName;
 	}
 
-	public void setOriginalFileName(String originalFileName) {
+    public void setOriginalFileName(String originalFileName) {
 		this.originalFileName = originalFileName;
 	}
 
-	public String getDeploymentMessage() {
+    public String getDeploymentMessage() {
 		return deploymentMessage;
 	}
 
-	public void setDeploymentMessage(String deploymentMessage) {
+    public void setDeploymentMessage(String deploymentMessage) {
 		this.deploymentMessage = deploymentMessage;
 	}
 
@@ -214,27 +272,27 @@ public class DmnModel  implements Serializable {
 		return tenantId;
 	}
 
-	public void setTenantId(String tenantId) {
+    public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
 
-	public String getDefinitionId() {
+    public String getDefinitionId() {
 		return definitionId;
 	}
 
-	public void setDefinitionId(String definitionId) {
+    public void setDefinitionId(String definitionId) {
 		this.definitionId = definitionId;
 	}
 
-	public String getDefinitionXml() {
+    public String getDefinitionXml() {
 		return definitionXml;
 	}
 
-	public void setDefinitionXml(String definitionXml) {
+    public void setDefinitionXml(String definitionXml) {
 		this.definitionXml = definitionXml;
 	}
 
-    private String serialize(Definitions def) {
+    public String serialize(Definitions def) {
         JAXBContext context;
         StringWriter stringWriter = new StringWriter();
         try {
@@ -286,73 +344,74 @@ public class DmnModel  implements Serializable {
         this.definitions = tDef;
     }
 
-    /**
-     * On creation the decision ids are read from the DMN file to allow ready
-     * retrieval later.
-     *
-     * @return Returns list of decision ids contained in the model.
-     */
-    public List<String> getDecisionIds() {
-        if (decisionIds == null) {
-            decisionIds = new ArrayList<String>();
-        }
-        return decisionIds;
-    }
+    // /**
+    // * On creation the decision ids are read from the DMN file to allow ready
+    // * retrieval later.
+    // *
+    // * @return Returns list of decision ids contained in the model.
+    // */
+    // public List<String> getDecisionIds() {
+    // if (decisionIds == null) {
+    // decisionIds = new ArrayList<String>();
+    // }
+    // return decisionIds;
+    // }
+    //
+    // public void setDecisionIds(List<String> decisionIds) {
+    // this.decisionIds = decisionIds;
+    // }
 
-    public void setDecisionIds(List<String> decisionIds) {
-        this.decisionIds = decisionIds;
-    }
+    // /**
+    // * On creation the decision names are read from the DMN file to allow
+    // ready
+    // * retrieval later.
+    // *
+    // * @return Returns list of decision names contained in the model.
+    // */
+    // public List<String> getDecisionNames() {
+    // if (decisionNames == null) {
+    // decisionNames = new ArrayList<String>();
+    // }
+    // return decisionNames;
+    // }
+    //
+    // public void setDecisionNames(List<String> decisionNames) {
+    // this.decisionNames = decisionNames;
+    // }
+    //
+    // public List<String> getBusinessKnowledgeModelIds() {
+    // if (bkmIds == null) {
+    // bkmIds = new ArrayList<String>();
+    // }
+    // return bkmIds;
+    // }
+    //
+    // public void setBusinessKnowledgeModelIds(List<String> bkmIds) {
+    // this.bkmIds = bkmIds;
+    // }
+    //
+    // /**
+    // * On creation the BKM names are read from the DMN file to allow ready
+    // * retrieval later.
+    // *
+    // * @return Returns list of BKM names contained in the model.
+    // */
+    // public List<String> getBusinessKnowledgeModelNames() {
+    // if (bkmNames == null) {
+    // bkmNames = new ArrayList<String>();
+    // }
+    // return bkmNames;
+    // }
+    //
+    // public void setBusinessKnowledgeModelNames(List<String> bkmNames) {
+    // this.bkmNames = bkmNames;
+    // }
 
-    /**
-     * On creation the decision names are read from the DMN file to allow ready
-     * retrieval later.
-     *
-     * @return Returns list of decision names contained in the model.
-     */
-    public List<String> getDecisionNames() {
-        if (decisionNames == null) {
-            decisionNames = new ArrayList<String>();
-        }
-        return decisionNames;
-    }
-
-    public void setDecisionNames(List<String> decisionNames) {
-        this.decisionNames = decisionNames;
-    }
-
-    public List<String> getBusinessKnowledgeModelIds() {
-        if (bkmIds == null) {
-            bkmIds = new ArrayList<String>();
-        }
-        return bkmIds;
-    }
-
-    public void setBusinessKnowledgeModelIds(List<String> bkmIds) {
-        this.bkmIds = bkmIds;
-    }
-
-    /**
-     * On creation the BKM names are read from the DMN file to allow ready
-     * retrieval later.
-     *
-     * @return Returns list of BKM names contained in the model.
-     */
-    public List<String> getBusinessKnowledgeModelNames() {
-        if (bkmNames == null) {
-            bkmNames = new ArrayList<String>();
-        }
-        return bkmNames;
-    }
-
-    public void setBusinessKnowledgeModelNames(List<String> bkmNames) {
-        this.bkmNames = bkmNames;
-    }
-
-	public byte[] getImage() {
+    public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(byte[] image) {
+    public void setImage(byte[] image) {
 		this.image = image;
 	}
 
@@ -368,15 +427,15 @@ public class DmnModel  implements Serializable {
 		return created;
 	}
 
-	public void setCreated(Date created) {
+    public void setCreated(Date created) {
 		this.created = created;
 	}
 
-	public Date getLastUpdated() {
+    public Date getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 
@@ -393,7 +452,7 @@ public class DmnModel  implements Serializable {
                 * result
                 + ((deploymentMessage == null) ? 0 : deploymentMessage
                         .hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((shortId == null) ? 0 : shortId.hashCode());
         result = prime * result + Arrays.hashCode(image);
         result = prime * result
                 + ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
@@ -435,10 +494,10 @@ public class DmnModel  implements Serializable {
                 return false;
         } else if (!deploymentMessage.equals(other.deploymentMessage))
             return false;
-        if (id == null) {
-            if (other.id != null)
+        if (shortId == null) {
+            if (other.shortId != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!shortId.equals(other.shortId))
             return false;
         if (!Arrays.equals(image, other.image))
             return false;

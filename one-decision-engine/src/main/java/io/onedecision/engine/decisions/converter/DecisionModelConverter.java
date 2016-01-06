@@ -80,8 +80,6 @@ public class DecisionModelConverter implements
         // BusinessKnowledgeModel bkm = objFact.createTBusinessKnowledgeModel();
         // target.getDrgElement().add(objFact.createBusinessKnowledgeModel(bkm));
 
-		List<InformationItem> informationItems = new ArrayList<InformationItem>();
-
         // TODO is this ok to be null?
         if (source.getDomainModelUri() != null) {
             for (DomainEntity type : getDomainModel(source.getDomainModelUri())

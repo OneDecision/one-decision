@@ -21,6 +21,7 @@ import io.onedecision.engine.decisions.model.ui.examples.ApplicationRiskRatingMo
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class UiModelLifecycleTest implements ExamplesConstants {
     protected ModelingService svc;
 
     @Test
+    @Ignore
     public void testLifecycle() {
         DecisionModel model = new ApplicationRiskRatingModel().getModel();
 

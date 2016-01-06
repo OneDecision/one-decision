@@ -126,16 +126,46 @@ public class FunctionDefinition extends Expression implements Serializable {
         this.expression = value;
     }
 
+    public DecisionTable getDecisionTable() {
+        if (expression == null || expression.getValue() == null) {
+            return null;
+        } else if (expression.getValue() instanceof DecisionTable) {
+            return (DecisionTable) expression.getValue();
+        } else {
+            return null;
+        }
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void setDecisionTable(DecisionTable dt) {
         setExpression(new JAXBElement(DecisionConstants.DECISION_TABLE,
                 DecisionTable.class, dt));
     }
 
+    public Context getContext() {
+        if (expression == null || expression.getValue() == null) {
+            return null;
+        } else if (expression.getValue() instanceof Context) {
+            return (Context) expression.getValue();
+        } else {
+            return null;
+        }
+    }
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void setContext(Context ctxt) {
         setExpression(new JAXBElement(DecisionConstants.CONTEXT, Context.class,
                 ctxt));
+    }
+
+    public LiteralExpression getLiteralExpression() {
+        if (expression == null || expression.getValue() == null) {
+            return null;
+        } else if (expression.getValue() instanceof LiteralExpression) {
+            return (LiteralExpression) expression.getValue();
+        } else {
+            return null;
+        }
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

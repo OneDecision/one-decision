@@ -4,6 +4,9 @@
 .decision-table thead tr:last-child {
 	border-bottom: double 5px #ccc;
 }
+.col-add {
+	width: 36px;
+}
 .expr-name.last-input {
   border-right: double 5px #ccc;
 }
@@ -40,17 +43,21 @@ input:focus {
   border: 1px solid #cccccc;
   border-top: 1px solid #cccccc !important;
 }
-.expr,
 .expr-action,
 .hit-policy,
 .rule td {
   border-right: 1px solid #ccc;
 }
 .input { 
-  background-color: #ccccff !important;
+  background-color: #ABDCEE /* blue at 0.35 opacity */;
 }
-.output { 
-  background-color: #ffcccc !important;
+th.output,
+input.output { 
+  background-color: #FFCCA8 /* orange at 0.35 opacity */;
+}
+th.output,
+td.output {
+  border-left: 5px double #ccc;
 }
 .newCondition,
 .newConclusion {

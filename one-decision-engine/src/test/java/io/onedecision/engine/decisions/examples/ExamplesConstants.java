@@ -36,7 +36,7 @@ public interface ExamplesConstants {
 
     // Decision table from Figure 27 in spec
     static final String FIG27_DMN_RESOURCE = "/decisions/examples/Fig27CalculateDiscount.dmn";
-    static final String FIG27_DEFINITION_ID = "fig27CalculateDiscount";
-    static final String FIG27_DECISION_ID = "calcDiscount";
+    static final String FIG37_DEFINITION_ID = "fig27CalculateDiscount";
+    static final String FIG37_DECISION_ID = "calcDiscount";
 
 }

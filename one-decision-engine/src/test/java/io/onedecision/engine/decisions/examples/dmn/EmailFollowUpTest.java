@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +43,6 @@ public class EmailFollowUpTest implements ExamplesConstants {
 								+ ",\"timeSinceEmail\":" + (8 * ONE_DAY)
 								+ ", \"doNotEmail\": false}",
                         "{\"template\":\"MissedYou\",\"subject\":\"We've missed you\"}" } });
-	}
-
-	@BeforeClass
-	public static void setUpClass() {
 	}
 
 	public EmailFollowUpTest(String contact, String email) {

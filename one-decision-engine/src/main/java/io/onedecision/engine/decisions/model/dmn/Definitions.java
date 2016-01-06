@@ -205,6 +205,15 @@ public class Definitions extends NamedElement implements Serializable {
         return decisions;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void setDecisions(Set<Decision> decisions) {
+        for (Decision decision : decisions) {
+            getDrgElements().add(
+                    new JAXBElement(new QName(DecisionConstants.DMN_URI,
+                            "decision"), Decision.class, decision));
+        }
+    }
+
     public Decision getDecision(@NotNull String decisionId) {
         for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
             if (el.getValue() != null && el.getValue() instanceof Decision

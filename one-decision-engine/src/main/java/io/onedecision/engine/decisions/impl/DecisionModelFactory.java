@@ -120,7 +120,7 @@ public class DecisionModelFactory implements DecisionConstants,
     protected DmnModel getModelForTenant(Long id, String tenantId) {
         for (DmnModel dmnModel : repo) {
             if (tenantId.equals(dmnModel.getTenantId())
-                    && id.equals(dmnModel.getId())) {
+                    && id.equals(dmnModel.getShortId())) {
                 return dmnModel;
             }
         }
@@ -173,6 +173,11 @@ public class DecisionModelFactory implements DecisionConstants,
                     "Unable to find model for tenant %1$s with id %2$d",
                     tenantId, id));
         }
+        if (!repo.remove(model)) {
+            LOGGER.error(String.format(
+                    "Unable to delete model for tenant %1$s with id %2$d",
+                    tenantId, id));
+        }
     }
 
     @Override
@@ -181,6 +186,11 @@ public class DecisionModelFactory implements DecisionConstants,
         if (model == null) {
             throw new DecisionNotFoundException(String.format(
                     "Unable to find model for tenant %1$s with id %2$s",
+                    tenantId, deploymentId));
+        }
+        if (!repo.remove(model)) {
+            LOGGER.error(String.format(
+                    "Unable to delete model for tenant %1$s with id %2$s",
                     tenantId, deploymentId));
         }
     }

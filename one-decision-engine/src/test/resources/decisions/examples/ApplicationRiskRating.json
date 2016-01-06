@@ -1,11 +1,25 @@
 { 
   "id":"1",
   "name":"Applicant Risk Rating",
+  "description":"Score risk of health insurance application"
   "hitPolicy":"UNIQUE",
   "domainModelUri": "http://onedecision.io/health",
+  "inputs":[ 
+    {"name":"contact.age", "label": "Age" }, 
+    {"name":"bureauCallType", "label": "Bureau Call Type"} 
+  ],
+  "outputs": [ 
+    { "name": "Strategy", "allowedValues": [ "DECLINE","BUREAU","THROUGH" ] }
+  ],
+  "rules": [
+    { 
+      "id":2,
+      "inputEntries":["\"INELIGIBLE\"","-"],
+      "outputEntries":["\"DECLINE\""]
+    },{
   "conditions":[
     {
-      "id":102,"name":"contact.age","label":"Age",
+      "id":102,"name":"","label":"",
       "expressions": [ "< 25", "< 25", "[25:60]", ">60", ">60" ] 
     },
     {

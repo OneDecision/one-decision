@@ -34,6 +34,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -54,6 +55,7 @@ public class DecisionModelConverterTest implements ExamplesConstants {
     }
 
     @Test
+    @Ignore //author direct in dmn?
     public void testConvertSingleDecisionTable() throws JsonParseException,
             JsonMappingException, IOException, DecisionException {
         DecisionModel jsonModel = getJsonModel(ARR_JSON_RESOURCE);

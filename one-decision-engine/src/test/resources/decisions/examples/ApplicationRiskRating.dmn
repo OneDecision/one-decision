@@ -1,90 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Definitions id="ApplicationRiskRating" namespace="http://onedecision.io/examples"
-  xmlns="http://www.omg.org/spec/DMN/20130901" 
+<definitions id="ApplicationRiskRating" namespace="http://onedecision.io/examples"
+  xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   expressionLanguage="http://foo.com/application/javascript"
-  name="Application Risk Decisions">
+  name="Application Risk decisions">
 
-  <ItemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
+  <itemDefinition id="applicantDef" isCollection="false" name="Applicant" typeLanguage="http://tempuri.org">
     <description>Domain model definition for a single applicant.</description>
-  </ItemDefinition>
-  <ItemDefinition id="policyDef" isCollection="false" name="policy" typeLanguage="http://tempuri.org">
+  </itemDefinition>
+  <itemDefinition id="policyDef" isCollection="false" name="policy" typeLanguage="http://tempuri.org">
     <description>Domain model definition for an applicant's policy.</description>
-  </ItemDefinition>
+  </itemDefinition>
   
   <!-- One Input Data required per Information Item (Why?) -->
-  <InputData>
-	  <InformationItem id="applicant" name="applicant">
-	    <description>An applicant for health insurance</description>
-	    <itemDefinition href="#applicantDef"/>
-	  </InformationItem>
-	</InputData>
-  
-  <Decision id="1_d" name="Determine applicant's risk rating">
+  <inputData>
+    <informationItem id="applicant" name="applicant">
+      <description>An applicant for health insurance</description>
+      <itemDefinition href="#applicantDef"/>
+    </informationItem>
+  </inputData>
+	
+  <decision id="1_d" name="Determine applicant's risk rating">
     <description>Determines health insurance applicant's risk rating</description>
     <question>What is the risk rating for the specified health insurance applicant?</question>
     <allowedAnswers>"High", "Medium", "Low"</allowedAnswers>
 
-    <InformationItem id="policy" name="policy">
-      <description>The policy being created for the applicant</description>
-      <itemDefinition href="#policyDef"/>
-    </InformationItem>
+    <variable typeRef="ns2:string" name="policy" id="policy" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
     
     <!-- InformationRequirement -->
    
-    <DecisionTable 
+    <decisionTable 
         aggregation="COLLECT" 
         hitPolicy="UNIQUE" 
         id="dt0" 
         name="Applicant Risk Rating" 
         preferedOrientation="Rule-as-Column">
       <description>Calculate applicant risk rating based on age and health</description>
-      <input>
+      <input label="Applicant Age">
         <inputExpression id="dt0_c0_ie">
           <description>The applicant's age</description>
           <text>applicant.age</text>
         </inputExpression>
-        <inputValue id="over60">
-          <description>Is the applicant over 60?</description>
-          <text>> 60</text>
-        </inputValue>
-        <inputValue id="between25And60">
-          <description>Is the applicant between 25 and 60?</description>
-          <text>[25..60]</text>
-        </inputValue>
-        <inputValue id="under25">
-           <description>Is the applicant under 25?</description>
-           <text>&lt; 25</text>
-        </inputValue>
+        <inputValues>
+          <text>[0..120]</text>
+        </inputValues>
       </input>
-      <input>
+      <input label="Applicant Health">
         <inputExpression id="dt0_c1_ie">
           <description>The applicant's health</description>
           <text>applicant.health</text>
         </inputExpression>
-        <inputValue id="inGoodHealth">
-          <description>Is the applicant in good health?</description>
-          <text>"Good"</text>
-         </inputValue>
-         <inputValue id="inBadHealth">
-           <description>Is the applicant in bad health?</description>
-           <text>"Bad"</text>
-         </inputValue>
+        <inputValues>
+          <text>"Good","Bad"</text>
+        </inputValues>
       </input>
-      <output>
-        <outputDefinition href="#policy.riskRating"/>
-        <outputValue id="highRisk">
-           <description>Applicant is high risk</description>
-           <text>"High"</text>
-        </outputValue>
-        <outputValue id="mediumRisk">
-           <description>Applicant is medium risk</description>
-           <text>"Medium"</text>
-        </outputValue>
-        <outputValue id="lowRisk">
-           <description>Applicant is low risk</description>
-           <text>"Low"</text>
-        </outputValue>
+      <output name="policy.riskRating">
+        <outputValues>
+           <description>How is the Applicant's health?</description>
+           <text>"High","Medium","Low"</text>
+        </outputValues>
       </output>
       <rule>
         <inputEntry id="over60_ie">
@@ -139,8 +113,8 @@
           <text>"Medium"</text>
         </outputEntry>
       </rule>
-    </DecisionTable>
+    </decisionTable>
   
-  </Decision>
+  </decision>
 
-</Definitions>
+</definitions>

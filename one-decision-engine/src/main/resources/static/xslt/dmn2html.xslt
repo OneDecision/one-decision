@@ -7,6 +7,7 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
   <xsl:param name="drgElementId"/>
+  <xsl:param name="edit"/>
   <xsl:output method="html" omit-xml-declaration="yes"/>
   
   <xsl:template match="/">
@@ -44,9 +45,12 @@
   <xsl:template match="dmn:businessKnowledgeModel">
     <xsl:element name="section">
       <xsl:attribute name="id"><xsl:value-of select="@id"/>Sect</xsl:attribute>
-      <xsl:attribute name="class">bkm</xsl:attribute>
+      <xsl:attribute name="class">bkm container</xsl:attribute>
       
-      <h2><xsl:value-of select="@name"/></h2>
+      <h2>
+        <xsl:value-of select="@name"/>
+        <!-- <xsl:call-template name="on-off-switch"/-->
+      </h2>
 	    
 	    <xsl:apply-templates select=".//dmn:context"/>
 	    <xsl:apply-templates select=".//dmn:decisionTable"/>
@@ -56,7 +60,7 @@
   <xsl:template match="dmn:context">
     <xsl:element name="section">
       <xsl:attribute name="id"><xsl:value-of select="@id"/>Sect</xsl:attribute>
-      <xsl:attribute name="class">context</xsl:attribute>
+      <xsl:attribute name="class">context container</xsl:attribute>
       <table class="context table">
         <thead>
           <tr>
@@ -97,7 +101,7 @@
 	<xsl:template match="dmn:decision">
 	  <xsl:element name="section">
       <xsl:attribute name="id"><xsl:value-of select="@id"/>Sect</xsl:attribute>
-      <xsl:attribute name="class">bkm</xsl:attribute>
+      <xsl:attribute name="class">decision container</xsl:attribute>
       
       <h2><xsl:value-of select="@name"/></h2>
       <p><xsl:value-of select="dmn:description"/></p>
@@ -425,4 +429,29 @@
 	<!-- suppress all else -->
 	<xsl:template match="@*|node()">
 	</xsl:template>	
+	
+	<!-- NAMED TEMPLATES -->
+	<xsl:template name="on-off-switch">
+	  <xsl:element name="span">
+      <xsl:attribute name="class">
+        <xsl:text> pull-right</xsl:text>
+      </xsl:attribute>
+      <div class="onoffswitch">
+        <xsl:element name="input">
+          <xsl:attribute name="type">checkbox</xsl:attribute>
+          <xsl:attribute name="name">editOnOffSwitch</xsl:attribute>
+          <xsl:attribute name="class">onoffswitch-checkbox</xsl:attribute>
+          <xsl:attribute name="id">editOnOffSwitch</xsl:attribute>
+          <xsl:if test="$edit='true'">
+            <xsl:attribute name="checked">checked</xsl:attribute>
+          </xsl:if>
+        </xsl:element>
+        <label class="onoffswitch-label" for="editOnOffSwitch">
+          <span class="onoffswitch-inner"></span>
+          <span class="onoffswitch-switch"></span>
+        </label>
+      </div>
+    </xsl:element>
+	</xsl:template>
+	
 </xsl:stylesheet>

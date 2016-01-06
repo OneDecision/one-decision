@@ -38,6 +38,8 @@ public class DecisionUIModelControllerTest implements ExamplesConstants {
     }
 
     @Test
+    @Ignore
+    // TODO UI to be dropped?
     public void testLifecycle() {
         DecisionModel model = new DecisionModel();
         model.setName("Test");

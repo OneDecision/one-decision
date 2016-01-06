@@ -12,9 +12,7 @@ import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
-import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
-import io.onedecision.engine.decisions.model.dmn.UnaryTests;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 
 import java.io.File;
@@ -38,12 +36,12 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Tests the fluent API's ability to create the Calculate Discount example from
- * Fig 27 of spec (p66 in 1.0 beta 2 version).
+ * Fig 37 of spec (p66 in 1.1 RTF v7).
  * 
  * @author Tim Stephenson
  */
 @RunWith(Parameterized.class)
-public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
+public class CalculateDiscountFig37ApiTest implements ExamplesConstants {
 
     private static ObjectFactory objFact;
 
@@ -51,16 +49,15 @@ public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
 
     private String customer;
     private Number orderSize;
+    private String delivery;
     private DmnModel dm;
     private Map<String, Object> vars = new HashMap<String, Object>();
 
     @Parameters
     public static Collection<String[]> data() {
-        return Arrays.asList(new String[][] { 
-                { "Business", "100" },
-                { "Business", "5" }, 
-                { "Private", "100" } 
-        });
+        return Arrays.asList(new String[][] { { "Business", "100", "-" },
+                { "Business", "5", "-" }, { "Private", "2", "sameday" },
+                { "Private", "2", "slow" }, { "Government", "30", "-" } });
     }
 
     @BeforeClass
@@ -70,9 +67,11 @@ public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
         de = new InMemoryDecisionEngineImpl();
     }
 
-    public CalculateDiscountFig27ApiTest(String customerCategory, String orderSize) {
+    public CalculateDiscountFig37ApiTest(String customerCategory,
+            String orderSize, String delivery) {
         this.customer = customerCategory;
         this.orderSize = new BigDecimal(orderSize);
+        this.delivery = delivery;
     }
 
     @Test
@@ -86,10 +85,11 @@ public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
 
         vars.clear();
         vars.put("Customer", customer);
-        vars.put("Ordersize", orderSize);
-        de.getRuntimeService().executeDecision(FIG27_DEFINITION_ID,
-                FIG27_DECISION_ID, vars, TENANT_ID);
-        Assert.assertNotNull(vars.get("discount"));
+        vars.put("OrderSize", orderSize);
+        vars.put("Delivery", delivery);
+        // de.getRuntimeService().executeDecision(FIG37_DEFINITION_ID,
+        // FIG37_DECISION_ID, vars, TENANT_ID);
+        // Assert.assertNotNull(vars.get("discount"));
     }
 
     // demonstrate Java API for defining decision.
@@ -97,84 +97,61 @@ public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
         if (dm == null) {
             // build item definitions
             ItemDefinition discount = objFact.createItemDefinition()
-                    .withId("discount")
-                    .withName("Discount")
+                    .withId("discount").withName("Discount")
                     .withTypeRef(DecisionConstants.FEEL_STRING);
-            
+
             // build definitions container
             Definitions def = objFact
                     .createDefinitions()
-                    .withId(FIG27_DEFINITION_ID)
+                    .withId(FIG37_DEFINITION_ID)
                     .withDescription(
                             "Calculates a customer discount using rules embedding the input/output values directly.")
                     .withItemDefinitions(discount);
 
             // build expressions
-            UnaryTests orderSizeSmall = objFact
-                    .createUnaryTests().withText("< 10");
-            UnaryTests orderSizeLarge = objFact
-                    .createUnaryTests().withId("27002_dt_i2_ie_2")
-                    .withText(">= 10");
-            UnaryTests customerBusiness = objFact.createUnaryTests()
-                    .withText("\"Business\"");
-            UnaryTests customerPrivate = objFact.createUnaryTests()
-                    .withText("\"Private\"");
-            LiteralExpression discountSmall = objFact.createLiteralExpression()
-                    .withId("27002_dt_o1_od_1").withText("0.05");
-            LiteralExpression discountMedium = objFact
-                    .createLiteralExpression()
-                    .withId("27002_dt_o1_od_2")
-                    .withText("0.10");
-            LiteralExpression discountLarge = objFact.createLiteralExpression()
-                    .withId("27002_dt_o2_od_1").withText("0.15");
-
             // build decision table from expressions
-            DecisionTable dt = objFact.createDecisionTable()
+            DecisionTable dt = objFact
+                    .createDecisionTable()
                     .withId("27002_dt")
                     .withHitPolicy(HitPolicy.UNIQUE)
                     .withPreferredOrientation(
                             DecisionTableOrientation.RULE_AS_COLUMN)
                     .withInputs(
                             objFact.createInputClause()
-                                    .withId("27002_dt_i1")
-                                    .withInputExpression(
-                                            objFact.createLiteralExpression()
-                                                    .withId("27002_dt_i1_ie")
-                                                    .withText("Customer"))
-                                    .withInputValues(
-                                            objFact.createUnaryTests()
-                                            .withUnaryTests("Business",
-                                                    "Private")
-                                    ),
+                                    .withInputExpression("Customer")
+                                    .withInputValues("Business", "Private",
+                                            "Government"),
                             objFact.createInputClause()
-                                    .withInputExpression(
-                                            objFact.createLiteralExpression()
-                                                    .withText("Ordersize"))
-                                    .withInputValues(objFact.createUnaryTests()
-                                                    .withUnaryTests("<10",
-                                                            ">=10"))
-                    )
+                                    .withInputExpression("OrderSize")
+                                    .withInputValues("<10", ">=10"),
+                            objFact.createInputClause()
+                                    .withInputExpression("Delivery")
+                                    .withInputValues("sameday", "slow"))
                     .withOutputs(
                             objFact.createOutputClause()
                                     .withName("Discount")
-                                    .withOutputValues(objFact.createUnaryTests()
-                                            .withUnaryTests("0.05","0.10","0.15")
-                            ))
+                                    .withOutputValues("0", "0.05", "0.10",
+                                            "0.15"))
                     .withRules(
                             objFact.createDecisionRule()
-                                    .withInputEntry(customerBusiness,
-                                            orderSizeSmall)
-                                    .withOutputEntry(discountMedium),
+                                    .withInputEntry("Business", "< 10", "-")
+                                    .withOutputEntry("0.10"),
                             objFact.createDecisionRule()
-                                    .withInputEntry(customerBusiness,
-                                            orderSizeLarge)
-                                    .withOutputEntry(discountLarge),
+                                    .withInputEntry("Business", ">= 10", "-")
+                                    .withOutputEntry("0.15"),
                             objFact.createDecisionRule()
-                                    .withInputEntry(customerPrivate)
-                                    .withOutputEntry(discountSmall));
+                                    .withInputEntry("Private", "-", "sameday")
+                                    .withOutputEntry("0.05"),
+                            objFact.createDecisionRule()
+                                    .withInputEntry("Private", "-", "slow")
+                                    .withOutputEntry("0.05"),
+                            objFact.createDecisionRule()
+                                    .withInputEntry("Government", "-", "-")
+                                    .withOutputEntry("0.15"));
 
-            Decision d = objFact.createDecision()
-                    .withId(FIG27_DECISION_ID)
+            Decision d = objFact
+                    .createDecision()
+                    .withId(FIG37_DECISION_ID)
                     .withName("Discount")
                     .withInformationItem(
                             objFact.createInformationItem().withId("discount"))
@@ -193,7 +170,7 @@ public class CalculateDiscountFig27ApiTest implements ExamplesConstants {
             throws IOException, FileNotFoundException {
         Assert.assertNotNull("Definitions produced must not be null", dm);
 
-        File dmnFile = new File("target", FIG27_DEFINITION_ID + ".dmn");
+        File dmnFile = new File("target", FIG37_DEFINITION_ID + ".dmn");
         FileWriter out = new FileWriter(dmnFile);
         try {
             de.getRepositoryService().write(dm, out);

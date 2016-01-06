@@ -39,6 +39,8 @@ var ractive = new OneDecisionApp({
     //saveObserver:false,
     stdPartials: [
       { "name": "dmnCurrentSect", "url": "/partials/dmn-current-sect.html"},
+      { "name": "dmnDecisionColumnSect", "url": "/partials/dmn-decision-column-sect.html"},
+      { "name": "dmnDecisionSect", "url": "/partials/dmn-decision-row-sect.html"},
       { "name": "dmnListSect", "url": "/partials/dmn-list-sect.html"},
       { "name": "poweredBy", "url": "/partials/powered-by.html"},
       { "name": "profileArea", "url": "/partials/profile-area.html"},
@@ -49,21 +51,54 @@ var ractive = new OneDecisionApp({
     title: "Decision Model Repository",
     username: localStorage['username']
   },
-  add: function () {
-    console.log('add...');
-    $('#upload').slideDown();
+  /**
+   * Add a decision to the currently selected model.
+   */
+  addDecision: function() {
+    console.info('addDecision');
+    ractive.get('current.definitions.decisions').push({
+      id:'decision'+(ractive.get('current.definitions.decisions').length+1),
+      name:'Decision '+(ractive.get('current.definitions.decisions').length+1),
+      decisionTable:{
+        id:"dt1",
+        hitPolicy:"UNIQUE",
+        preferredOrientation:"RULE_AS_ROW",
+        inputs:[{inputExpression:{text:"TODO"}}],
+        outputs:[{name:"Strategy"}],
+        rules:[]
+      }
+    });
   },
+  /**
+   * 
+   */
   addDeploymentResource: function () {
     console.log('add...');
     $("#file").click();
   },
+  /**
+   * Hide the new model upload UI.
+   */
   collapseAdd: function () {
     console.log('collapseAdd...');
     $('#upload').slideUp();
   },
-  edit: function(type,i,j,obj) {
-    console.log('edit '+type+' at position '+i+','+j+': '+obj.name+'...');
+  /**
+   * Request a new blank decision model from the server.
+   */
+  create: function() {
+    console.log('create');
+    var jqXHR = $.post('/'+ractive.get('tenant.id')+'/decision-models/', function( data ) {
+      console.log('created definition...');
+      var location = jqXHR.getResponseHeader('Location');
+//      data._links = {self:{href:location}};
+      ractive.merge('decisions', data);
+      ractive.select(data);
+    });
   },
+  /**
+   * Delete a DMN model.
+   */
   delete: function (decision) {
     console.log('delete '+decision+'...');
     $.ajax({
@@ -76,6 +111,9 @@ var ractive = new OneDecisionApp({
         }
     });
   },
+  /**
+   * Fetch list of model summaries for tenant.
+   */
   fetch: function () {
     $.ajax({
       dataType: "json",
@@ -94,25 +132,37 @@ var ractive = new OneDecisionApp({
       }
     });
   },
+  getLink: function(definition) {
+    console.info('getLink');
+    return ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/'+definition.shortId;
+  },
   oninit: function() {
     console.info('oninit');
     this.ajaxSetup();
     this.loadStandardPartials(this.get('stdPartials'));
   },
-  select: function(decision) {
-    console.log('select...'+decision);
+
+  /**
+   * Select a single decision model in UI and fetch all associated details.
+   */
+  select: function(definition) {
+    console.log('select...'+definition);
     ractive.set('saveObserver', false);
-    ractive.set('current', decision);
-    ractive.showDecision();
-    $.getJSON('/'+ractive.get('tenant.id')+'/decision-models/'+decision.id,  function( data ) {
-      console.log('loaded decision...');
+    ractive.set('current', definition);
+    $.getJSON(ractive.getLink(definition), function( data ) {
+      console.log('loaded definition...');
+      data.definitions.decisions = data.definitions.decisions.sort(sortByName);
+      data.definitions.businessKnowledgeModels = data.definitions.businessKnowledgeModels.sort(sortByName);
       ractive.set('current', data);
       ractive.set('saveObserver',true);
-      ractive.showDecision();
+      ractive.showDefinition();
     });
   },
-  showDecision: function() {
-    console.log('showDecision');
+  /**
+   * Show the 'raw' DMN for the current model.
+   */
+  showDefinition: function() {
+    console.log('showDefinition');
     try {
       $('#currentHighlightedDmn').html(hljs.highlight('xml',formatXml(ractive.get('current.definitionXml'))).value);
     } catch (e) { 
@@ -123,12 +173,32 @@ var ractive = new OneDecisionApp({
     $('#decisionsTableToggle').removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-right');
     $('#currentSect').slideDown();
   },
+  /**
+   * Show the model list UI.
+   */
   showResults: function() {
     console.log('showResults');
     $('#currentSect').slideUp();
     $('#decisionsTable').slideDown();
     $('#decisionsTableToggle').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
   },
+  /**
+   * Display UI to receive a new model upload.
+   */
+  showUpload: function () {
+    console.log('showUpload...');
+    $('#upload').slideDown();
+  },
+  /** 
+   * Toggle editable property of decision tables.
+   */
+  toggleEdit: function() {
+    console.info('toggleEdit');
+    $('.onoffswitch-checkbox').checked = !$('.onoffswitch-checkbox').checked;
+  },
+  /**
+   * Toggle UI between model list and single model focus.
+   */
   toggleResults: function() {
     console.log('toggleResults');
     $('#decisionsTableToggle').toggleClass('glyphicon-triangle-bottom').toggleClass('glyphicon-triangle-right');
@@ -138,6 +208,28 @@ var ractive = new OneDecisionApp({
       ractive.fetch();
     }
   },
+  update: function () {
+    console.info('update');
+    
+    // remove drgElements (this is denormalisation) 
+    ractive.set('current.definitions.drgElements',[]);
+    ractive.set('current.tenantId',ractive.get('tenant.id'));
+
+    $.ajax({
+      url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('current.definitions.id'),
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(ractive.get('current')),
+      success: completeHandler = function(data, textStatus, jqXHR) {
+        console.log('data: '+ data);
+        ractive.splice('decisions',ractive.get('currentIdx'),1,data);
+        ractive.showMessage('Saved');
+      }
+    });
+  },
+  /**
+   * Upload one or more DMN files and associated meta data.
+   */
   upload: function (formId) {
     console.log('upload:'+formId);
     ractive.showMessage('Uploading ...');
@@ -191,6 +283,34 @@ function formatXml(xml) {
   });
 
   return formatted;
+}
+
+// sync model and definitions 
+ractive.observe('current.definitionId', function(newValue, oldValue, keypath) {
+  ractive.set('current.definitions.id',newValue);
+});
+ractive.observe('current.name', function(newValue, oldValue, keypath) {
+  ractive.set('current.definitions.name',newValue);
+});
+
+//Save on model change
+ractive.observe('current.*', function(newValue, oldValue, keypath) {
+  console.log('current prop change: '+newValue +','+oldValue+' '+keypath);  
+  var ignored=[];
+  if (ractive.get('saveObserver') && ignored.indexOf(keypath)==-1) {
+    console.log('current prop change: '+newValue +','+oldValue+' '+keypath);
+    ractive.update();
+  } else { 
+    console.warn  ('Skipped save of '+keypath);
+    //console.log('current prop change: '+newValue +','+oldValue+' '+keypath);
+    //console.log('  saveObserver: '+ractive.get('saveObserver'));
+  }
+});
+
+function sortByName(a, b) {
+  if (a.name < b.name) return -1;
+  else if (a.name > b.name) return 1;
+  else return 0;
 }
 
 $(document).ready(function() {
