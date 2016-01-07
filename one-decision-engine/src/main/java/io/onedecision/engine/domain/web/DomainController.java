@@ -18,6 +18,7 @@ import io.onedecision.engine.domain.model.DomainModel;
 import io.onedecision.engine.domain.model.EntityField;
 import io.onedecision.engine.domain.repositories.DomainModelRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Controller to access a tenant's domain model.
@@ -47,6 +53,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class DomainController {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DomainController.class);
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private DomainModelRepository repo;
@@ -71,13 +80,13 @@ public class DomainController {
             return model;
         } else {
             LOGGER.info("... not found, reliant on defaults");
-			return getDefaultDomain();
+            return getDefaultDomain();
         }
     }
 
-	protected DomainModel getDefaultDomain() {
+    protected DomainModel getDefaultDomain() {
         DomainModel model = new DomainModel();
-		model.setName("Example customer model");
+        model.setName("Example customer model");
         model.setDescription("A general purpose and extensible customer model for the web");
 
         List<DomainEntity> entities = new ArrayList<DomainEntity>();
@@ -107,7 +116,7 @@ public class DomainController {
         fields.add(new EntityField("countyOrCity", "City or County", "", false,
                 "text"));
         fields.add(new EntityField("postCode", "Post Code",
-				"Postal code, for example in London N1 9DH", false, "text", ""));
+                "Postal code, for example in London N1 9DH", false, "text", ""));
         fields.add(new EntityField("stage", "Stage",
                 "The point in the sales funnel of this lead", false, "text"));
         fields.add(new EntityField(
@@ -132,7 +141,7 @@ public class DomainController {
                 "Time since registered",
                 "Time since last registered (milliseconds)", false, "number"));
         fields.add(new EntityField("tenantId", "Tenant",
-				"Name of the tenant's account", true, "text"));
+                "Name of the tenant's account", true, "text"));
         fields.add(new EntityField("firstContact", "First Contact",
                 "Date of first contact with this business", true, "date"));
         fields.add(new EntityField("lastUpdated", "Last Updated",
@@ -158,7 +167,7 @@ public class DomainController {
         fields.add(new EntityField("description", "Description",
                 "A fuller description", false, "text"));
         fields.add(new EntityField("tenantId", "Tenant",
-				"Name of the tenant's account", true, "text"));
+                "Name of the tenant's account", true, "text"));
         fields.add(new EntityField("firstContact", "First Contact",
                 "Date of first contact with this business", true, "date"));
         fields.add(new EntityField("lastUpdated", "Last Updated",
@@ -184,13 +193,45 @@ public class DomainController {
     }
 
     /**
+     * Imports JSON representation of contacts.
+     * 
+     * <p>
+     * This is a handy link: http://shancarter.github.io/mr-data-converter/
+     * 
+     * @param file
+     *            A file posted in a multi-part request
+     * @return The meta data of the added model
+     * @throws IOException
+     *             If cannot parse the JSON.
+     */
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public @ResponseBody DomainModel handleFileUpload(
+            @PathVariable("tenantId") String tenantId,
+            @RequestParam(value = "file", required = true) MultipartFile file)
+            throws IOException {
+        LOGGER.info(String.format("Uploading domain model for: %1$s", tenantId));
+        String content = new String(file.getBytes());
+
+        DomainModel model = objectMapper.readValue(content,
+                new TypeReference<DomainModel>() {
+                });
+        model.setTenantId(tenantId);
+
+        LOGGER.info(String.format("  found model with %1$d entities", model
+                .getEntities().size()));
+        updateModelForTenant(tenantId, model);
+
+        return model;
+    }
+
+    /**
      * Model updates are typically additive but for the time being at least this
      * is not enforced.
      * 
      * @param tenantId
      *            The tenant whose model is to be updated.
      * @param model
-     *            The new model.
+     *            The new domain model.
      */
     @RequestMapping(value = "/", method = RequestMethod.PUT)
     public @ResponseBody void updateModelForTenant(
@@ -211,13 +252,13 @@ public class DomainController {
      * 
      * @param tenantId
      *            The tenant whose model is to be updated.
-     * @param model
-     *            The new model.
+     * @param entityName
+     *            Name of the entity being updated.
      */
-    @RequestMapping(value = "/{entity}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{entityName}", method = RequestMethod.PUT)
     public @ResponseBody void updateEntityForTenant(
             @PathVariable("tenantId") String tenantId,
-            @PathVariable("entity") String entityName,
+            @PathVariable("entityName") String entityName,
             @RequestBody DomainEntity entity) {
         LOGGER.info(String.format(
                 "Updating domain model for tenant %1$s with entity %2$s",
