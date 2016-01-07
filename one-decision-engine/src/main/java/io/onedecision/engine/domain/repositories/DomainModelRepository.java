@@ -24,6 +24,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface DomainModelRepository extends
         CrudRepository<DomainModel, Long> {
 
-    @Query("SELECT d FROM DomainModel d WHERE d.tenantId = :tenantId")
+    @Query("SELECT d FROM DomainModel d WHERE d.tenantId = :tenantId AND d.revision = (SELECT MAX(d.revision) FROM DomainModel d WHERE d.tenantId = :tenantId)")
     DomainModel findByName(@Param("tenantId") String tenantId);
 }

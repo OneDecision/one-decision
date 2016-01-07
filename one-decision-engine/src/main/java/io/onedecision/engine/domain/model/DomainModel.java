@@ -13,6 +13,7 @@
  *******************************************************************************/
 package io.onedecision.engine.domain.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +59,10 @@ public class DomainModel {
 
     @JsonProperty
     protected String imageUrl;
+
+    @Column(name = "REV")
+    @JsonProperty
+    private Long revision;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
@@ -110,7 +115,15 @@ public class DomainModel {
 		this.imageUrl = imageUrl;
 	}
 
-	public Date getFirstCreated() {
+    public Long getRevision() {
+        return revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
+    }
+
+    public Date getFirstCreated() {
 		return firstCreated;
 	}
 
@@ -135,10 +148,63 @@ public class DomainModel {
 	}
 
 	public List<DomainEntity> getEntities() {
+        if (entities == null) {
+            entities = new ArrayList<DomainEntity>();
+        }
 		return entities;
 	}
 
 	public void setEntities(List<DomainEntity> entities) {
 		this.entities = entities;
 	}
+
+    public DomainModel withId(Long id) {
+        setId(id);
+        return this;
+    }
+
+    public DomainModel withName(String name) {
+        setName(name);
+        return this;
+    }
+
+    public DomainModel withDescription(String description) {
+        setDescription(description);
+        return this;
+    }
+
+    public DomainModel withImageUrl(String imageUrl) {
+        setImageUrl(imageUrl);
+        return this;
+    }
+
+    public DomainModel withRevision(Long revision) {
+        setRevision(revision);
+        return this;
+    }
+
+    public DomainModel withFirstCreated(Date created) {
+        setFirstCreated(created);
+        return this;
+    }
+
+    public DomainModel withLastUpdated(Date lastUpdated) {
+        setLastUpdated(lastUpdated);
+        return this;
+    }
+
+    public DomainModel withTenantId(String tenantId) {
+        setTenantId(tenantId);
+        return this;
+    }
+
+    public DomainModel withEntities(List<DomainEntity> entities) {
+        getEntities().addAll(entities);
+        return this;
+    }
+
+    public DomainModel withEntity(DomainEntity entity) {
+        getEntities().add(entity);
+        return this;
+    }
 }

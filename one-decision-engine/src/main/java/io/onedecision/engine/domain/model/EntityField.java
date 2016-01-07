@@ -146,4 +146,44 @@ public class EntityField {
 	public void setBuiltIn(boolean builtIn) {
 		this.builtIn = builtIn;
 	}
+	
+	public EntityField withId(Long id) { 
+	    setId(id); 
+	    return this;
+	}
+	
+	public EntityField withName(String name) { 
+        setName(name); 
+        return this;
+    }
+
+	public EntityField withLabel(String label) { 
+        setLabel(label); 
+        return this;
+    }
+
+	public EntityField withHint(String hint) { 
+        setHint(hint); 
+        return this;
+    }
+
+	public EntityField withRequired(boolean required) { 
+        setRequired(required); 
+        return this;
+    }
+
+	public EntityField withType(String type) { 
+        setType(type); 
+        return this;
+    }
+
+	public EntityField withValidation(String validation) { 
+        setValidation(validation); 
+        return this;
+    }
+
+	public EntityField withBuiltIn(boolean builtIn) { 
+        setBuiltIn(builtIn); 
+        return this;
+    }
 }

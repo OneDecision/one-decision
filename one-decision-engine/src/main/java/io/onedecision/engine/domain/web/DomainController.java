@@ -234,7 +234,7 @@ public class DomainController {
      *            The new domain model.
      */
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public @ResponseBody void updateModelForTenant(
+    public @ResponseBody DomainModel updateModelForTenant(
             @PathVariable("tenantId") String tenantId, @RequestBody DomainModel model) {
         LOGGER.info(String.format("Updating domain model for tenant %1$s",
                 tenantId));
@@ -242,9 +242,15 @@ public class DomainController {
         for (DomainEntity entity : model.getEntities()) {
             entity.setTenantId(tenantId);
         }
-        // TODO perform checks that the model changes are not destructive.
 
-        repo.save(model);
+        DomainModel existingModel = repo.findByName(tenantId);
+        if (existingModel == null) {
+            model.setRevision(1l);
+        } else {
+            // TODO perform checks that the model changes are not destructive.
+            model.setRevision(existingModel.getRevision() + 1);
+        }
+        return repo.save(model);
     }
 
     /**

@@ -13,6 +13,7 @@
  *******************************************************************************/
 package io.onedecision.engine.domain.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -135,10 +136,58 @@ public class DomainEntity {
 	}
 
 	public List<EntityField> getFields() {
+        if (fields == null) {
+            fields = new ArrayList<EntityField>();
+        }
 		return fields;
 	}
 
 	public void setFields(List<EntityField> fields) {
 		this.fields = fields;
 	}
+
+    public DomainEntity withId(Long id) {
+        setId(id);
+        return this;
+    }
+
+    public DomainEntity withName(String name) {
+        setName(name);
+        return this;
+    }
+
+    public DomainEntity withDescription(String description) {
+        setDescription(description);
+        return this;
+    }
+
+    public DomainEntity withImageUrl(String imageUrl) {
+        setImageUrl(imageUrl);
+        return this;
+    }
+
+    public DomainEntity withFirstCreated(Date firstCreated) {
+        setFirstCreated(firstCreated);
+        return this;
+    }
+
+    public DomainEntity withLastUpdated(Date lastUpdated) {
+        setLastUpdated(lastUpdated);
+        return this;
+    }
+
+    public DomainEntity withTenantId(String tenantId) {
+        setTenantId(tenantId);
+        return this;
+    }
+
+    public DomainEntity withFields(List<EntityField> fields) {
+        setFields(fields);
+        return this;
+    }
+
+    public DomainEntity withField(EntityField field) {
+        getFields().add(field);
+        return this;
+    }
 }
