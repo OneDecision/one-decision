@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
 import io.onedecision.engine.decisions.impl.TransformUtil;
+import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 
 import java.io.File;
@@ -41,9 +42,11 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
                 ch11LoanExample.getDmnModel());
         String html = getTransformUtil().transform(dmnModel.getDefinitionXml());
         assertNotNull("No visualization created", html);
-        for (String decisionId : dmnModel.getDecisionIds()) {
-            assertTrue("Cannot find visualisation for " + decisionId,
-                    html.contains("<section id=\"" + decisionId + "Sect\""));
+        for (Decision decision : dmnModel.getDefinitions().getDecisions()) {
+            assertTrue(
+                    "Cannot find visualisation for " + decision.getId(),
+                    html.contains("<section id=\"" + decision.getId()
+                            + "Sect\""));
         }
         write(html, dmnModel.getDefinitionId() + ".html");
     }
