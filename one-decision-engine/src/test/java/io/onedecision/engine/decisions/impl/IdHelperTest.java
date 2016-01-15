@@ -39,4 +39,10 @@ public class IdHelperTest {
             ; // expected
         }
     }
+
+    @Test
+    public void testHandleFileNameToName() {
+        assertEquals("Alternate Loan Origination Model",
+                IdHelper.toName("AlternateLoanOriginationModel.dmn"));
+    }
 }

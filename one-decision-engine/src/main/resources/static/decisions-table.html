@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Decisions Repository</title>
+  <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/css/one-decision-1.1.0.css" rel="stylesheet">
+  <link href="/css/decisions-1.1.0.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/one-decision-icon-16x16.png" />  
+</head>
+<body>
+  <div class="clearfix" id="messages"></div>
+  <div class="container" id="container"></div>
+  <script id='template' type='text/ractive'>
+    {{>profileArea}}
+    {{!>titleArea}}
+
+    {{#current.definitions.decisions:idx}}
+      {{#if match(id) }}
+        <h1>
+          <span>{{name}}</span>
+          {{#hasRole('author')}}
+            <span> ({{id}})</span>
+          {{/}}
+        </h1>
+        {{#if ..decisionTable}}
+          {{#if ..decisionTable.preferredOrientation=='RULE_AS_COLUMN'}}
+            {{>dmnDecisionColumnSect}}
+          {{else}}
+            {{>dmnDecisionRowSect}}
+          {{/if}}                      
+        {{/if}}
+      {{/if}}
+    {{/}}
+
+    {{#current.definitions.businessKnowledgeModels:idx}}
+      {{#if match(id) }}
+        <h1>
+          <span>{{name}}</span>
+          {{#hasRole('author')}}
+            <span> ({{id}})</span>
+          {{/}}
+        </h1>
+        {{#if .encapsulatedLogic.decisionTable}}
+          {{#if .encapsulatedLogic.decisionTable.preferredOrientation=='RULE_AS_COLUMN'}}
+            {{>dmnDecisionColumnSect}}
+          {{else}}
+            {{>dmnDecisionRowSect}}
+          {{/if}}                      
+        {{/if}}
+      {{/if}}
+    {{/}}
+    {{>poweredBy}}
+    {{>sidebar}}
+  
+    {{#partial dmnDecisionColumnSect}}
+      <section id="dtSect" class="entity-fields">
+        <h2>Decision Table as Column is not supported at the moment</h2>
+      </section>
+    {{/partial}}
+
+    {{#partial dmnDecisionRowSect}}
+      <section id="dtSect" class="entity-fields">
+        <h2>
+          <span>Decision Logic</span>
+          <div class="pull-right">
+            {{#hasRole('author') || hasRole('manage')}}
+              <div class="onoffswitch">
+                <input type="checkbox" name="editOnOffSwitch" class="onoffswitch-checkbox" id="editOnOffSwitch">
+                <label class="onoffswitch-label" for="editOnOffSwitch">
+                  <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
+                </label>
+              </div>
+            {{/}}
+          </div>
+        </h2>
+        
+        <table id="decisionTable" class="decision-table table table-striped">
+          <thead>
+            <tr>
+              <th class="information-item-name" colspan="2">
+                <input class="author" on-blur="save()" title="{{name}}" value="{{name}}"/>
+              </th>
+            </tr>
+            <tr>
+              <th class="expr-name hit-policy" rowspan="2">
+                <input autocomplete="off" class="author typeahead" on-blur="save()" placeholder="Click to set hit policy" title="{{..decisionTable.hitPolicy}}" value="{{..decisionTable.hitPolicy[0]}}"/>
+              </th>
+              {{#each ..decisionTable.inputs:i}}
+                <th class="expr-name input">
+                  <input autocomplete="off" class="author typeahead input" on-blur="save()" placeholder="..." title="{{inputExpression.text}}" value="{{inputExpression.text}}"/>
+                </th>
+              {{/each}}
+              {{#hasRole('author')}}
+                <th class="col-add input editCell" rowspan="1">
+                  <span class="glyphicon glyphicon-plus" onclick="ractive.addColumnCondition('{{exprType}}',{{idx}})"></span>
+                </th>
+              {{/}}
+              {{#each ..decisionTable.outputs:i}}
+                <th class="expr-name output">
+                  <input autocomplete="off" class="author output" on-blur="save()" title="{{name}}" value="{{name}}"/>
+                </th>
+              {{/each}}
+            </tr>
+            <tr>
+              {{#each ..decisionTable.inputs:i}}
+                <th class="expr-name">
+                  <input autocomplete="off" class="author" on-blur="save()" title="{{inputValues.text}}" value="{{inputValues.text}}"/>
+                </th>
+              {{/each}}
+              {{#hasRole('author')}}
+                <th class="editCell" rowspan="1">&nbsp;</th>
+              {{/}}
+              {{#each ..decisionTable.outputs:i}}
+                <td class="expr-name output">
+                  <input autocomplete="off" class="author" on-blur="save()" title="{{outputValues.text}}" value="{{outputValues.text}}"/>
+                </td>
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each ..decisionTable.rules:i}}
+              <tr class="condition" data-condition="...">
+                <th class=""><span>{{i+1}}</span></th>
+                {{#each .inputEntry:j}}
+                  <td class="expr-name"><input autocomplete="off" class="manage typeahead" on-blur="save()"  title="{{text}}" value="{{text}}"></td>
+                {{/each}}
+                {{#hasRole('author')}}
+                  <th class="col-add editCell">&nbsp;</th>
+                {{/}}
+                {{#each outputEntry:j}}
+                  <td class="expr output"><input title="{{text}}" on-blur="save()" value="{{text}}"/></td>
+                {{/each}}
+              </tr>
+            {{/each}}
+            {{#hasRole('author')}}
+              <tr class="editCell">
+                <td class="expr-name" colspan="{{..decisionTable.inputs.length+..decisionTable.outputs.length+2}}">
+                  <span class="author glyphicon glyphicon-plus" onclick="ractive.addRowRule('{{exprType}}',{{idx}})"></span>
+                </td>
+              </tr>
+            {{/}}
+          </tbody>
+        </table>
+      </section>
+    {{/partial}}
+
+</script>
+  
+  
+
+  <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+  <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
+  <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
+
+  <script src="/js/md5.min.js"></script>
+  <script src="/js/one-decision-1.1.0.js"></script>
+  <script src="/js/decisions-table-1.1.0.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+</body>
+</html>

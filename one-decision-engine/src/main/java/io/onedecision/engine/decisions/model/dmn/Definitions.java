@@ -539,6 +539,15 @@ public class Definitions extends NamedElement implements Serializable {
         }
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void withDecisionServices(DecisionService... decisionServices) {
+        for (DecisionService ds : decisionServices) {
+            withDrgElements(new JAXBElement(new QName(
+                    DecisionConstants.DMN_URI, "decisionService"),
+                    DecisionService.class, ds));
+        }
+    }
+
     public Definitions withArtifact(JAXBElement<? extends Artifact> ... values) {
         if (values!= null) {
             for (JAXBElement<? extends Artifact> value: values) {

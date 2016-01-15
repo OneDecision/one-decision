@@ -44,6 +44,14 @@ var OneDecisionApp = Ractive.extend({
       $( "#ajax-loader" ).hide();
     });
   },
+  fetchProfile: function() {
+    console.info('fetchProfile');
+    $.getJSON('/profile/', function( data ) {
+      console.log('loaded profile...');
+      ractive.set('profile', data);
+      ractive.set('roles', data.roles);
+    });
+  },
   handleError: function(jqXHR, textStatus, errorThrown) {
     switch (jqXHR.status) {
     case 400:
@@ -61,6 +69,10 @@ var OneDecisionApp = Ractive.extend({
       console.error('msg:'+msg);
       ractive.showError(msg);
     }
+  },
+  hasRole: function(role) {
+    if (ractive.get('roles')==undefined) return true;
+    else return ractive.get('roles').indexOf(role)!=-1;
   },
   getServer: function() {
     return ractive.get('server')==undefined ? '' : ractive.get('server');

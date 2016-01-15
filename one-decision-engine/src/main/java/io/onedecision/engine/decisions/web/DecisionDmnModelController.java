@@ -18,6 +18,7 @@ import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
+import io.onedecision.engine.decisions.impl.IdHelper;
 import io.onedecision.engine.decisions.impl.TransformUtil;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
@@ -312,10 +313,13 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         if (dmnContent == null) {
             throw new NoDmnFileInUploadException();
         }
-
+        if (deploymentMessage == null || deploymentMessage.length() == 0) {
+            deploymentMessage = String.format("Deployed from file: %1$s",
+                    dmnFileName);
+        }
         DmnModel dmnModel = new DmnModel(dmnContent, deploymentMessage,
                 image, tenantId);
-        dmnModel.setName(dmnFileName);
+        dmnModel.setName(IdHelper.toName(dmnFileName));
         dmnModel.setDefinitionXml(dmnContent);
         return createModelForTenant(dmnModel);
     }
@@ -398,6 +402,17 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         repo.save(model);
     }
 
+    @Override
+    public void deleteModelForTenant(Long id, String tenantId) {
+        DmnModel model = getModelForTenant(id, tenantId);
+        if (model == null) {
+            throw new DecisionNotFoundException(String.format(
+                    "Unable to find model for tenant %1$s with id %2$d",
+                    tenantId, id));
+        }
+        repo.delete(model);
+    }
+
     /**
      * @see io.onedecision.engine.decisions.api.RepositoryService#deleteModelForTenant(java.lang.Long,
      *      java.lang.String)
@@ -405,12 +420,16 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody void deleteModelForTenant(
-            @PathVariable("id") Long id,
+            @PathVariable("id") String id,
             @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Deleting decision model %1$s for tenant %2$s", id, tenantId));
 
-        repo.delete(id);
+        DmnModel dmnModel = repo.findByDefinitionId(id, tenantId);
+        if (dmnModel == null) {
+            repo.delete(Long.valueOf(id));
+        } else {
+            repo.delete(dmnModel.getShortId());
+        }
     }
-
 }

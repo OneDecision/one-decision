@@ -27,6 +27,11 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
+/**
+ * Faithfully creates the model described in chapter 11 of the specification.
+ *
+ * @author Tim Stephenson
+ */
 public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
 
     public static String DMN_EXAMPLES_URI = "http://www.omg.org/spec/DMN/examples/20151101/ch11example";

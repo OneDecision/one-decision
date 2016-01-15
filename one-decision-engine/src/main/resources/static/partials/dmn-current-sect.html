@@ -4,7 +4,9 @@
         <span>{{current.name}}</span>
         <span class="pull-right">
           <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.definitionId}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
-          <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
+          {{#hasRole('admin')}}
+            <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
+          {{/}}
         </span>
       </h2>
 
@@ -40,7 +42,7 @@
         <div class="form-group">
           <label for="curDefinitionsName" class="col-sm-2 control-label">Deployed / Created At:</label>
           <div class="col-sm-10">
-            <input class="form-control" id="curCreated" type="datetime" value="{{current.created}}" readonly="readonly" disabled="disabled"/>
+            <input class="form-control" id="curCreated" type="datetime" value="{{formatDateTime(current.created)}}" readonly="readonly" disabled="disabled"/>
             <p class="hidden-sm hidden-xs help-block">When the model was deployed or created.</p>
           </div>
         </div>
@@ -59,19 +61,27 @@
             <h3>
               <span>Decisions</span>
               <span class="pull-right">
-                <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addDecision()" title="Add a new decision"></a>
+                {{#hasRole('author')}}
+                  <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addDecision()" title="Add a new decision"></a>
+                {{/}}
               </span>
             </h3>
             <ul>
               {{#current.definitions.decisions:idx}}
-                <li>
-                  <div>
-                    <span>{{name}} ({{id}})</span>
-                    <a href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newTab">
-                      <span class="glyphicon glyphicon-new-window"></span>
-                      <span></span>
+                <li style="clear:both">
+                  <label>{{name}}</label>
+                  {{#hasRole('author')}}
+                    <span> ({{id}})</span>
+                  {{/}}
+                  <span>{{question}} {{allowedAnswers}}</span>
+                  <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newtab">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                  </a>
+                  {{#hasRole('manage')}}
+                    <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}?edit" target="_newtab">
+                      <span class="glyphicon glyphicon-pencil"></span>
                     </a>
-                  </div>
+                  {{/}}
                 </li>
               {{/}}
               {{^current.definitions.decisions}}
@@ -81,14 +91,20 @@
             <h3>Business Knowledge Models</h3>
             <ul>
               {{#current.definitions.businessKnowledgeModels:idx}}
-                <li>
-                  <div>
-                    <span>{{name}} ({{current.id}})</span>
-                    <a href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newTab">
-                      <span class="glyphicon glyphicon-new-window"></span>
-                      <span></span>
+                <li style="clear:both">
+                    <label>{{name}}</label>
+                    {{#hasRole('author')}}
+                      <span> ({{id}})</span>
+                    {{/}}
+                    <span>{{question}} {{allowedAnswers}}</span>
+                    <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newtab">
+                      <span class="glyphicon glyphicon-eye-open"></span>
                     </a>
-                  </div>
+                    {{#hasRole('manage')}}
+                      <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}?edit" target="_newtab">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                      </a>
+                    {{/}}
                 </li>
               {{/}}
               {{^current.definitions.businessKnowledgeModels}}

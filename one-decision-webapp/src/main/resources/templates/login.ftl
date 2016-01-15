@@ -55,7 +55,8 @@
           <input type="hidden" id="redirect" name="redirect"/>
           <input type="button" id="login" onclick="ractive.login()" value="Login" class="btn btn-primary" />
         </fieldset>
-        <p>If you are running the quick-start application you may login as <em>admin/onedecision</em></p> 
+        <p style="text-align:right">If you are running the quick-start application you may login as <em>user, super-user</em> or <em>author</em>.
+        <br/>The password for all users is <em>onedecision</em>.</p> 
       </form>
   </script>
 

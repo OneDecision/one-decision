@@ -2,14 +2,7 @@
   <h2>
     <span>Define Decision</span>
     <div class="pull-right">
-    <!--
-      <a id="save_as_image" href="#" download="{{decision.name}}.png" target="_blank">
-        <span class="glyphicon glyphicon-picture" aria-hidden="true" onclick="ractive.decision2Image();" title="Save image"></span>
-      </a>
-      <span class="glyphicon glyphicon-export" aria-hidden="true" onclick="ractive.publish(ractive.get('decision'))" title="Publish to Repository"></span>
-      -->
       <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('decision'))" title="Delete"></span>
-      <!--<button class="btn" type="button">Validate</button>-->
     </div>
   </h2>
   <table id="decisionTable" class="decision-table table table-striped">
@@ -24,7 +17,7 @@
       {{#each decision.inputs:i}}
         <tr class="condition" data-input="{{name}}">
           <th class="expr-name input">
-            <input autocomplete="false" class="edit typeahead input" title="{{name}}" value="{{name}}"/>
+            <input autocomplete="false" class="author typeahead input" title="{{name}}" value="{{name}}"/>
             <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteInput(i)" title="Delete Input"></span>
           </th>
         {{#if (i==0)}}
@@ -48,7 +41,7 @@
       {{#each decision.outputs:i}}
         <tr class="conclusion" data-output="{{name}}">
           <th class="expr-name output">
-            <input autocomplete="false" class="edit typeahead output" title="{{name}}" value="{{name}}"/>
+            <input autocomplete="false" class="author typeahead output" title="{{name}}" value="{{name}}"/>
             <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteOutput(i)" title="Delete Output"></span>
           </th>
           {{#each decision.rules[i+decision.inputs.length].inputEntries:j}}
@@ -66,7 +59,7 @@
       </tr-->
       <tr class="rule">
         <th class="hit-policy" colspan="1">
-          <input autocomplete="false" class="edit typeahead" placeholder="Click to set hit policy" title="{{decision.hitPolicy}}" value="{{decision.hitPolicy}}"/>
+          <input autocomplete="false" class="author typeahead" placeholder="Click to set hit policy" title="{{decision.hitPolicy}}" value="{{decision.hitPolicy}}"/>
         </th>
         {{#each decision.rules:j}}
             <td class="expr">

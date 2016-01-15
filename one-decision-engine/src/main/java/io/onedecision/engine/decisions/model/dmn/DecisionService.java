@@ -52,6 +52,7 @@ import javax.xml.bind.annotation.XmlType;
 public class DecisionService extends NamedElement implements Serializable {
 
     private static final long serialVersionUID = -6573858175169625919L;
+    private static ObjectFactory objFact = new ObjectFactory();
     @XmlElement(required = true)
     protected List<DmnElementReference> outputDecision;
     protected List<DmnElementReference> encapsulatedDecision;
@@ -80,7 +81,7 @@ public class DecisionService extends NamedElement implements Serializable {
      * 
      * 
      */
-    public List<DmnElementReference> getOutputDecision() {
+    public List<DmnElementReference> getOutputDecisions() {
         if (outputDecision == null) {
             outputDecision = new ArrayList<DmnElementReference>();
         }
@@ -138,7 +139,7 @@ public class DecisionService extends NamedElement implements Serializable {
      * 
      * 
      */
-    public List<DmnElementReference> getInputDecision() {
+    public List<DmnElementReference> getInputDecisions() {
         if (inputDecision == null) {
             inputDecision = new ArrayList<DmnElementReference>();
         }
@@ -174,18 +175,30 @@ public class DecisionService extends NamedElement implements Serializable {
         return this.inputData;
     }
 
-    public DecisionService withOutputDecision(DmnElementReference... values) {
+    public DecisionService withOutputDecisions(DmnElementReference... values) {
         if (values!= null) {
             for (DmnElementReference value: values) {
-                getOutputDecision().add(value);
+                getOutputDecisions().add(value);
             }
         }
         return this;
     }
 
-    public DecisionService withOutputDecision(Collection<DmnElementReference> values) {
+    public DecisionService withOutputDecisions(
+            Collection<DmnElementReference> values) {
         if (values!= null) {
-            getOutputDecision().addAll(values);
+            getOutputDecisions().addAll(values);
+        }
+        return this;
+    }
+
+    public DecisionService withOutputDecisions(Decision... values) {
+        if (values != null) {
+            for (Decision value : values) {
+                getOutputDecisions().add(
+                        objFact.createDmnElementReference().withHref(
+                                value.getId()));
+            }
         }
         return this;
     }
@@ -206,18 +219,18 @@ public class DecisionService extends NamedElement implements Serializable {
         return this;
     }
 
-    public DecisionService withInputDecision(DmnElementReference... values) {
+    public DecisionService withInputDecisions(DmnElementReference... values) {
         if (values!= null) {
             for (DmnElementReference value: values) {
-                getInputDecision().add(value);
+                getInputDecisions().add(value);
             }
         }
         return this;
     }
 
-    public DecisionService withInputDecision(Collection<DmnElementReference> values) {
+    public DecisionService withInputDecisions(Collection<DmnElementReference> values) {
         if (values!= null) {
-            getInputDecision().addAll(values);
+            getInputDecisions().addAll(values);
         }
         return this;
     }
@@ -226,6 +239,17 @@ public class DecisionService extends NamedElement implements Serializable {
         if (values!= null) {
             for (DmnElementReference value: values) {
                 getInputData().add(value);
+            }
+        }
+        return this;
+    }
+
+    public DecisionService withInputData(InputData... values) {
+        if (values!= null) {
+            for (InputData value: values) {
+                getInputData().add(
+                        objFact.createDmnElementReference().withHref(
+                                value.getId()));
             }
         }
         return this;

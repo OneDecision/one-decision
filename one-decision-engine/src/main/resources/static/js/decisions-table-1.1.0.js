@@ -32,14 +32,15 @@ var ractive = new OneDecisionApp({
       if (timeString==undefined) return 'n/a';
       return new Date(timeString).toLocaleString(navigator.languages);
     },
+    hasRole: function(role) {
+      return ractive.hasRole(role);
+    },
     match: function(obj) {
       if (obj == ractive.get('decisionId')) return true;
       else return false;
     },
     //saveObserver:false,
     stdPartials: [
-      { "name": "dmnDecisionColumnSect", "url": "/partials/dmn-decision-column-sect.html"},
-      { "name": "dmnDecisionSect", "url": "/partials/dmn-decision-row-sect.html"},
       { "name": "poweredBy", "url": "/partials/powered-by.html"},
       { "name": "profileArea", "url": "/partials/profile-area.html"},
       { "name": "sidebar", "url": "/partials/sidebar.html"},
@@ -88,13 +89,6 @@ var ractive = new OneDecisionApp({
       ractive.get('current.definitions.'+exprType+'s['+idx+'].decisionTable.rules').push(rule);
     }
   },
-  /**
-   * Edit a single cell of the decision table.
-   */
-  editCell: function() {
-    console.info('editCell');
-    
-  },
   fetch: function() {
     console.info('fetch:'+window.location.href);
     ractive.set('saveObserver', false);
@@ -127,6 +121,27 @@ var ractive = new OneDecisionApp({
     this.ajaxSetup();
     this.loadStandardPartials(this.get('stdPartials'));
   },
+  save: function() { 
+    console.warn('save is not implemented on this public demo system');
+    
+    // remove drgElements (this is denormalisation) 
+    /*ractive.set('current.definitions.drgElements',[]);
+    for(idx in ractive.get('current.definitions.decisions')) {
+      var d = ractive.get('current.definitions.decisions.'+idx);
+      delete ractive.get('current.definitions.decisions.'+idx)['expression'];
+    }
+    
+    $.ajax({
+      url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('current.definitions.id'),
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(ractive.get('current')),
+      success: completeHandler = function(data, textStatus, jqXHR) {
+        console.log('data: '+ data);
+        ractive.showMessage('Saved');
+      }
+    });*/
+  },
   toggleEdit: function() {
     console.info('toggleEdit:'+!$('#editOnOffSwitch').prop('checked'));
     ractive.toggle('editable');
@@ -143,16 +158,18 @@ ractive.observe('editable', function(newValue, oldValue, keypath) {
   console.log('editable: '+newValue +','+oldValue+','+keypath);  
   if (newValue) {
     $('#editOnOffSwitch').prop('checked',newValue);
-    $('.edit').prop('readonly',false).prop('disabled',false);
+    if (ractive.hasRole('manage')) $('.manage').prop('readonly',false).prop('disabled',false);
+    if (ractive.hasRole('author')) $('.author,.manage').prop('readonly',false).prop('disabled',false);
     $('.editCell').show();
   } else {
     $('#editOnOffSwitch').prop('checked',newValue);
-    $('.edit').prop('readonly',true).prop('disabled',true);
+    $('.author,.manage').prop('readonly',true).prop('disabled',true);
     $('.editCell').hide();
   }
 });
 
 $(document).ready(function() {
   console.info('Running ready handler');
+  ractive.fetchProfile();
   ractive.fetch();
 });

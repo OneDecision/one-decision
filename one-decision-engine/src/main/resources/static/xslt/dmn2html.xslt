@@ -225,7 +225,7 @@
   <xsl:template match="@hitPolicy">
     <xsl:element name="input">
       <xsl:attribute name="autocomplete">false</xsl:attribute>
-      <xsl:attribute name="class">edit typeahead</xsl:attribute>
+      <xsl:attribute name="class">author typeahead</xsl:attribute>
       <xsl:attribute name="placeholder">Click to set hit policy</xsl:attribute>
 
       <xsl:attribute name="title">Hit policy for the table</xsl:attribute>
@@ -339,7 +339,7 @@
       </xsl:attribute>
       <xsl:element name="input">
         <xsl:attribute name="autocomplete">false</xsl:attribute>
-        <xsl:attribute name="class">edit typeahead</xsl:attribute>
+        <xsl:attribute name="class">author typeahead</xsl:attribute>
         <xsl:attribute name="placeholder">Select...</xsl:attribute>
         <xsl:attribute name="title"></xsl:attribute>
         <xsl:attribute name="value"><xsl:value-of select="dmn:text"/></xsl:attribute>
@@ -356,7 +356,7 @@
       </xsl:attribute>
       <xsl:element name="input">
         <xsl:attribute name="autocomplete">false</xsl:attribute>
-        <xsl:attribute name="class">edit typeahead input</xsl:attribute>
+        <xsl:attribute name="class">author typeahead input</xsl:attribute>
         <xsl:attribute name="placeholder">Select...</xsl:attribute>
         <xsl:attribute name="title"></xsl:attribute>
         <xsl:attribute name="value"><xsl:value-of select="dmn:text"/></xsl:attribute>
@@ -368,7 +368,7 @@
     <th class="expr-name output">
       <xsl:element name="input">
         <xsl:attribute name="autocomplete">false</xsl:attribute>
-        <xsl:attribute name="class">edit typeahead output</xsl:attribute>
+        <xsl:attribute name="class">author typeahead output</xsl:attribute>
         <xsl:attribute name="placeholder">Select...</xsl:attribute>
         <xsl:attribute name="title"></xsl:attribute>
         <xsl:attribute name="value"><xsl:value-of select="@name"/></xsl:attribute>
@@ -393,7 +393,7 @@
     <td class="expr-name">
       <xsl:element name="input">
         <xsl:attribute name="autocomplete">false</xsl:attribute>
-        <xsl:attribute name="class">edit typeahead</xsl:attribute>
+        <xsl:attribute name="class">author typeahead</xsl:attribute>
         <xsl:attribute name="placeholder">Select...</xsl:attribute>
         <xsl:attribute name="title"></xsl:attribute>
         <xsl:attribute name="value"><xsl:value-of select="dmn:text"/></xsl:attribute>

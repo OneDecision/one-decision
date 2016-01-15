@@ -35,4 +35,7 @@ public interface ExamplesConstants {
     static final String CH11_FIG78_DEFINITION_ID = "ApplicationRiskScoreModel";
     static final String CH11_FIG78_DECISION_ID = "ApplicationRiskScore";
 
+    static final String LO_DMN_RESOURCE = "/decisions/examples/AlternateLoanOriginationModel.dmn";
+    static final String LO_DEFINITION_ID = "AlternateLoanOriginationModel";
+
 }

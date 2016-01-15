@@ -32,15 +32,17 @@ var ractive = new OneDecisionApp({
       if (timeString==undefined) return 'n/a';
       return new Date(timeString).toLocaleString(navigator.languages);
     },
+    hasRole: function(role) {
+      return ractive.hasRole(role);
+    },
     matchFilter: function(obj) {
       if (ractive.get('filter')==undefined) return true;
       else return ractive.get('filter').value.toLowerCase()==obj[ractive.get('filter').field].toLowerCase();
     },
+    roles: [],
     //saveObserver:false,
     stdPartials: [
       { "name": "dmnCurrentSect", "url": "/partials/dmn-current-sect.html"},
-      { "name": "dmnDecisionColumnSect", "url": "/partials/dmn-decision-column-sect.html"},
-      { "name": "dmnDecisionSect", "url": "/partials/dmn-decision-row-sect.html"},
       { "name": "dmnListSect", "url": "/partials/dmn-list-sect.html"},
       { "name": "poweredBy", "url": "/partials/powered-by.html"},
       { "name": "profileArea", "url": "/partials/profile-area.html"},
@@ -73,21 +75,21 @@ var ractive = new OneDecisionApp({
    * 
    */
   addDeploymentResource: function () {
-    console.log('add...');
+    console.info('add...');
     $("#file").click();
   },
   /**
    * Hide the new model upload UI.
    */
   collapseAdd: function () {
-    console.log('collapseAdd...');
+    console.info('collapseAdd...');
     $('#upload').slideUp();
   },
   /**
    * Request a new blank decision model from the server.
    */
   create: function() {
-    console.log('create');
+    console.info('create');
     var jqXHR = $.post('/'+ractive.get('tenant.id')+'/decision-models/', function( data ) {
       console.log('created definition...');
       var location = jqXHR.getResponseHeader('Location');
@@ -99,10 +101,10 @@ var ractive = new OneDecisionApp({
   /**
    * Delete a DMN model.
    */
-  delete: function (decision) {
-    console.log('delete '+decision+'...');
+  delete: function (definition) {
+    console.info('delete '+definition+'...');
     $.ajax({
-        url: '/'+ractive.get('tenant.id')+'/decision-models/'+decision.id,
+        url: ractive.getLink(definition),
         type: 'DELETE',
         success: completeHandler = function(data) {
           ractive.set('current',undefined);
@@ -146,7 +148,7 @@ var ractive = new OneDecisionApp({
    * Select a single decision model in UI and fetch all associated details.
    */
   select: function(definition) {
-    console.log('select...'+definition);
+    console.info('select...'+definition);
     ractive.set('saveObserver', false);
     ractive.set('current', definition);
     $.getJSON(ractive.getLink(definition), function( data ) {
@@ -162,7 +164,7 @@ var ractive = new OneDecisionApp({
    * Show the 'raw' DMN for the current model.
    */
   showDefinition: function() {
-    console.log('showDefinition');
+    console.info('showDefinition');
     try {
       $('#currentHighlightedDmn').html(hljs.highlight('xml',formatXml(ractive.get('current.definitionXml'))).value);
     } catch (e) { 
@@ -177,7 +179,7 @@ var ractive = new OneDecisionApp({
    * Show the model list UI.
    */
   showResults: function() {
-    console.log('showResults');
+    console.info('showResults');
     $('#currentSect').slideUp();
     $('#decisionsTable').slideDown();
     $('#decisionsTableToggle').removeClass('glyphicon-triangle-right').addClass('glyphicon-triangle-bottom');
@@ -186,7 +188,7 @@ var ractive = new OneDecisionApp({
    * Display UI to receive a new model upload.
    */
   showUpload: function () {
-    console.log('showUpload...');
+    console.info('showUpload...');
     $('#upload').slideDown();
   },
   /** 
@@ -200,7 +202,7 @@ var ractive = new OneDecisionApp({
    * Toggle UI between model list and single model focus.
    */
   toggleResults: function() {
-    console.log('toggleResults');
+    console.info('toggleResults');
     $('#decisionsTableToggle').toggleClass('glyphicon-triangle-bottom').toggleClass('glyphicon-triangle-right');
     $('#decisionsTable').slideToggle();
     $('#currentSect').slideToggle();
@@ -231,7 +233,7 @@ var ractive = new OneDecisionApp({
    * Upload one or more DMN files and associated meta data.
    */
   upload: function (formId) {
-    console.log('upload:'+formId);
+    console.info('upload:'+formId);
     ractive.showMessage('Uploading ...');
 
     var formElement = document.getElementById(formId);
@@ -295,7 +297,7 @@ ractive.observe('current.name', function(newValue, oldValue, keypath) {
 
 //Save on model change
 ractive.observe('current.*', function(newValue, oldValue, keypath) {
-  console.log('current prop change: '+newValue +','+oldValue+' '+keypath);  
+  console.info('current prop change: '+newValue +','+oldValue+' '+keypath);  
   var ignored=[];
   if (ractive.get('saveObserver') && ignored.indexOf(keypath)==-1) {
     console.log('current prop change: '+newValue +','+oldValue+' '+keypath);
@@ -319,6 +321,7 @@ $(document).ready(function() {
   if (ractive.initCallbacks==undefined) ractive.initCallbacks = $.Callbacks();
   ractive.initCallbacks.add(function() {
 //    ractive.applyBranding();
+    ractive.fetchProfile();
     ractive.fetch();
 //    ractive.initControls();
   });

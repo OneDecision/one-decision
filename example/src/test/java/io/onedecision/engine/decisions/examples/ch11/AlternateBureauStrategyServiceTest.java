@@ -11,18 +11,14 @@ import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
+public class AlternateBureauStrategyServiceTest implements ExamplesConstants {
 
-public class Ch11LoanExampleTest implements ExamplesConstants {
-
-    private static Ch11LoanExample ch11LoanExample;
+    private static AlternateBureauStrategyServiceExample example;
 
     private static DecisionEngine de;
 
@@ -30,20 +26,19 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        ch11LoanExample = new Ch11LoanExample();
+        example = new AlternateBureauStrategyServiceExample();
         de = new InMemoryDecisionEngineImpl();
     }
 
     @Test
     public void testSerialization() throws Exception {
-        de.getRepositoryService().createModelForTenant(
-                ch11LoanExample.getDmnModel());
+        de.getRepositoryService().createModelForTenant(example.getDmnModel());
     }
 
     @Test
     public void testVisualization() throws Exception {
         DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-                ch11LoanExample.getDmnModel());
+                example.getDmnModel());
         String html = getTransformUtil().transform(dmnModel.getDefinitionXml());
         assertNotNull("No visualization created", html);
         for (Decision decision : dmnModel.getDefinitions().getDecisions()) {
@@ -58,36 +53,15 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
     @Test
     public void testBKMVisualization() throws Exception {
         DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-                ch11LoanExample.getDmnModel());
+                example.getDmnModel());
         transformAndAssert(dmnModel, "applicationRiskScoreModel_bkm");
     }
 
     @Test
     public void testDecisionVisualization() throws Exception {
         DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-                ch11LoanExample.getDmnModel());
+                example.getDmnModel());
         transformAndAssert(dmnModel, "applicationRiskScoreModel_bkm");
-    }
-
-    @Test
-    public void testJsonDeserialization() throws Exception {
-        InputStream is = null;
-        try {
-            is = getClass().getResourceAsStream(
-                    "/decisions/examples/Ch11LoanExample.json");
-            ObjectMapper mapper = new ObjectMapper();
-            // we'll be reading instances of MyBean
-            ObjectReader reader = mapper.readerFor(DmnModel.class);
-            // and then do other configuration, if any, and read:
-            DmnModel result = reader.readValue(is);
-            assertNotNull(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            // fail("unable to find test resource");
-        }
-        // DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-        // ch11LoanExample.getDmnModel());
-        // transformAndAssert(dmnModel, "applicationRiskScoreModel_bkm");
     }
 
     private void transformAndAssert(DmnModel dmnModel, String drgElementId)

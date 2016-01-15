@@ -52,6 +52,7 @@ public class DecisionControllerTest implements ExamplesConstants {
     public void testDecisionViaController() throws IOException,
             DecisionException {
 
+        // CREATE
         DecisionDmnModelController svc = (DecisionDmnModelController) decisionEngine
                 .getRepositoryService();
 
@@ -63,10 +64,12 @@ public class DecisionControllerTest implements ExamplesConstants {
                 null/* no deployment message */,
                 MockMultipartFileUtil.newInstance(ARR_DMN_RESOURCE));
 
+        // RETRIEVE
         assertEquals(
                 "Test environment should now contain 1 decisions",
                 1, svc.listForTenant(TENANT_ID).size());
 
+        // EXECUTE
         Map<String, Object> vars = new HashMap<String, Object>();
         String applicantVal = "{\"age\":18,\"health\":\"Good\"}";
         vars.put("applicant", applicantVal);
@@ -75,5 +78,10 @@ public class DecisionControllerTest implements ExamplesConstants {
                         TENANT_ID);
         assertNotNull(results);
         assertEquals(results.get("policy"), "{\"riskRating\":\"Low\"}");
+
+        // DELETE
+        svc.deleteModelForTenant(ARR_DEFINITION_ID, TENANT_ID);
+        assertEquals("Test environment should now contain 0 decisions", 0, svc
+                .listForTenant(TENANT_ID).size());
     }
 }

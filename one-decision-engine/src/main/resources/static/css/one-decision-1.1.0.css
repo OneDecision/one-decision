@@ -115,6 +115,10 @@ section h2 .search {
 section h2 .glyphicon {
   margin-top: -10px;
 }
+.tab-pane h3 .glyphicon {
+  position: relative;
+  top: -15px;
+}
 section h2 .glyphicon-search {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 15px;
@@ -232,6 +236,11 @@ h2 a.glyphicon:focus,
 h2 a.glyphicon:hover {
   color: #ff6c06;
   /*color: #646669;*/
+}
+.help-block {
+	font-size: 0.8em;
+  font-style: italic;
+  line-height: 0.8em;
 }
 .navbar-brand { 
 	padding: 0;

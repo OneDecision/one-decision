@@ -42,6 +42,7 @@ input:focus {
 .information-item-name {
   border: 1px solid #cccccc;
   border-top: 1px solid #cccccc !important;
+  border-bottom: 0px !important;
 }
 .expr-action,
 .hit-policy,

@@ -181,17 +181,17 @@ public class DecisionModelFactory implements DecisionConstants,
     }
 
     @Override
-    public void deleteModelForTenant(String deploymentId, String tenantId) {
-        DmnModel model = getModelForTenant(deploymentId, tenantId);
+    public void deleteModelForTenant(String definitionId, String tenantId) {
+        DmnModel model = getModelForTenant(definitionId, tenantId);
         if (model == null) {
             throw new DecisionNotFoundException(String.format(
                     "Unable to find model for tenant %1$s with id %2$s",
-                    tenantId, deploymentId));
+                    tenantId, definitionId));
         }
         if (!repo.remove(model)) {
             LOGGER.error(String.format(
                     "Unable to delete model for tenant %1$s with id %2$s",
-                    tenantId, deploymentId));
+                    tenantId, definitionId));
         }
     }
 

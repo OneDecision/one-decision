@@ -81,6 +81,9 @@ public class UnaryTests extends DmnElement implements Serializable {
     }
 
     public void setUnaryTests(String... tests) {
+        if (tests.length == 0) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         for (String t : tests) {
             char c = t.trim().charAt(0);

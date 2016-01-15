@@ -38,7 +38,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -104,7 +103,7 @@ public class Application extends WebMvcConfigurerAdapter {
 							.permitAll()
 	                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 	                .antMatchers("/*.html", "/users/**")
-                    	.hasRole("user")
+                    .hasRole("view")
                     .antMatchers("/admin/**")
                     	.hasRole("admin")
                     .anyRequest().authenticated()  
@@ -134,7 +133,16 @@ public class Application extends WebMvcConfigurerAdapter {
                 throws Exception {
 			auth.inMemoryAuthentication().withUser("admin")
 					.password("onedecision")
-                    .roles("user", "admin");
+					.roles("view", "manage", "author", "admin");
+			auth.inMemoryAuthentication().withUser("author")
+                    .password("onedecision")
+                    .roles("view", "manage", "author");
+			auth.inMemoryAuthentication().withUser("super-user")
+                    .password("onedecision")
+                    .roles("view", "manage");
+            auth.inMemoryAuthentication().withUser("user")
+                    .password("onedecision")
+                    .roles("view");
         }
     }
 
