@@ -49,6 +49,7 @@ public class OneDecisionExceptionHandler {
     @ResponseBody
     public InvalidDmnException handleInvalidDmn(InvalidDmnException e) {
         LOGGER.error(e.getMessage(), e);
+
         return e;
     }
 

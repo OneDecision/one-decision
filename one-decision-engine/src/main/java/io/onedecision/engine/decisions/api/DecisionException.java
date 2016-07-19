@@ -13,6 +13,8 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Base class for all exceptions thrown by the engine.
  *
@@ -20,7 +22,7 @@ package io.onedecision.engine.decisions.api;
  */
 public class DecisionException extends RuntimeException {
 
-	private static final long serialVersionUID = 434480901378400857L;
+    private static final long serialVersionUID = 434480901378400857L;
 
     public DecisionException() {
         super();
@@ -34,5 +36,16 @@ public class DecisionException extends RuntimeException {
         super(msg, cause);
     }
 
+    @JsonIgnore
+    @Override
+    public Throwable getCause() {
+        return super.getCause();
+    }
 
+    @JsonIgnore
+    @Override
+    public StackTraceElement[] getStackTrace() {
+        return super.getStackTrace();
+    }
+    
 }

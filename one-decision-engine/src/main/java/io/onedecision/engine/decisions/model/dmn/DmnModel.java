@@ -328,7 +328,7 @@ public class DmnModel implements Serializable, Identifiable<Link> {
                 return (Definitions) dm;
             }
         } catch (JAXBException e) {
-            String msg = "Unable to load decision model from stream";
+            String msg = "Unable to load decision model from stream, typically this means the model does not conform to the published schema.";
             throw new InvalidDmnException(msg, e);
         }
     }

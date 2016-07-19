@@ -14,6 +14,8 @@
 package io.onedecision.engine.decisions.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -28,10 +30,11 @@ public class InvalidDmnException extends DecisionException {
 
     private static final long serialVersionUID = 5963000172167072118L;
     public static final String MESSAGE = "The DMN file is invalid";
-    private ArrayList<String> messages;
+    private List<String> messages;
 
     public InvalidDmnException(String msg, Exception cause) {
         super(msg, cause);
+        messages = Collections.singletonList(cause.getMessage());
     }
 
     public InvalidDmnException(String message) {
@@ -39,7 +42,7 @@ public class InvalidDmnException extends DecisionException {
     }
 
     public InvalidDmnException(String message,
-            ArrayList<String> individualMessages) {
+ List<String> individualMessages) {
         super(message);
         messages = individualMessages;
     }
@@ -58,7 +61,7 @@ public class InvalidDmnException extends DecisionException {
         return new InvalidDmnException(sb.toString(), messages);
     }
 
-    public ArrayList<String> getMessages() {
+    public List<String> getMessages() {
         return messages;
     }
 
