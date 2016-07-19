@@ -1,29 +1,42 @@
 package io.onedecision.engine;
 
-import io.onedecision.engine.decisions.api.DecisionService;
-import io.onedecision.engine.decisions.impl.del.DelExpression;
-import io.onedecision.engine.decisions.impl.del.DurationExpression;
+import io.onedecision.engine.decisions.api.DecisionEngine;
+import io.onedecision.engine.decisions.impl.SpringDecisionEngineImpl;
+import io.onedecision.engine.decisions.web.DecisionController;
+import io.onedecision.engine.decisions.web.DecisionDmnModelController;
+import io.onedecision.engine.decisions.web.DecisionUIModelController;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Spring configuration to bootstrap the engine.
+ *
+ * @author Tim Stephenson
+ */
 @Configuration
-// @ComponentScan({ "io.onedecision.engine" })
 @EnableAutoConfiguration
-// @EntityScan({ "io.onedecision.engine" })
-// @EnableJpaRepositories({ "io.onedecision.engine" })
 public class OneDecisionConfig {
 
+    @Autowired
+    private DecisionDmnModelController repoSvc;
+
+    @Autowired
+    @Qualifier("decisionController")
+    private DecisionController runSvc;
+
+    @Autowired
+    private DecisionUIModelController modelingSvc;
+
     @Bean
-    public DecisionService decisionService() {
-        DecisionService svc = new DecisionService();
-        List<DelExpression> compilers = new ArrayList<DelExpression>();
-        compilers.add(new DurationExpression());
-        svc.setDelExpressions(compilers);
-        return svc;
+    protected DecisionEngine decisionEngine() {
+        SpringDecisionEngineImpl de = new SpringDecisionEngineImpl();
+        de.setRepositoryService(repoSvc);
+        de.setRuntimeService(runSvc);
+        // de.setModelingService(modelingSvc);
+        return de;
     }
 }

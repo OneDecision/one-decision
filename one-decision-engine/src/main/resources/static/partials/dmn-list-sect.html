@@ -1,29 +1,32 @@
 <section id="decisionsSect">
   <h2>
     <a id="decisionsTableToggle" class="clickable glyphicon glyphicon-triangle-bottom" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the decision model table"></a>
-    <span>Decisions</span>
-    <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="add()" title="Add a new decision model"></a>
+    <span>Decision Models</span>
+    {{#hasRole('author')}}
+      <a class="clickable glyphicon glyphicon-cloud-upload" aria-hidden="true" on-click="showUpload()" title="Upload a new decision model"></a>
+      <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="create()" title="Add a new decision model"></a>
+    {{/}}
     <a class="clickable glyphicon glyphicon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
     <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
     <a class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching decisions"></a>
   </h2>
-    <div id="upload" style="display:none">
-      <form action="/{{tenant.id}}/decision-models/upload" class="well form-inline" enctype="multipart/form-data" id="uploadForm" method="post">
-          <fieldset>
-            <div class="form-group">
-              <label for="deploymentName">Deployment Message</label>
-              <input id="file" multiple="multiple" name="file" style="display: none" type="file">
-              <input name="tenantId" id="tenantId" type="hidden" value="{{tenant.id}}">
-              <input name="deploymentMessage" id="deploymentMessage" placeholder="Name or tag of this decision model deployment">
-              <button class="btn btn-primary" on-click="addDeploymentResource()" type="button">Select Files</button>
-            </div>
-            <div class="pull-right">
-              <button class="btn" on-click="collapseAdd()" type="button">Cancel</button>
-              <button class="btn" on-click="upload('uploadForm')" type="button">Upload</button>
-            </div>
-          </fieldset>
-        </form>
-    </div>
+  <div id="upload" style="display:none">
+    <form action="/{{tenant.id}}/decision-models/upload" class="well form-inline" enctype="multipart/form-data" id="uploadForm" method="post">
+        <fieldset>
+          <div class="form-group">
+            <label for="deploymentName">Deployment Message</label>
+            <input id="file" multiple="multiple" name="file" style="display: none" type="file">
+            <input name="tenantId" id="tenantId" type="hidden" value="{{tenant.id}}">
+            <input name="deploymentMessage" id="deploymentMessage" placeholder="Name or tag of this decision model deployment">
+            <button class="btn btn-primary" on-click="addDeploymentResource()" type="button">Select Files</button>
+          </div>
+          <div class="pull-right">
+            <button class="btn" on-click="collapseAdd()" type="button">Cancel</button>
+            <button class="btn" on-click="upload('uploadForm')" type="button">Upload</button>
+          </div>
+        </fieldset>
+      </form>
+  </div>
   <table id="decisionsTable" class="table table-striped">
     <thead>
       <tr>
@@ -44,7 +47,6 @@
             <td>{{formatDate(created)}}</td>
             <td class="col-actions">
               <a class="clickable glyphicon glyphicon-pencil" aria-hidden="true" onclick="ractive.select(this);ractive.toggleResults();" title="View or edit this decision"></a>
-              <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="delete(this)"></a>                
             </td>
           </tr>
       {{/}}

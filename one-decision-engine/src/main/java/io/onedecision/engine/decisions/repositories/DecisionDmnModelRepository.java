@@ -17,6 +17,7 @@ import io.onedecision.engine.decisions.model.dmn.DmnModel;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -26,15 +27,19 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface DecisionDmnModelRepository extends
         CrudRepository<DmnModel, Long> {
 
-    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.id = :id")
-    DmnModel findOneForTenant(@Param("tenantId") String tenantId,
-            @Param("id") Long id);
+    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.id = :id AND d.deleted = false")
+    DmnModel findOneForTenant(@Param("id") Long id,
+            @Param("tenantId") String tenantId);
 
-    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.definitionId = :definitionId")
-    DmnModel findByDefinitionId(@Param("tenantId") String tenantId,
-            @Param("definitionId") String definitionId);
+    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.definitionId = :definitionId AND d.deleted = false")
+    DmnModel findByDefinitionId(@Param("definitionId") String definitionId,
+            @Param("tenantId") String tenantId);
 
-    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId")
+    @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.deleted = false")
     List<DmnModel> findAllForTenant(@Param("tenantId") String tenantId);
 
+    @Override
+    @Query("UPDATE #{#entityName} x set x.deleted = true where x.id = ?1")
+    @Modifying(clearAutomatically = true)
+    public void delete(Long id);
 }

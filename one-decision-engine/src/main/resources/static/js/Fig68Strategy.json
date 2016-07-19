@@ -1,0 +1,26 @@
+{
+  "id":1,
+  "decisionId":"Strategy",
+  "hitPolicy":"UNIQUE",
+  "domainModelUri":"http://onedecision.io/loans",
+  "inputs":[ {"name":"eligibility", "label": "Eligibility" }, {"name":"bureauCallType", "label": "Bureau Call Type"} ],
+  "outputs": [ { "name": "Strategy" } ],
+  "rules": [
+    { 
+      "id":2,
+      "inputEntries":["\"INELIGIBLE\"","\"\""],
+      "outputEntries":["\"DECLINE\""]
+    },{
+      "id":3,
+      "inputEntries":["\"ELIGIBLE\"","\"FULL\""],
+      "outputEntries":["\"BUREAU\""]
+    },{
+      "id":4,
+      "inputEntries":["\"ELIGIBLE\"","\"NONE\""],
+      "outputEntries":["\"THROUGH\""]
+    }
+  ],
+  "created":1445707303183,
+  "lastUpdated":1445707595814,
+  "tenantId":"onedecision"
+}

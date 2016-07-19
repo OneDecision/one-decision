@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -44,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Component
 public class DecisionModel implements Serializable {
 
-    private static final long serialVersionUID = -1955316879920138892L;
+    private static final long serialVersionUID = -3986716944265142506L;
 
     @Id
     @Column(name = "id")
@@ -57,18 +56,22 @@ public class DecisionModel implements Serializable {
     protected String name;
 
     @JsonProperty
+    protected String description;
+
+    @JsonProperty
+    protected String question;
+
+    @JsonProperty
+    protected String allowedAnswers;
+
+    @JsonProperty
     protected String hitPolicy;
 
     @JsonProperty
+    protected String preferredOrientation;
+
+    @JsonProperty
     protected String domainModelUri;
-
-    @Embedded
-    @JsonProperty
-    private List<String> inputs;
-
-    @Embedded
-    @JsonProperty
-    private List<String> outputs;
 
 	public DecisionModel() {
 		created = new Date();
@@ -76,11 +79,15 @@ public class DecisionModel implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
      @JoinColumn(name = "MODEL_ID")
-    private List<DecisionCondition> conditions;
+    private List<DecisionInput> inputs;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
      @JoinColumn(name = "MODEL_ID")
-    private List<DecisionConclusion> conclusions;
+    private List<DecisionOutput> outputs;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "MODEL_ID")
+    private List<DecisionRule> rules;
 
     @Temporal(TemporalType.TIMESTAMP)
 	@Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -124,7 +131,31 @@ public class DecisionModel implements Serializable {
 		this.name = name;
 	}
 
-	public String getHitPolicy() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAllowedAnswers() {
+        return allowedAnswers;
+    }
+
+    public void setAllowedAnswers(String allowedAnswers) {
+        this.allowedAnswers = allowedAnswers;
+    }
+
+    public String getHitPolicy() {
 		return hitPolicy;
 	}
 
@@ -132,7 +163,15 @@ public class DecisionModel implements Serializable {
 		this.hitPolicy = hitPolicy;
 	}
 
-	public String getDomainModelUri() {
+    public String getPreferredOrientation() {
+        return preferredOrientation;
+    }
+
+    public void setPreferredOrientation(String preferedOrientation) {
+        this.preferredOrientation = preferedOrientation;
+    }
+
+    public String getDomainModelUri() {
 		return domainModelUri;
 	}
 
@@ -140,42 +179,34 @@ public class DecisionModel implements Serializable {
 		this.domainModelUri = domainModelUri;
 	}
 
-	public List<String> getInputs() {
+    public List<DecisionInput> getInputs() {
+        if (inputs == null) {
+            inputs = new ArrayList<DecisionInput>();
+        }
 		return inputs;
 	}
 
-	public void setInputs(List<String> inputs) {
+    public void setInputs(List<DecisionInput> inputs) {
 		this.inputs = inputs;
 	}
 
-	public List<String> getOutputs() {
-		return outputs;
-	}
-
-	public void setOutputs(List<String> outputs) {
-		this.outputs = outputs;
-	}
-
-    public List<DecisionCondition> getConditions() {
-        if (conditions == null) {
-            conditions = new ArrayList<DecisionCondition>();
+    public List<DecisionOutput> getOutputs() {
+        if (outputs == null) {
+            outputs = new ArrayList<DecisionOutput>();
         }
-		return conditions;
-	}
-
-    public void setConditions(List<DecisionCondition> conditions) {
-		this.conditions = conditions;
-	}
-
-    public List<DecisionConclusion> getConclusions() {
-        if (conclusions == null) {
-            conclusions = new ArrayList<DecisionConclusion>();
-        }
-        return conclusions;
+        return outputs;
     }
 
-    public void setConclusions(List<DecisionConclusion> conclusions) {
-        this.conclusions = conclusions;
+    public void setOutputs(List<DecisionOutput> outputs) {
+        this.outputs = outputs;
+    }
+
+    public List<DecisionRule> getRules() {
+        return rules;
+    }
+
+    public void setRules(List<DecisionRule> rules) {
+        this.rules = rules;
     }
 
 	public Date getCreated() {
@@ -202,94 +233,117 @@ public class DecisionModel implements Serializable {
 		this.tenantId = tenantId;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
         result = prime * result
-                + ((conclusions == null) ? 0 : conclusions.hashCode());
-		result = prime * result
-				+ ((conditions == null) ? 0 : conditions.hashCode());
-		result = prime * result + ((created == null) ? 0 : created.hashCode());
-		result = prime * result
-				+ ((domainModelUri == null) ? 0 : domainModelUri.hashCode());
-		result = prime * result
-				+ ((hitPolicy == null) ? 0 : hitPolicy.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((inputs == null) ? 0 : inputs.hashCode());
-		result = prime * result
-				+ ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((outputs == null) ? 0 : outputs.hashCode());
-		result = prime * result
-				+ ((tenantId == null) ? 0 : tenantId.hashCode());
-		return result;
-	}
+                + ((allowedAnswers == null) ? 0 : allowedAnswers.hashCode());
+        result = prime * result + ((created == null) ? 0 : created.hashCode());
+        result = prime * result
+                + ((description == null) ? 0 : description.hashCode());
+        result = prime * result
+                + ((domainModelUri == null) ? 0 : domainModelUri.hashCode());
+        result = prime * result
+                + ((hitPolicy == null) ? 0 : hitPolicy.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((inputs == null) ? 0 : inputs.hashCode());
+        result = prime * result
+                + ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((outputs == null) ? 0 : outputs.hashCode());
+        result = prime
+                * result
+                + ((preferredOrientation == null) ? 0 : preferredOrientation
+                        .hashCode());
+        result = prime * result
+                + ((question == null) ? 0 : question.hashCode());
+        result = prime * result + ((rules == null) ? 0 : rules.hashCode());
+        result = prime * result
+                + ((tenantId == null) ? 0 : tenantId.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		DecisionModel other = (DecisionModel) obj;
-        if (conclusions == null) {
-            if (other.conclusions != null)
-                return false;
-        } else if (!conclusions.equals(other.conclusions))
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
             return false;
-		if (conditions == null) {
-			if (other.conditions != null)
-				return false;
-		} else if (!conditions.equals(other.conditions))
-			return false;
-		if (created == null) {
-			if (other.created != null)
-				return false;
-		} else if (!created.equals(other.created))
-			return false;
-		if (domainModelUri == null) {
-			if (other.domainModelUri != null)
-				return false;
-		} else if (!domainModelUri.equals(other.domainModelUri))
-			return false;
-		if (hitPolicy == null) {
-			if (other.hitPolicy != null)
-				return false;
-		} else if (!hitPolicy.equals(other.hitPolicy))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (inputs == null) {
-			if (other.inputs != null)
-				return false;
-		} else if (!inputs.equals(other.inputs))
-			return false;
-		if (lastUpdated == null) {
-			if (other.lastUpdated != null)
-				return false;
-		} else if (!lastUpdated.equals(other.lastUpdated))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (outputs == null) {
-			if (other.outputs != null)
-				return false;
-		} else if (!outputs.equals(other.outputs))
-			return false;
-		if (tenantId == null) {
-			if (other.tenantId != null)
-				return false;
-		} else if (!tenantId.equals(other.tenantId))
-			return false;
-		return true;
-	}
+        if (getClass() != obj.getClass())
+            return false;
+        DecisionModel other = (DecisionModel) obj;
+        if (allowedAnswers == null) {
+            if (other.allowedAnswers != null)
+                return false;
+        } else if (!allowedAnswers.equals(other.allowedAnswers))
+            return false;
+        if (created == null) {
+            if (other.created != null)
+                return false;
+        } else if (!created.equals(other.created))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (domainModelUri == null) {
+            if (other.domainModelUri != null)
+                return false;
+        } else if (!domainModelUri.equals(other.domainModelUri))
+            return false;
+        if (hitPolicy == null) {
+            if (other.hitPolicy != null)
+                return false;
+        } else if (!hitPolicy.equals(other.hitPolicy))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (inputs == null) {
+            if (other.inputs != null)
+                return false;
+        } else if (!inputs.equals(other.inputs))
+            return false;
+        if (lastUpdated == null) {
+            if (other.lastUpdated != null)
+                return false;
+        } else if (!lastUpdated.equals(other.lastUpdated))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (outputs == null) {
+            if (other.outputs != null)
+                return false;
+        } else if (!outputs.equals(other.outputs))
+            return false;
+        if (preferredOrientation == null) {
+            if (other.preferredOrientation != null)
+                return false;
+        } else if (!preferredOrientation.equals(other.preferredOrientation))
+            return false;
+        if (question == null) {
+            if (other.question != null)
+                return false;
+        } else if (!question.equals(other.question))
+            return false;
+        if (rules == null) {
+            if (other.rules != null)
+                return false;
+        } else if (!rules.equals(other.rules))
+            return false;
+        if (tenantId == null) {
+            if (other.tenantId != null)
+                return false;
+        } else if (!tenantId.equals(other.tenantId))
+            return false;
+        return true;
+    }
+
 }

@@ -1,0 +1,89 @@
+[contenteditable]:hover {
+  cursor: pointer;
+}
+.decision-table thead tr:last-child {
+	border-bottom: double 5px #ccc;
+}
+.col-add {
+	width: 36px;
+}
+.expr-name.last-input {
+  border-right: double 5px #ccc;
+}
+.binding-expression input,
+.decision-name input,
+.expr-name input,
+.expression input,
+.information-item-name input,
+.parameter input,
+.rule input {
+  border: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+	width: 100%;
+}
+.expr input {
+  border: none;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+input:focus {
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+.condition th,
+.condition td,
+.conclusion th,
+.conclusion td {
+  border-bottom: 1px solid #ccc;
+}
+.decision-name,
+.information-item-name {
+  border: 1px solid #cccccc;
+  border-top: 1px solid #cccccc !important;
+  border-bottom: 0px !important;
+}
+.expr-action,
+.hit-policy,
+.rule td {
+  border-right: 1px solid #ccc;
+}
+.input { 
+  background-color: #ABDCEE /* blue at 0.35 opacity */;
+}
+th.output,
+input.output { 
+  background-color: #FFCCA8 /* orange at 0.35 opacity */;
+}
+th.output,
+td.output {
+  border-left: 5px double #ccc;
+}
+.newCondition,
+.newConclusion {
+	border: none;
+	background-color: #fff !important;
+}
+.parameter {
+	background-color: #d6e3bc;
+  border-top: 1px solid #ccc !important;
+	border-right: 1px solid #ccc;
+}
+.parameter input {
+  background-color: #d6e3bc;
+}
+.table>thead>tr>th {
+  /*border-bottom: 1px solid #ccc;*/
+}
+.table-striped>tbody>tr:nth-child(odd)>td>input, 
+.table-striped>tbody>tr:nth-child(odd)>th>input {
+  background-color: #f9f9f9;	
+}
+.table-striped>tbody>tr:nth-child(odd)>td>input:focus, 
+.table-striped>tbody>tr:nth-child(odd)>th>input:focus {
+  background-color: #fff;	
+}
+#deploymentName {
+  width: 350px;	
+}

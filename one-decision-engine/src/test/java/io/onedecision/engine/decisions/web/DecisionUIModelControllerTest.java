@@ -4,9 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
-import io.onedecision.engine.decisions.model.ui.DecisionConclusion;
-import io.onedecision.engine.decisions.model.ui.DecisionCondition;
+import io.onedecision.engine.decisions.model.ui.DecisionInput;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
+import io.onedecision.engine.decisions.model.ui.DecisionOutput;
+import io.onedecision.engine.decisions.model.ui.DecisionRule;
 
 import java.util.List;
 
@@ -37,17 +38,22 @@ public class DecisionUIModelControllerTest implements ExamplesConstants {
     }
 
     @Test
+    @Ignore
+    // TODO UI to be dropped?
     public void testLifecycle() {
         DecisionModel model = new DecisionModel();
         model.setName("Test");
-        model.getConditions().add(
-                new DecisionCondition("timeSinceLogin", "Time since login",
-                        new String[] { "<P7D", ">=P7D" }));
-        model.getConclusions().add(
-                new DecisionConclusion("subjectLine", "Subject line",
-                        new String[] { "foo", "bar" }));
+        model.getInputs().add(
+                new DecisionInput().withName("timeSinceLogin").withLabel(
+                        "Time since login"));
+        model.getOutputs().add(
+                new DecisionOutput().withName("subjectLine").withLabel(
+                        "Subject line"));
+        model.getRules().add(new DecisionRule()
+                .withInputEntries(new String[] { "<P7D", ">=P7D" })
+                .withOutputEntries(new String[] { "foo", "bar" }));
 
-        model = controller.createModelForTenant(TENANT_ID, model);
+        model = controller.createModelForTenant(model, TENANT_ID);
         assertNotNull(model);
         assertNotNull(model.getId());
 
@@ -57,10 +63,10 @@ public class DecisionUIModelControllerTest implements ExamplesConstants {
         assertEquals(model.getId(), models.get(0).getId());
         assertEquals(model.getName(), models.get(0).getName());
         assertEquals(model.getTenantId(), models.get(0).getTenantId());
-        assertEquals(model.getConditions().size(), models.get(0)
-                .getConditions().size());
-        assertEquals(model.getConclusions().size(), models.get(0)
-                .getConclusions().size());
+        assertEquals(model.getInputs().size(), models.get(0)
+                .getInputs().size());
+        assertEquals(model.getOutputs().size(), models.get(0)
+                .getOutputs().size());
 
         // assertEquals(model.hashCode(), models.get(0).hashCode());
     }

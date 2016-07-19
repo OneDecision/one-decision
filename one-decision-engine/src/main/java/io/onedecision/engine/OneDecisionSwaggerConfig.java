@@ -11,6 +11,11 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import com.google.common.base.Predicate;
 
+/**
+ * Provides Swagger the classes implementing the REST API.
+ *
+ * @author Tim Stephenson
+ */
 @Component
 public class OneDecisionSwaggerConfig {
 
@@ -23,8 +28,7 @@ public class OneDecisionSwaggerConfig {
     }
 
     /**
-     * 
-     * @return public API.
+     * @return REST API paths.
      */
     @SuppressWarnings("unchecked")
     private Predicate<String> publicPaths() {

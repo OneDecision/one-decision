@@ -15,13 +15,13 @@ package io.onedecision.engine.decisions.examples;
 
 public interface ExamplesConstants {
 
-	static final String TENANT_ID = "examples";
+    static final String TENANT_ID = "examples";
 
     // Application Risk Rating example
     static final String ARR_JSON_RESOURCE = "/decisions/examples/ApplicationRiskRating.json";
     static final String ARR_DMN_RESOURCE = "/decisions/examples/ApplicationRiskRating.dmn";
     static final String ARR_DEFINITION_ID = "ApplicationRiskRating";
-	static final String ARR_DECISION_ID = "1_d";
+    static final String ARR_DECISION_ID = "1_d";
 
     // Email Follow Up example
     static final String EFU_JSON_RESOURCE = "/decisions/examples/EmailFollowUp.json";
@@ -30,7 +30,13 @@ public interface ExamplesConstants {
     static final String EFU_DECISION_ID = "DetermineEmailToSend";
 
     // Calculate Discount example
-    static final String CD_DMN_RESOURCE = "/decisions/examples/calculate_discount.dmn.xml";
+    static final String CD_DMN_RESOURCE = "/decisions/examples/calculate_discount.dmn";
     static final String CD_DEFINITION_ID = "27002";
     static final String CD_DECISION_ID = "calcDiscount1";
+
+    // Decision table from Figure 27 in spec
+    static final String FIG27_DMN_RESOURCE = "/decisions/examples/Fig27CalculateDiscount.dmn";
+    static final String FIG37_DEFINITION_ID = "fig27CalculateDiscount";
+    static final String FIG37_DECISION_ID = "calcDiscount";
+
 }

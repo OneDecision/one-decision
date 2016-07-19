@@ -14,9 +14,19 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
+import io.onedecision.engine.decisions.api.DecisionConstants;
+import io.onedecision.engine.decisions.api.DecisionException;
+import io.onedecision.engine.decisions.api.InvalidDmnException;
+
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +38,20 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
 
+import org.springframework.hateoas.Identifiable;
+import org.springframework.hateoas.Link;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -39,14 +62,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "OL_DMN_MODEL")
-public class DmnModel  implements Serializable {
+public class DmnModel implements Serializable, Identifiable<Link> {
     private static final long serialVersionUID = 3333702300975742216L;
+    
+    private static final ObjectFactory objFact = new ObjectFactory();
+
+    public static DmnModel newModel() {
+        DmnModel model = new DmnModel(objFact.createDefinitions()
+                .withId(UUID.randomUUID().toString())
+                .withName("New decision model"), "-unknown-tenant-");
+        return model; 
+    }
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty
-    private Long id;
+    private Long shortId;
+
+    // @JsonProperty
+    private transient List<Link> links;
 
     @NotNull
     @JsonProperty
@@ -54,6 +89,9 @@ public class DmnModel  implements Serializable {
 
     @JsonProperty
     private String originalFileName;
+
+    @JsonProperty
+    private String description;
 
     @JsonProperty
     private String deploymentMessage;
@@ -71,9 +109,28 @@ public class DmnModel  implements Serializable {
     @Lob
     private String definitionXml;
 
+    // @JsonProperty
+    // @Embedded
+    // private List<String> decisionIds;
+    //
+    // @JsonProperty
+    // @Embedded
+    // private List<String> decisionNames;
+    //
+    // @JsonProperty
+    // @Embedded
+    // private List<String> bkmIds;
+    //
+    // @JsonProperty
+    // @Embedded
+    // private List<String> bkmNames;
+
     @JsonProperty
     @Lob
     private byte[] image;
+
+    @JsonProperty
+    private boolean deleted;
 
     /**
      * The time the contact is created.
@@ -93,95 +150,292 @@ public class DmnModel  implements Serializable {
     @JsonProperty
     private Date lastUpdated;
 
-    public DmnModel(Definitions model, String xmlString) {
+    private transient Definitions definitions;
+
+    public DmnModel() {
+        created = new Date();
+        links = new ArrayList<Link>();
+    }
+
+    public DmnModel(Definitions model, String tenantId) {
+        this(model, model.getName(), tenantId);
+    }
+
+    public DmnModel(Definitions model, String deploymentMessage, String tenantId) {
         this();
         setName(model.getName());
         setDefinitionId(model.getId());
+        setDefinitions(model);
+        setDefinitionXml(serialize(model));
         setTenantId(tenantId);
-        setDefinitionXml(xmlString);
-    }
-    
-    public DmnModel() {
-        created = new Date();
+        setDeploymentMessage(deploymentMessage);
     }
 
-	public Long getId() {
-		return id;
+    public DmnModel(String definitionXml, String tenantId)
+            throws DecisionException {
+        this();
+        setDefinitions(deserialize(definitionXml));
+        setName(definitions.getName());
+        setDefinitionId(definitions.getId());
+        setDefinitionXml(definitionXml);
+        setTenantId(tenantId);
+        setDeploymentMessage(deploymentMessage);
+    }
+
+    public DmnModel(String definitionXml, String deploymentMessage,
+            byte[] image, String tenantId) throws IOException {
+        this(definitionXml, tenantId);
+        setDeploymentMessage(deploymentMessage);
+    }
+
+    @JsonIgnore
+    public Link getId() {
+        return getLink(Link.REL_SELF);
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+    public void addLink(Link link) {
+        links.add(link);
+    }
+
+    /**
+     * Returns the link with the given rel.
+     * 
+     * @param rel
+     * @return the link with the given rel or {@literal null} if none found.
+     */
+    public Link getLink(String rel) {
+        for (Link link : links) {
+            if (link.getRel().equals(rel)) {
+                return link;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns all {@link Link}s contained in this resource.
+     * 
+     * @return
+     */
+    @XmlElement(name = "link", namespace = Link.ATOM_NAMESPACE)
+    @JsonProperty("links")
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    @JsonProperty("links")
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
+    public Long getShortId() {
+        return shortId;
+    }
+
+    public void setShortId(Long id) {
+        this.shortId = id;
 	}
 
-	public String getName() {
+    public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+    public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getOriginalFileName() {
+    public String getOriginalFileName() {
 		return originalFileName;
 	}
 
-	public void setOriginalFileName(String originalFileName) {
+    public void setOriginalFileName(String originalFileName) {
 		this.originalFileName = originalFileName;
 	}
 
-	public String getDeploymentMessage() {
+    public String getDeploymentMessage() {
 		return deploymentMessage;
 	}
 
-	public void setDeploymentMessage(String deploymentMessage) {
+    public void setDeploymentMessage(String deploymentMessage) {
 		this.deploymentMessage = deploymentMessage;
 	}
 
-	public String getTenantId() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTenantId() {
 		return tenantId;
 	}
 
-	public void setTenantId(String tenantId) {
+    public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
 
-	public String getDefinitionId() {
+    public String getDefinitionId() {
 		return definitionId;
 	}
 
-	public void setDefinitionId(String definitionId) {
+    public void setDefinitionId(String definitionId) {
 		this.definitionId = definitionId;
 	}
 
-	public String getDefinitionXml() {
+    public String getDefinitionXml() {
 		return definitionXml;
 	}
 
-	public void setDefinitionXml(String definitionXml) {
+    public void setDefinitionXml(String definitionXml) {
 		this.definitionXml = definitionXml;
 	}
 
-	public byte[] getImage() {
+    public String serialize(Definitions def) {
+        JAXBContext context;
+        StringWriter stringWriter = new StringWriter();
+        try {
+            context = JAXBContext.newInstance(Definitions.class);
+            Marshaller m = context.createMarshaller();
+            Result out = new StreamResult(stringWriter);
+            // Since no @XmlRootElement generated for Definitions need to create
+            // element wrapper here. See
+            // https://weblogs.java.net/blog/kohsuke/archive/2006/03/why_does_jaxb_p.html
+            m.marshal(new JAXBElement<Definitions>(new QName(
+                    DecisionConstants.DMN_URI,
+                    "definitions"),
+                    Definitions.class, def), out);
+        } catch (JAXBException e) {
+            String msg = "Unable to load decision model from stream";
+            throw new InvalidDmnException(msg, e);
+        }
+        return stringWriter.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Definitions deserialize(@NotNull String definition)
+            throws DecisionException {
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(Definitions.class);
+            Unmarshaller um = context.createUnmarshaller();
+
+            Object dm = um.unmarshal(new StringReader(definition));
+            if (dm instanceof JAXBElement<?>) {
+                return ((JAXBElement<Definitions>) dm).getValue();
+            } else {
+                return (Definitions) dm;
+            }
+        } catch (JAXBException e) {
+            String msg = "Unable to load decision model from stream";
+            throw new InvalidDmnException(msg, e);
+        }
+    }
+
+    public Definitions getDefinitions() {
+        if (definitions == null && definitionXml != null) {
+            definitions = deserialize(definitionXml);
+        }
+        return definitions;
+    }
+
+    public void setDefinitions(Definitions tDef) {
+        this.definitions = tDef;
+    }
+
+    // /**
+    // * On creation the decision ids are read from the DMN file to allow ready
+    // * retrieval later.
+    // *
+    // * @return Returns list of decision ids contained in the model.
+    // */
+    // public List<String> getDecisionIds() {
+    // if (decisionIds == null) {
+    // decisionIds = new ArrayList<String>();
+    // }
+    // return decisionIds;
+    // }
+    //
+    // public void setDecisionIds(List<String> decisionIds) {
+    // this.decisionIds = decisionIds;
+    // }
+
+    // /**
+    // * On creation the decision names are read from the DMN file to allow
+    // ready
+    // * retrieval later.
+    // *
+    // * @return Returns list of decision names contained in the model.
+    // */
+    // public List<String> getDecisionNames() {
+    // if (decisionNames == null) {
+    // decisionNames = new ArrayList<String>();
+    // }
+    // return decisionNames;
+    // }
+    //
+    // public void setDecisionNames(List<String> decisionNames) {
+    // this.decisionNames = decisionNames;
+    // }
+    //
+    // public List<String> getBusinessKnowledgeModelIds() {
+    // if (bkmIds == null) {
+    // bkmIds = new ArrayList<String>();
+    // }
+    // return bkmIds;
+    // }
+    //
+    // public void setBusinessKnowledgeModelIds(List<String> bkmIds) {
+    // this.bkmIds = bkmIds;
+    // }
+    //
+    // /**
+    // * On creation the BKM names are read from the DMN file to allow ready
+    // * retrieval later.
+    // *
+    // * @return Returns list of BKM names contained in the model.
+    // */
+    // public List<String> getBusinessKnowledgeModelNames() {
+    // if (bkmNames == null) {
+    // bkmNames = new ArrayList<String>();
+    // }
+    // return bkmNames;
+    // }
+    //
+    // public void setBusinessKnowledgeModelNames(List<String> bkmNames) {
+    // this.bkmNames = bkmNames;
+    // }
+
+    public byte[] getImage() {
 		return image;
 	}
 
-	public void setImage(byte[] image) {
+    public void setImage(byte[] image) {
 		this.image = image;
 	}
 
-	public Date getCreated() {
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Date getCreated() {
 		return created;
 	}
 
-	public void setCreated(Date created) {
+    public void setCreated(Date created) {
 		this.created = created;
 	}
 
-	public Date getLastUpdated() {
+    public Date getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(Date lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 
@@ -198,7 +452,7 @@ public class DmnModel  implements Serializable {
                 * result
                 + ((deploymentMessage == null) ? 0 : deploymentMessage
                         .hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((shortId == null) ? 0 : shortId.hashCode());
         result = prime * result + Arrays.hashCode(image);
         result = prime * result
                 + ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
@@ -240,10 +494,10 @@ public class DmnModel  implements Serializable {
                 return false;
         } else if (!deploymentMessage.equals(other.deploymentMessage))
             return false;
-        if (id == null) {
-            if (other.id != null)
+        if (shortId == null) {
+            if (other.shortId != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!shortId.equals(other.shortId))
             return false;
         if (!Arrays.equals(image, other.image))
             return false;
@@ -269,4 +523,5 @@ public class DmnModel  implements Serializable {
             return false;
         return true;
     }
+
 }

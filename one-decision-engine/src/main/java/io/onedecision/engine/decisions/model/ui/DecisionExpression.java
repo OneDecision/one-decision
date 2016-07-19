@@ -91,6 +91,9 @@ public abstract class DecisionExpression implements Serializable {
 	}
 
     public String[] getExpressions() {
+        if (expressions == null) {
+            return null;
+        }
         return expressions.split(",");
 	}
 

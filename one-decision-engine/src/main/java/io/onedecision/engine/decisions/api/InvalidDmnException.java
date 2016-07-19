@@ -18,6 +18,12 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
+/**
+ * Reported when the DMN supplied is either invalid according to the spec
+ * <em>or</em> unsupported by the engine.
+ *
+ * @author Tim Stephenson
+ */
 public class InvalidDmnException extends DecisionException {
 
     private static final long serialVersionUID = 5963000172167072118L;

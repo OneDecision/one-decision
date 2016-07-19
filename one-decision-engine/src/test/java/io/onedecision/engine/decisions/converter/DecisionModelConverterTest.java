@@ -17,8 +17,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.api.DecisionModelFactory;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
+import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DecisionRule;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
@@ -26,10 +26,11 @@ import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 import io.onedecision.engine.decisions.model.dmn.validators.SchemaValidator;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.domain.api.test.MockDomainModelFactory;
+import io.onedecision.engine.test.MockDomainModelFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.junit.BeforeClass;
@@ -54,7 +55,7 @@ public class DecisionModelConverterTest implements ExamplesConstants {
     }
 
     @Test
-    @Ignore
+    @Ignore //author direct in dmn?
     public void testConvertSingleDecisionTable() throws JsonParseException,
             JsonMappingException, IOException, DecisionException {
         DecisionModel jsonModel = getJsonModel(ARR_JSON_RESOURCE);
@@ -62,28 +63,37 @@ public class DecisionModelConverterTest implements ExamplesConstants {
 				"http://onedecision.io/health", "/domains/health.json"));
 
         Definitions dmnModel = converter.convert(jsonModel);
-		Decision d = dmnModel.getDecisionById(ARR_DECISION_ID);
+        Decision d = dmnModel.getDecision(ARR_DECISION_ID);
 		assertNotNull(d);
 
 		DecisionTable dt = d.getDecisionTable();
 		assertNotNull(dt);
-		assertEquals(3, dt.getClause().size());
+		assertEquals(3, dt.getInputs().size());
 
-		assertEquals(5, dt.getRule().size());
-        for (DecisionRule rule : dt.getRule()) {
-            assertEquals(2, rule.getConditions().size());
-            assertEquals(1, rule.getConclusions().size());
+		assertEquals(5, dt.getRules().size());
+        for (DecisionRule rule : dt.getRules()) {
+            assertEquals(2, rule.getInputEntry().size());
+            assertEquals(1, rule.getOutputEntry().size());
         }
 
         File dmnFile = new File("target", ARR_DEFINITION_ID + ".dmn");
-        new DecisionModelFactory().write("application/xml", dmnModel, dmnFile);
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(dmnFile);
+            new DecisionModelFactory().write(dmnModel, writer);
+        } finally {
+            try {
+                writer.close();
+            } catch (Exception e) {
+            }
+        }
         assertTrue(dmnFile.exists());
 
         // TODO validate the result using all registered validators
         // http://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html
 
 		SchemaValidator schemaValidator = new SchemaValidator();
-		DmnValidationErrors errors = new DmnValidationErrors();
+        DmnValidationErrors errors = new DmnValidationErrors(dmnFile.getName());
 		schemaValidator.validate(new FileInputStream(dmnFile), errors);
 		assertEquals(0, errors.getErrorCount());
     }

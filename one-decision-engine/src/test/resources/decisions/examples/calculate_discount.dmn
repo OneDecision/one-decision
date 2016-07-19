@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Definitions id="27002" xmlns="http://www.omg.org/spec/DMN/20130901">
+	<description>Calculates discount for a given customer.</description>
+	<ItemDefinition name="Customer Category" id="customerCategory">
+		<typeDefinition>string</typeDefinition>
+	</ItemDefinition>
+	<ItemDefinition name="Order Size" id="orderSize">
+		<typeDefinition>number</typeDefinition>
+	</ItemDefinition>
+	<ItemDefinition id="totalOrderPrice">
+		<typeDefinition>number</typeDefinition>
+	</ItemDefinition>
+	<Decision name="Determine Customer Discount" id="calcDiscount1">
+		<InformationItem id="totalOrderPrice" />
+		<DecisionTable hitPolicy="FIRST" id="27002_dt">
+			<input id="27002_dt_i1">
+				<inputExpression id="27002_dt_i1_ie">
+					<description>Customer Category</description>
+					<text>customerCategory</text>
+				</inputExpression>
+				<inputValue id="27002_dt_i1_ie_1">
+					<text>!= "gold"</text>
+				</inputValue>
+				<inputValue id="27002_dt_i1_ie_2">
+					<text>== "gold"</text>
+				</inputValue>
+			</input>
+			<input id="27002_dt_i2">
+				<inputExpression id="27002_dt_i2_ie">
+					<description>Order Size</description>
+					<text>orderSize</text>
+				</inputExpression>
+				<inputValue id="27002_dt_i2_ie_1">
+					<text>&lt; 500</text>
+				</inputValue>
+				<inputValue id="27002_dt_i2_ie_2">
+					<text>&gt;= 500</text>
+				</inputValue>
+			</input>
+			<output id="27002_dt_o1">
+				<outputDefinition href="#totalOrderPrice" />
+				<outputValue id="27002_dt_o1_od_1">
+					<text>orderSize * totalOrderPrice</text>
+				</outputValue>
+				<outputValue id="27002_dt_o1_od_2">
+					<text>(orderSize * totalOrderPrice) * 0.9</text>
+				</outputValue>
+			</output>
+			<rule>
+				<inputEntry id="27002_dt_i1_ie_1">
+					<text>!= "gold"</text>
+				</inputEntry>
+				<outputEntry id="27002_dt_o1_od_1">
+					<text>orderSize * totalOrderPrice</text>
+				</outputEntry>
+			</rule>
+			<rule>
+				<inputEntry id="27002_dt_i1_ie_2">
+					<text>== "gold"</text>
+				</inputEntry>
+				<inputEntry id="27002_dt_i2_ie_1">
+					<text>&lt; 500</text>
+				</inputEntry>
+				<outputEntry id="27002_dt_o1_od_2">
+					<text>(orderSize * totalOrderPrice) * 0.9</text>
+				</outputEntry>
+			</rule>
+			<rule>
+				<inputEntry id="27002_dt_i1_ie_2">
+					<text>== "gold"</text>
+				</inputEntry>
+				<inputEntry id="27002_dt_i2_ie_2">
+					<text>&gt;= 500</text>
+				</inputEntry>
+				<outputEntry id="27002_dt_o1_od_2">
+					<text>(orderSize * totalOrderPrice) * 0.9</text>
+				</outputEntry>
+			</rule>
+		</DecisionTable>
+	</Decision>
+</Definitions>

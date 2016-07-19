@@ -1,9 +1,9 @@
 <div class="profile pull-right">
   <form name="logoutForm" action="/logout" method="POST">
+    <span class="profile-img">Logged in as: {{username}}</span>
+    <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()" title="Logout"></span>
     <a href="/">
       <span class="clickable glyphicon glyphicon-home" aria-hidden="true" title="Home"></span>
     </a>
-    <span class="profile-img">Logged in as: {{username}}</span>
-    <span class="clickable glyphicon glyphicon-log-out" aria-hidden="true" on-click="logout()" title="Logout"></span>
   </form>
 </div>

@@ -2,17 +2,121 @@
   <section id="currentSect" style="display:none">
       <h2>
         <span>{{current.name}}</span>
-        <div class="pull-right">
+        <span class="pull-right">
           <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.definitionId}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
-          <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
-        </div>          
+          {{#hasRole('admin')}}
+            <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
+          {{/}}
+        </span>
       </h2>
-      <p>
-        <span class="a-primary-label control-label">{{current.deploymentMessage}}: </span>
-        <span class="a-secondary-label control-label">Id: </span> {{current.id}};
-        <span class="a-secondary-label control-label">Definition Id: </span> {{current.definitionId}};
-        <span class="a-secondary-label control-label">Deployed: </span> {{formatDateTime(current.created)}};
-      </p>
-      <pre><code id="currentHighlightedDmn" class="xml"></code></pre>
+
+      <form class="form-horizontal">
+        <div class="form-group" style="display:none">
+          <label class="col-sm-2 control-label" for="curSelfRef">URL:</label>
+          <div class="col-sm-10">
+            <input class="form-control" id="curSelfRef" required type="text" value="{{current._links.self.href}}"/>
+            <p class="hidden-sm hidden-xs help-block">The resource URL for the model within this system.</p>
+          </div>
+        </div>
+        <div class="form-group" style="display:none">
+          <label class="col-sm-2 control-label" for="curDefinitionId">Id:</label>
+          <div class="col-sm-10">
+            <input class="form-control" id="curDefinitionId" required type="text" value="{{current.definitionId}}"/>
+            <p class="hidden-sm hidden-xs help-block">The id of the model is consistent across systems</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="curName" class="col-sm-2 control-label">Name:</label>
+          <div class="col-sm-10">
+            <input class="form-control" id="curName" required type="text" value="{{current.name}}"/>
+            <p class="hidden-sm hidden-xs help-block">A natural language name for the decision model.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="curDeploymentMessage">Deployment Message:</label>
+          <div class="col-sm-10">
+            <input class="form-control" id="curDeploymentMessage" type="text" value="{{current.deploymentMessage}}" readonly="readonly" disabled="disabled"/>
+            <p class="hidden-sm hidden-xs help-block">A message left by the deployer of the model into the system.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="curDefinitionsName" class="col-sm-2 control-label">Deployed / Created At:</label>
+          <div class="col-sm-10">
+            <input class="form-control" id="curCreated" type="datetime" value="{{formatDateTime(current.created)}}" readonly="readonly" disabled="disabled"/>
+            <p class="hidden-sm hidden-xs help-block">When the model was deployed or created.</p>
+          </div>
+        </div>
+      </form>
+
+      <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#notation" aria-controls="notation" role="tab" data-toggle="tab">Model</a></li>
+          <li role="presentation"><a href="#xml" aria-controls="xml" role="tab" data-toggle="tab">XML</a></li>
+        </ul>
+      
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="notation">
+            <h3>
+              <span>Decisions</span>
+              <span class="pull-right">
+                {{#hasRole('author')}}
+                  <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addDecision()" title="Add a new decision"></a>
+                {{/}}
+              </span>
+            </h3>
+            <ul>
+              {{#current.definitions.decisions:idx}}
+                <li style="clear:both">
+                  <label>{{name}}</label>
+                  {{#hasRole('author')}}
+                    <span> ({{id}})</span>
+                  {{/}}
+                  <span>{{question}} {{allowedAnswers}}</span>
+                  <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newtab">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                  </a>
+                  {{#hasRole('manage')}}
+                    <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}?edit" target="_newtab">
+                      <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                  {{/}}
+                </li>
+              {{/}}
+              {{^current.definitions.decisions}}
+                <li>None</li>
+              {{/}}
+            </ul>
+            <h3>Business Knowledge Models</h3>
+            <ul>
+              {{#current.definitions.businessKnowledgeModels:idx}}
+                <li style="clear:both">
+                    <label>{{name}}</label>
+                    {{#hasRole('author')}}
+                      <span> ({{id}})</span>
+                    {{/}}
+                    <span>{{question}} {{allowedAnswers}}</span>
+                    <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newtab">
+                      <span class="glyphicon glyphicon-eye-open"></span>
+                    </a>
+                    {{#hasRole('manage')}}
+                      <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}?edit" target="_newtab">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                      </a>
+                    {{/}}
+                </li>
+              {{/}}
+              {{^current.definitions.businessKnowledgeModels}}
+                <li>None</li>
+              {{/}}
+            </ul>   
+          </div>
+          <div role="tabpanel" class="tab-pane" id="xml">
+            <pre><code id="currentHighlightedDmn" class="xml"></code></pre>          
+          </div>
+        </div>
+      
+      </div> 
   </section>
 {{/}}

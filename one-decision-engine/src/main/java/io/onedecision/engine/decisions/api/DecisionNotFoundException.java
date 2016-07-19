@@ -13,7 +13,11 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.api;
 
-
+/**
+ * Reported when a requested model is not found in the engine's repository.
+ *
+ * @author Tim Stephenson
+ */
 public class DecisionNotFoundException extends DecisionException {
 
     private static final long serialVersionUID = -7579907826337455003L;
@@ -22,7 +26,17 @@ public class DecisionNotFoundException extends DecisionException {
         super(msg, cause);
     }
 
-    public DecisionNotFoundException(String tenantId, String definitionId, String decisionId) {
+    public DecisionNotFoundException(String msg) {
+        super(msg);
+    }
+
+    public DecisionNotFoundException(String tenantId, String definitionId) {
+        super(String.format("Could not find %1$s for %2$s", definitionId,
+                tenantId));
+    }
+
+    public DecisionNotFoundException(String tenantId, String definitionId,
+            String decisionId) {
         super(String.format("Could not find %1$s.%2$s for %3$s", definitionId,
                 decisionId, tenantId));
     }

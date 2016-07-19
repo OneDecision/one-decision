@@ -2,77 +2,71 @@
   <h2>
     <span>Define Decision</span>
     <div class="pull-right">
-    <!--
-      <a id="save_as_image" href="#" download="{{decision.name}}.png" target="_blank">
-        <span class="glyphicon glyphicon-picture" aria-hidden="true" onclick="ractive.decision2Image();" title="Save image"></span>
-      </a>
-      <span class="glyphicon glyphicon-export" aria-hidden="true" onclick="ractive.publish(ractive.get('decision'))" title="Publish to Repository"></span>
-      -->
       <span class="glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('decision'))" title="Delete"></span>
-      <!--<button class="btn" type="button">Validate</button>-->
     </div>
   </h2>
   <table id="decisionTable" class="decision-table table table-striped">
     <thead>
-      <tr>
-        <th class="decision-name" colspan="3">
-          <input title="{{decision.name}}" value="{{decision.name}}"/>
+      <tr style="border: 1px solid green">
+        <th class="decision-name" colspan="1">
+          <input title="{{decision.decisionName}}" value="{{decision.decisionName}}"/>
         </th>
       </tr>
     </thead>
     <tbody>
-      {{#each decision.conditions:i}}
-        <tr class="condition" data-condition="{{name}}">
-          <th class="">
-            <span class="glyphicon glyphicon-list-alt" aria-hidden="true" style="border:0px"></span>
+      {{#each decision.inputs:i}}
+        <tr class="condition" data-input="{{name}}">
+          <th class="expr-name input">
+            <input autocomplete="false" class="author typeahead input" title="{{name}}" value="{{name}}"/>
+            <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteInput(i)" title="Delete Input"></span>
           </th>
-          <th class="expr-name">
-            <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
-          </th>
-          <th class="expr-action">
-            <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteCondition(i)" title="Delete Condition"></span>
-          </th>
-          {{#each expressions:j}}
-            <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
-          {{/each}}
         {{#if (i==0)}}
-          <td class="rule-add" rowspan="{{decision.conditions[0].expressions.length+decision.conclusions[0].expressions.length+2}}">
-            <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConditionExpr()" title="Add Rule"></span>
-          </td>
+<!--           <td class="rule-add" rowspan="{{decision.rules[0].length+2}}">
+            <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addRuleExpr()" title="Add Rule"></span>
+          </td> -->
         {{/if}}
-        </tr>
-      {{/each}}
-      <tr class="newCondition">
-        <th colspan="2">
-          <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addCondition()" title="Add Condition"></span>
-        </th>
-      </tr>
-      {{#each decision.conclusions:i}}
-        <tr class="conclusion" data-conclusion="{{name}}">
-          <th class="">
-            <span class="glyphicon glyphicon-flash" aria-hidden="true" style="border:0px"></span>
-          </th>
-          <th class="expr-name">
-            <input autocomplete="false" class="edit typeahead" title="{{name}}" value="{{name}}"/>
-          </th>
-          <th class="expr-action">
-            <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteConclusion(i)" title="Delete Conclusion"></span>
-          </th>
-          {{#each expressions:j}}
+          {{#each decision.rules[i].inputEntries:j}}
+            <td class="expr"><input id="{{j}}" title="{{.}}" value="{{.}}"/></td>
+          {{/each}}
+          {{#each decision.rules[i].outputEntries:j}}
             <td class="expr"><input title="{{.}}" value="{{.}}"/></td>
           {{/each}}
         </tr>
       {{/each}}
-      <tr class="newConclusion">
+      <!--tr class="newRule">
+        <th colspan="2">
+          <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addRule()" title="Add Rule"></span>
+        </th>
+      </tr-->
+      {{#each decision.outputs:i}}
+        <tr class="conclusion" data-output="{{name}}">
+          <th class="expr-name output">
+            <input autocomplete="false" class="author typeahead output" title="{{name}}" value="{{name}}"/>
+            <span class="clickable glyphicon glyphicon-remove" aria-hidden="true" on-click="deleteOutput(i)" title="Delete Output"></span>
+          </th>
+          {{#each decision.rules[i+decision.inputs.length].inputEntries:j}}
+            <td class="expr"><input id="input_{{i}}_{{j}}" title="{{.}}" value="{{.}}"/></td>
+          {{/each}}
+          {{#each decision.rules[i+decision.inputs.length].outputEntries:j}}
+            <td class="expr"><input id="output_{{i}}_{{j}}" title="{{.}}" value="{{.}}"/></td>
+          {{/each}}
+        </tr>
+      {{/each}}
+      <!--tr class="newConclusion">
         <th colspan="2">
           <span class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addConclusion()" title="Add Conclusion"></span>
         </th>
-      </tr>
+      </tr-->
       <tr class="rule">
-        <th>&nbsp;</th>
-        <th class="hit-policy" colspan="2">
-          <input autocomplete="false" class="edit typeahead" placeholder="Click to set hit policy" title="{{hitPolicy}}" value="{{hitPolicy}}"/>
+        <th class="hit-policy" colspan="1">
+          <input autocomplete="false" class="author typeahead" placeholder="Click to set hit policy" title="{{decision.hitPolicy}}" value="{{decision.hitPolicy}}"/>
         </th>
+        {{#each decision.rules:j}}
+            <td class="expr">
+              <span>{{j}}</span>
+              <span class="clickable glyphicon glyphicon-remove pull-right" aria-hidden="true" on-click="deleteRule(i)" title="Delete Rule"></span>
+            </td>
+          {{/each}}
         {{#each decision.conclusions[0].expressions:idx}}
           <td contenteditable>{{idx+1}}</td>
         {{/each}}

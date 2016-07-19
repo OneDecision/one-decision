@@ -13,6 +13,12 @@
  ******************************************************************************/
 package io.onedecision.engine.decisions.api;
 
+/**
+ * A very specific exception in response to an attempt to upload files not
+ * containing any DMN.
+ *
+ * @author Tim Stephenson
+ */
 public class NoDmnFileInUploadException extends IllegalArgumentException{
 
     private static final long serialVersionUID = 3410221492413480890L;

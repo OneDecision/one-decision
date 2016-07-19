@@ -13,55 +13,78 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
-import io.onedecision.engine.decisions.api.DecisionModelFactory;
+import io.onedecision.engine.decisions.api.DecisionException;
+import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
-import io.onedecision.engine.decisions.converter.DefinitionsDmnModelConverter;
-import io.onedecision.engine.decisions.model.dmn.Definitions;
+import io.onedecision.engine.decisions.api.RepositoryService;
+import io.onedecision.engine.decisions.impl.DecisionModelFactory;
+import io.onedecision.engine.decisions.impl.IdHelper;
+import io.onedecision.engine.decisions.impl.TransformUtil;
+import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.TransformerConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
- * Controller to support the native DMN decision definition.
+ * Controller to manage native DMN decision definitions.
  * 
  * @author Tim Stephenson
  */
 @Controller
 @RequestMapping(value = "/{tenantId}/decision-models")
-public class DecisionDmnModelController {
+public class DecisionDmnModelController extends DecisionModelFactory implements
+        RepositoryService {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionDmnModelController.class);
 
     @Autowired
     private DecisionDmnModelRepository repo;
 
-    @Autowired
-    private DecisionModelFactory decisionModelFactory;
+    protected TransformUtil transformUtil ;
 
-    @Autowired
-    private DefinitionsDmnModelConverter converter;
-
+    protected TransformUtil getTransformUtil() {
+        // if (transformUtil == null) {
+            transformUtil = new TransformUtil();
+            try {
+                transformUtil.setXsltResources("/static/xslt/dmn2html.xslt");
+            } catch (TransformerConfigurationException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DecisionException("Unable to render decision model",
+                        e);
+            }
+        // }
+        return transformUtil;
+    }
+    
     /**
-     * Return just the decision models for a specific tenant.
-     * 
-     * @param tenantId
-     *            .
-     * @return decision models for tenantId.
+     * @see io.onedecision.engine.decisions.api.RepositoryService#listForTenant(java.lang.String)
      */
+    @Override
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public @ResponseBody List<DmnModel> listForTenant(
             @PathVariable("tenantId") String tenantId) {
@@ -74,42 +97,168 @@ public class DecisionDmnModelController {
         return list;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = { "application/json" })
-    public @ResponseBody DmnModel getModelForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") Long id) {
+    @RequestMapping(value = "/{definitionOrInternalId}", method = RequestMethod.GET, produces = { "text/html" })
+    public String getModelForTenantHtml(
+            @PathVariable("definitionOrInternalId") String id,
+            @PathVariable("tenantId") String tenantId, Model model) {
         LOGGER.info(String.format(
                 "Seeking decision model %1$s for tenant %2$s", id, tenantId));
 
-        DmnModel model = repo.findOneForTenant(tenantId, id);
+        DmnModel dmnModel = null;
+        try {
+            dmnModel = getModelForTenant(Long.parseLong(id), tenantId);
+        } catch (NumberFormatException e) {
+            dmnModel = getModelForTenant(id, tenantId);
+        } finally {
+            model.addAttribute("dmnModel", dmnModel);
+        }
+
+        return "decisionModel";
+    }
+
+    @RequestMapping(value = "/{definitionId}/{drgElementId}", method = RequestMethod.GET, produces = { "text/html" })
+    public String getDrgElementForTenantHtml(
+            @PathVariable("definitionId") String definitionId,
+            @PathVariable("drgElementId") String drgElementId,
+            @PathVariable("tenantId") String tenantId,
+            @RequestParam(required = false) String edit,
+            Model model) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s.%2$s for tenant %3$s",
+                definitionId, drgElementId, tenantId));
+
+        DmnModel dmnModel = getModelForTenant(definitionId, tenantId);
+        Decision decision = dmnModel.getDefinitions().getDecision(drgElementId);
+        if (decision == null || decision.getDecisionTable() == null) {
+            // these are currently uneditable, render via XSL
+            model.addAttribute("dmnModel", dmnModel);
+            model.addAttribute("decision", decision);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("drgElementId", drgElementId);
+            params.put("edit", edit == null ? "false" : "true");
+            model.addAttribute(
+                    "decisionHtml",
+                    getTransformUtil().transform(dmnModel.getDefinitionXml(),
+                            params));
+            model.addAttribute("edit", edit == null ? false : true);
+
+            return "decision";
+        } else {
+            // these ARE editable
+            return "/decisions-table.html";
+        }
+    }
+
+    @RequestMapping(value = "/{definitionId}/{decisionId}", method = RequestMethod.GET, produces = { "application/json" })
+    public @ResponseBody DmnModel getDecisionServiceForTenant(
+            @PathVariable("definitionId") String definitionId,
+            @PathVariable("decisionId") String decisionId,
+            @PathVariable("tenantId") String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s.%2$s for tenant %3$s",
+                definitionId, decisionId, tenantId));
+
+        DmnModel dmnModel = getModelForTenant(definitionId, tenantId);
+        Decision decision = dmnModel.getDefinitions().getDecision(decisionId);
+        if (decision == null) {
+            throw new DecisionNotFoundException(
+                    String.format(
+                    "Decision %1$s.%2$s not not exist for tenant %3$s",
+                    definitionId, decisionId, tenantId));
+        }
+        // TODO should reduce this to only the requested or inferred decisions
+
+        return dmnModel;
+    }
+
+    @RequestMapping(value = "/{definitionOrInternalId}", method = RequestMethod.GET, produces = { "application/json" })
+    public @ResponseBody DmnModel getModelForTenantRestApi(
+            @PathVariable("definitionOrInternalId") String id,
+            @PathVariable("tenantId") String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
+
+        try {
+            return getModelForTenant(Long.parseLong(id), tenantId);
+        } catch (NumberFormatException e) {
+            return getModelForTenant(id, tenantId);
+        }
+    }
+
+    @Override
+    public @ResponseBody DmnModel getModelForTenant(
+            @PathVariable("id") Long id,
+            @PathVariable("tenantId") String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
+
+        DmnModel model = repo.findOneForTenant(id, tenantId);
+        if (model == null) {
+            throw new DecisionNotFoundException(tenantId, id.toString());
+        }
+        // indexModel(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model;
     }
 
+    /**
+     * @see io.onedecision.engine.decisions.api.RepositoryService#getModelForTenant(java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    public @ResponseBody DmnModel getModelForTenant(
+            @PathVariable("definitionId") String definitionId,
+            @PathVariable("tenantId") String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model %1$s for tenant %2$s", definitionId,
+                tenantId));
+
+        DmnModel model = repo.findByDefinitionId(definitionId, tenantId);
+        if (model == null) {
+            throw new DecisionNotFoundException(String.format(
+                    "Decision model %1$s not not exist for tenant %2$s",
+                    definitionId, tenantId));
+        }
+        // indexModel(model);
+        LOGGER.debug(String.format("... result from db: %1$s", model));
+
+        return model;
+    }
+
+    /**
+     * @see io.onedecision.engine.decisions.api.RepositoryService#getDmnForTenant(java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
     @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "application/xml" })
     public @ResponseBody String getDmnForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") String id) {
+            @PathVariable("id") String id,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Seeking decision model (dmn) %1$s for tenant %2$s", id,
                 tenantId));
 
-        DmnModel model = repo.findByDefinitionId(tenantId, id);
+        DmnModel model = repo.findByDefinitionId(id, tenantId);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model.getDefinitionXml();
     }
 
+    /**
+     * @see io.onedecision.engine.decisions.api.RepositoryService#getImageForTenant(java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
     @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "image/png" })
     public @ResponseBody byte[] getImageForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") String id) {
+            @PathVariable("id") String id,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Seeking decision model image %1$s for tenant %2$s", id,
                 tenantId));
 
-        DmnModel model = repo.findByDefinitionId(tenantId, id);
+        DmnModel model = repo.findByDefinitionId(id, tenantId);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
         return model.getImage();
@@ -118,10 +267,10 @@ public class DecisionDmnModelController {
     /**
      * Upload DMN representation of decision.
      * 
-     * @param file
-     *            A DMN file posted in a multi-part request and optionally an
+     * @param files
+     *            DMN files posted in a multi-part request and optionally an
      *            image of it.
-     * @return
+     * @return The model created in the repository.
      * @throws IOException
      *             If cannot parse the file.
      */
@@ -164,69 +313,81 @@ public class DecisionDmnModelController {
         if (dmnContent == null) {
             throw new NoDmnFileInUploadException();
         }
-
-        return createModelForTenant(tenantId, dmnFileName,
-                deploymentMessage,
-                decisionModelFactory.load(dmnContent), image);
+        if (deploymentMessage == null || deploymentMessage.length() == 0) {
+            deploymentMessage = String.format("Deployed from file: %1$s",
+                    dmnFileName);
+        }
+        DmnModel dmnModel = new DmnModel(dmnContent, deploymentMessage,
+                image, tenantId);
+        dmnModel.setName(IdHelper.toName(dmnFileName));
+        dmnModel.setDefinitionXml(dmnContent);
+        return createModelForTenant(dmnModel);
     }
 
     /**
-     * Model updates are typically additive but for the time being at least this
-     * is not enforced.
+     * Experimental.
      * 
-     * @param tenantId
-     *            The tenant to create the model for.
      * @param model
-     *            The new model.
-     * @return
-     * @throws IOException
      */
-    public DmnModel createModelForTenant(String tenantId,
-            String originalFileName, String deploymentMessage,
-            Definitions model, byte[] image) {
-        DmnModel dmnModel = createModelForTenant(tenantId, originalFileName,
-                deploymentMessage, model);
-        dmnModel.setImage(image);
-        return dmnModel;
-    }
-
-    public DmnModel createModelForTenant(String tenantId,
-            String originalFileName, String deploymentMessage, Definitions model) {
-        LOGGER.info(String.format("Creating decision model for tenant %1$s",
-                tenantId));
-
-        // TODO perform checks that the model changes are not destructive.
-
-        DmnModel dmnModel = converter.convert(model);
-        dmnModel.setOriginalFileName(originalFileName);
-        dmnModel.setDeploymentMessage(deploymentMessage);
-        return createModelForTenant(tenantId, dmnModel);
+    protected void indexModel(DmnModel model) {
+        model.setName(model.getDefinitions().getName());
+        model.setDescription(model.getDefinitions().getDescription());
+        // for (Decision d : model.getDefinitions().getDecisions()) {
+        // model.getDecisionIds().add(d.getId());
+        // model.getDecisionNames().add(d.getName());
+        // }
+        // for (BusinessKnowledgeModel bkm : model.getDefinitions()
+        // .getBusinessKnowledgeModels()) {
+        // model.getBusinessKnowledgeModelIds().add(bkm.getId());
+        // model.getBusinessKnowledgeModelNames().add(bkm.getName());
+        // }
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody DmnModel createModelForTenant(
             @PathVariable("tenantId") String tenantId,
-            @RequestBody DmnModel model) {
-        model.setTenantId(tenantId);
+            @RequestBody(required = false) DmnModel dmnModel,
+            HttpServletRequest request, HttpServletResponse response,
+            UriComponentsBuilder uriBuilder) {
+        if (dmnModel == null) {
+            dmnModel = DmnModel.newModel();
+        }
+
+        // ensure no discrepancy between tenant in URL and in model
+        dmnModel.setTenantId(tenantId);
+        dmnModel = createModelForTenant(dmnModel);
+        // uriBuilder.fromPath();
+        String url = request.getRequestURL().append(dmnModel.getShortId())
+                .toString();
+        response.setHeader("Location", url);
+        dmnModel.addLink(new Link(url));
+        return dmnModel;
+    }
+
+    /**
+     * @see io.onedecision.engine.decisions.api.RepositoryService#createModelForTenant(io.onedecision.engine.decisions.model.dmn.DmnModel)
+     */
+    @Override
+    public DmnModel createModelForTenant(DmnModel model) {
+        LOGGER.info(String.format("Creating decision model for tenant %1$s",
+                model.getTenantId()));
+        // indexModel(model);
+        model.setDefinitionXml(model.serialize(model.getDefinitions()));
         return repo.save(model);
     }
 
     /**
-     * Model updates are typically additive but for the time being at least this
-     * is not enforced.
-     * 
-     * @param tenantId
-     *            The tenant whose model is to be updated.
-     * @param definitionId
-     *            The id of the DMN root element.
-     * @param model
-     *            The updated model.
+     * @see io.onedecision.engine.decisions.api.RepositoryService#updateModelForTenant(java.lang.String,
+     *      io.onedecision.engine.decisions.model.dmn.DmnModel,
+     *      java.lang.String)
      */
+    @Override
     @RequestMapping(value = "/{definitionId}", method = RequestMethod.PUT)
     public @ResponseBody void updateModelForTenant(
-            @PathVariable("tenantId") String tenantId,
             @PathVariable("definitionId") String definitionId,
-            @RequestBody DmnModel model) {
+            @RequestBody DmnModel model,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Updating decision model %2$s for tenant %1$s", tenantId,
                 definitionId));
@@ -237,25 +398,38 @@ public class DecisionDmnModelController {
         }
         // TODO perform checks that the model changes are not destructive.
 
+        model.setDefinitionXml(model.serialize(model.getDefinitions()));
         repo.save(model);
     }
 
+    @Override
+    public void deleteModelForTenant(Long id, String tenantId) {
+        DmnModel model = getModelForTenant(id, tenantId);
+        if (model == null) {
+            throw new DecisionNotFoundException(String.format(
+                    "Unable to find model for tenant %1$s with id %2$d",
+                    tenantId, id));
+        }
+        repo.delete(model);
+    }
+
     /**
-     * Delete the specified model for the tenant.
-     * 
-     * @param tenantId
-     *            The tenant whose model is to be removed.
-     * @param id
-     *            Id of a particular decision (allocated by the repository not
-     *            any id from within the DMN).
+     * @see io.onedecision.engine.decisions.api.RepositoryService#deleteModelForTenant(java.lang.Long,
+     *      java.lang.String)
      */
+    @Override
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public @ResponseBody void deleteModelForTenant(
-            @PathVariable("tenantId") String tenantId,
-            @PathVariable("id") Long id) {
+            @PathVariable("id") String id,
+            @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Deleting decision model %1$s for tenant %2$s", id, tenantId));
 
-        repo.delete(id);
+        DmnModel dmnModel = repo.findByDefinitionId(id, tenantId);
+        if (dmnModel == null) {
+            repo.delete(Long.valueOf(id));
+        } else {
+            repo.delete(dmnModel.getShortId());
+        }
     }
 }

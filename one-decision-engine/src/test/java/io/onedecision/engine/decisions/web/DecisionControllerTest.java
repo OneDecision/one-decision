@@ -13,9 +13,10 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.TestApplication;
+import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
@@ -25,8 +26,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,36 +44,44 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class DecisionControllerTest implements ExamplesConstants {
 
     @Autowired
-    protected DecisionDmnModelController svc;
+    protected DecisionEngine decisionEngine;
 
-    @Autowired
-    protected DecisionController decisionController;
-
-    protected DmnModel dmnModel;
-
-    @Before
-    public void setUp() throws IOException {
-        dmnModel = svc.handleFileUpload(TENANT_ID,
-                null/* no deployment message */,
-                MockMultipartFileUtil.newInstance(ARR_DMN_RESOURCE));
-    }
-
-    @After
-    public void tearDown() {
-        svc.deleteModelForTenant(TENANT_ID, dmnModel.getId());
-    }
-
+    protected static DmnModel dmnModel;
 
     @Test
     public void testDecisionViaController() throws IOException,
             DecisionException {
+
+        // CREATE
+        DecisionDmnModelController svc = (DecisionDmnModelController) decisionEngine
+                .getRepositoryService();
+
+        assertEquals(
+                "Test environment should not contain any decisions at start",
+                0, svc.listForTenant(TENANT_ID).size());
+
+        dmnModel = svc.handleFileUpload(TENANT_ID,
+                null/* no deployment message */,
+                MockMultipartFileUtil.newInstance(ARR_DMN_RESOURCE));
+
+        // RETRIEVE
+        assertEquals(
+                "Test environment should now contain 1 decisions",
+                1, svc.listForTenant(TENANT_ID).size());
+
+        // EXECUTE
         Map<String, Object> vars = new HashMap<String, Object>();
         String applicantVal = "{\"age\":18,\"health\":\"Good\"}";
         vars.put("applicant", applicantVal);
-        String conclusion = decisionController.executeDecision(TENANT_ID,
-                ARR_DEFINITION_ID, ARR_DECISION_ID, vars);
-        assertNotNull(conclusion);
-        StringBuffer sb = new StringBuffer(conclusion);
-        assertTrue(conclusion.contains("{\"riskRating\":\"Low\"}"));
+        Map<String, Object> results = decisionEngine.getRuntimeService()
+                .executeDecision(ARR_DEFINITION_ID, ARR_DECISION_ID, vars,
+                        TENANT_ID);
+        assertNotNull(results);
+        assertEquals(results.get("policy"), "{\"riskRating\":\"Low\"}");
+
+        // DELETE
+        svc.deleteModelForTenant(ARR_DEFINITION_ID, TENANT_ID);
+        assertEquals("Test environment should now contain 0 decisions", 0, svc
+                .listForTenant(TENANT_ID).size());
     }
 }

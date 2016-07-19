@@ -12,7 +12,7 @@
  * limitations under the License.
  *******************************************************************************/
 /**
- * Contains only the application entry point.
+ * Support for Spring configuration. 
  */
 package io.onedecision.engine;
 

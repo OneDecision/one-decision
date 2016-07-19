@@ -4,7 +4,7 @@
   <meta charset='utf-8'>
   <title>One Decision</title>
   <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/one-decision-0.8.0.css" rel="stylesheet">
+  <link href="css/one-decision-1.1.0.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/one-decision-icon-16x16.png" />
 </head>
 <body>
@@ -28,13 +28,25 @@
     </div>
 
     <section>
+      <p class="alert-warning">Please note this is a demonstration system only, make your own backups as changes to demo models will not be saved and all models are removed periodically.</p> 
+      
+      <p>The demo users have these privileges:</p>
+      <ul>
+        <li><label>user: </label><span> May view models</span></li>
+        <li><label>super-user: </label><span> May view models and make limited operational changes to decisions</span></li>
+        <li><label>author: </label><span> May create and edit all aspects of the models</span></li> 
+      </ul>
+
       <p>Here are some links to get you started: </p>
       <ul>
-        <li><a href="domain.html">Domain Model</a> Each decision needs a business language with which to define conditions and conclusions. This example describes a customer.</li> 
+        <!--<li><a href="domain.html">Domain Model</a> Each decision needs a business language with which to define conditions and conclusions. This example describes a customer.</li> 
         <li><a href="decisions-ui.html">Decision Table UI</a> View and modify your decision tables.</li>
+        -->
         <li><a href="decisions-dmn.html">DMN Repository</a> View the DMN models currently in your repository.</li>
+        <!--
         <li><a href="swagger-ui.html">API</a> A full description of the REST API to define and invoke decisions.</li>
         <li><a href="arch.html">Architecture</a> An overview of how One Decision is put together.</li>
+        -->
       </ul>
     </section>
   </script>
@@ -42,10 +54,10 @@
   <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
   <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
-  <script src="/webjars/ractive/0.7.1/ractive.min.js"></script>
+  <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
 
   <script src="js/md5.min.js"></script>
-  <script src="js/one-decision-0.8.0.js"></script>
-  <script src="js/decisions-0.8.0.js"></script>
+  <script src="js/one-decision-1.1.0.js"></script>
+  <script src="js/index-1.1.0.js"></script>
 </body>
 </html>

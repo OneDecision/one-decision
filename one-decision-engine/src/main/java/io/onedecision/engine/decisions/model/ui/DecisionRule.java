@@ -13,6 +13,8 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.model.ui;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +31,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "OL_UI_RULE")
 @Component
-public class DecisionRule {
+public class DecisionRule implements Serializable {
+
+    private static final long serialVersionUID = -6779322287292907493L;
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(DecisionRule.class);
 
@@ -40,12 +44,16 @@ public class DecisionRule {
     private Long id;
 
     @JsonProperty 
-    protected String[] expressions;
+    protected String[] inputEntries;
+
+    @JsonProperty
+    protected String[] outputEntries;
 
     public DecisionRule() {}
 
-    public DecisionRule(String[] expressions) {
-        setExpressions(expressions);
+    public DecisionRule(String[] inputEntries, String[] outputEntries) {
+        setInputEntries(inputEntries);
+        setOutputEntries(outputEntries);
     }
 
 	public Long getId() {
@@ -56,11 +64,29 @@ public class DecisionRule {
 		this.id = id;
 	}
 
-	public String[] getExpressions() {
-		return expressions;
+	public String[] getInputEntries() {
+		return inputEntries;
 	}
 
-	public void setExpressions(String[] expressions) {
-		this.expressions = expressions;
+    public void setInputEntries(String[] inputEntries) {
+        this.inputEntries = inputEntries;
 	}
+
+    public String[] getOutputEntries() {
+        return outputEntries;
+    }
+
+    public void setOutputEntries(String[] outputEntries) {
+        this.outputEntries = outputEntries;
+    }
+
+    public DecisionRule withInputEntries(String[] inputEntries) {
+        setInputEntries(inputEntries);
+        return this;
+    }
+
+    public DecisionRule withOutputEntries(String[] outputEntries) {
+        setOutputEntries(outputEntries);
+        return this;
+    }
 }
