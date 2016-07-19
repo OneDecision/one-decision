@@ -8,7 +8,7 @@
   <parent>
     <groupId>io.onedecision</groupId>
     <artifactId>onedecision-root</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -25,7 +25,7 @@
     <dependency>
         <groupId>io.onedecision</groupId>
         <artifactId>onedecision-engine</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>${project.version}</version>
     </dependency>
     <!-- Override scope so we can provide test helpers  -->
     <dependency>
@@ -56,9 +56,9 @@
       </exclusions>
     </dependency>
     <dependency>
-    	<groupId>org.webjars</groupId>
-    	<artifactId>bootstrap</artifactId>
-    	<version>3.3.5</version>
+      <groupId>org.webjars</groupId>
+      <artifactId>bootstrap</artifactId>
+      <version>3.3.5</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
@@ -72,10 +72,10 @@
     </dependency>
     <dependency>
       <groupId>link.omny</groupId>
-		  <artifactId>fonts</artifactId>
-		  <version>1.0.0</version>
-		  <optional>true</optional>
-	  </dependency>
+      <artifactId>fonts</artifactId>
+      <version>1.0.0</version>
+      <optional>true</optional>
+    </dependency>
     <!-- TEST dependencies -->
     <dependency>
       <groupId>org.toxos.activiti</groupId>
