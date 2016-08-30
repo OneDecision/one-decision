@@ -22,7 +22,6 @@ import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.InformationItem;
-import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.dmn.OutputClause;
@@ -30,9 +29,6 @@ import io.onedecision.engine.decisions.model.ui.DecisionExpression;
 import io.onedecision.engine.decisions.model.ui.DecisionInput;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 import io.onedecision.engine.decisions.model.ui.DecisionOutput;
-import io.onedecision.engine.domain.api.DomainModelFactory;
-import io.onedecision.engine.domain.model.DomainEntity;
-import io.onedecision.engine.domain.model.DomainModel;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -52,7 +48,8 @@ import org.springframework.core.convert.converter.Converter;
 /**
  * Converts between the UI model and DMN serialisation.
  * 
- * @author Tim Stephenson
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
  */
 public class DecisionModelConverter implements
 		Converter<DecisionModel, Definitions> {
@@ -63,7 +60,6 @@ public class DecisionModelConverter implements
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionModelConverter.class);
 
-	protected DomainModelFactory domainFact;
 
 	protected ObjectFactory objFact = new ObjectFactory();
 
@@ -82,28 +78,6 @@ public class DecisionModelConverter implements
 
         // TODO is this ok to be null?
         if (source.getDomainModelUri() != null) {
-            for (DomainEntity type : getDomainModel(source.getDomainModelUri())
-                    .getEntities()) {
-                ItemDefinition itemDef = objFact.createItemDefinition();
-                itemDef.setId(createTypeDef(type));
-                itemDef.setName(type.getName() + " Definition");
-                itemDef.setDescription(type.getDescription());
-
-                target.getItemDefinitions().add(itemDef);
-
-                // More indirection - yay!!
-                InformationItem informationItem = objFact
-                        .createInformationItem();
-                informationItem.setId(toId(toCamelCase(type.getName())));
-                // TODO these should have own namespace (corresponding to
-                // domain)
-
-                // TODO dmn11
-                // informationItem.setItemDefinition(new
-                // QName(itemDef.getId()));
-                // informationItems.add(informationItem);
-                // bkm.getInformationItem().add(informationItem);
-            }
 		}
 
         Decision decision = objFact.createDecision();
@@ -303,10 +277,6 @@ public class DecisionModelConverter implements
     // throw new DecisionException("Cannot find input for " + string);
     // }
 
-	private String createTypeDef(DomainEntity type) {
-		return type.getName() + "Def";
-	}
-
     private String createId(DecisionModel source) {
         return toId(source.getId() == null ? UUID.randomUUID().toString()
                 : source.getId().toString() + "Model");
@@ -338,18 +308,6 @@ public class DecisionModelConverter implements
 			return expr;
 		}
 		return expr.substring(0, expr.indexOf('.'));
-	}
-
-	public void setDomainModelFactory(DomainModelFactory fact) {
-		domainFact = fact;
-	}
-
-	public DomainModel getDomainModel(String domainModelUri) {
-		if (domainFact == null) {
-			throw new IllegalStateException(
-					"No domain factory, set one with setDomainFactory()");
-		}
-		return domainFact.fetchDomain(domainModelUri);
 	}
 
 	private void writeAsXml(Object o, Writer writer) throws IOException {

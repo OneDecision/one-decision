@@ -15,6 +15,10 @@ package io.onedecision.engine.decisions.model.ui.examples;
 
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 
+/**
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
+ */
 public interface ExampleModel {
 
     DecisionModel getModel();

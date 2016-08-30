@@ -6,7 +6,6 @@ import io.onedecision.engine.decisions.api.ModelingService;
 import io.onedecision.engine.decisions.converter.DecisionModelConverter;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.domain.api.DomainModelFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +18,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
+ */
 public class BaseModelingService implements ModelingService {
 
     protected static final Logger LOGGER = LoggerFactory
@@ -31,8 +34,6 @@ public class BaseModelingService implements ModelingService {
     private ObjectMapper mapper;
 
     protected List<DecisionModel> repo;
-
-    private DomainModelFactory domainModelFactory;
 
     protected ObjectMapper getMapper() {
         if (mapper == null) {
@@ -94,15 +95,10 @@ public class BaseModelingService implements ModelingService {
     }
 
     @Override
-    public void setDomainModelFactory(DomainModelFactory domainModelFactory) {
-        this.domainModelFactory = domainModelFactory;
-    }
-
-    @Override
     public Definitions convert(DecisionModel source) {
-        if (domainModelFactory != null) {
-            converter.setDomainModelFactory(domainModelFactory);
-        }
+        // if (domainModelFactory != null) {
+        // converter.setDomainModelFactory(domainModelFactory);
+        // }
         return converter.convert(source);
     }
 
@@ -118,5 +114,4 @@ public class BaseModelingService implements ModelingService {
             throw new DecisionIllegalArgumentException(msg, e);
         }
     }
-
 }

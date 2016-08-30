@@ -22,7 +22,6 @@
   </parent>
 
   <properties>
-    <activiti.version>6.0.0.Beta1</activiti.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.7</java.version>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
@@ -55,6 +54,8 @@
   </dependencyManagement>
 
   <modules>
+    <module>examples</module>
+    <module>one-decision-domain</module>
     <module>one-decision-engine</module>
     <module>one-decision-webapp</module>
   </modules>

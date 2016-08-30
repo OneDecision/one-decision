@@ -1,0 +1,10 @@
+# GET a single model as JSON
+curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/onedecision/decision-models/1
+
+curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/profile
+
+# PUT a DMN model
+curl \
+  -F "file=@order-discount.dmn" \
+  http://admin:onedecision@demo.onedecision.io/onedecision/decision-models/upload
+  http://admin:onedecision@localhost:8090/onedecision/decision-models/upload

@@ -6,8 +6,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 /**
- * Decision Rule allowed input
- * 
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

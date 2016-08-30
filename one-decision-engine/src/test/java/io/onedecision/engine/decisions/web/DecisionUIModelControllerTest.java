@@ -20,7 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 /**
- * @author Tim Stephenson
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TestApplication.class)

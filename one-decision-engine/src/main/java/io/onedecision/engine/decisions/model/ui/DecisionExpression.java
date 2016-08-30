@@ -29,6 +29,10 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
+ */
 @MappedSuperclass
 @Component
 public abstract class DecisionExpression implements Serializable {

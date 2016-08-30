@@ -13,6 +13,9 @@
  *******************************************************************************/
 /**
  * Some examples constructed using the Java API.
+ *
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
  */
 package io.onedecision.engine.decisions.model.ui.examples;
 

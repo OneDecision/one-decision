@@ -43,6 +43,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * For execution and interchange decision models are stored as DMN models.
  * 
  * @author Tim Stephenson
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
  */
 @Controller
 @RequestMapping(value = "/{tenantId}/decision-ui-models")

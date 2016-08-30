@@ -26,7 +26,6 @@ import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 import io.onedecision.engine.decisions.model.dmn.validators.SchemaValidator;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.test.MockDomainModelFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,8 +58,8 @@ public class DecisionModelConverterTest implements ExamplesConstants {
     public void testConvertSingleDecisionTable() throws JsonParseException,
             JsonMappingException, IOException, DecisionException {
         DecisionModel jsonModel = getJsonModel(ARR_JSON_RESOURCE);
-        converter.setDomainModelFactory(new MockDomainModelFactory(
-				"http://onedecision.io/health", "/domains/health.json"));
+        // converter.setDomainModelFactory(new MockDomainModelFactory(
+        // "http://onedecision.io/health", "/domains/health.json"));
 
         Definitions dmnModel = converter.convert(jsonModel);
         Decision d = dmnModel.getDecision(ARR_DECISION_ID);

@@ -13,6 +13,8 @@
  *******************************************************************************/
 /**
  * Simplified model to support decision table definition user interface.
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
  */
 package io.onedecision.engine.decisions.model.ui;
 

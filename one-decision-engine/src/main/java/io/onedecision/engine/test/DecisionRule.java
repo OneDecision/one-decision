@@ -168,13 +168,6 @@ public class DecisionRule implements TestRule {
             String model = loadFromClassPath(resource);
             DmnModel dmnModel = null;
             if (resource.toLowerCase().endsWith(".json")) {
-                if (deployment.domainModelUri() != null
-                        && deployment.domainModelUrl() != null) {
-                    de.getModelingService().setDomainModelFactory(
-                            new MockDomainModelFactory(
-                                    deployment.domainModelUri(), 
-                                    deployment.domainModelUrl()));
-                }
                 Definitions dm = de.getModelingService().convert(model);
                 dmnModel = new DmnModel(dm, tenantId);
             } else if (resource.toLowerCase().endsWith(".dmn")) {

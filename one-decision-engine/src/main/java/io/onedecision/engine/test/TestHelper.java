@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author Tim Stephenson
  */
+@SuppressWarnings("deprecation")
 public class TestHelper {
 
     private static SchemaValidator schemaValidator;
@@ -69,6 +70,10 @@ public class TestHelper {
         TestHelper.mapper = mapper;
     }
 
+    /**
+     * @deprecated Since 1.2 focus on DMN models as there are now plenty of
+     *             modeling tools.
+     */
     public static DecisionModel getJsonModel(String resource)
             throws JsonParseException, JsonMappingException, IOException {
         DecisionModel jsonModel = getMapper().readValue(

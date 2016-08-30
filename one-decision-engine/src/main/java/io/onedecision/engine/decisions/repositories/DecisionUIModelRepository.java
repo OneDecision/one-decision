@@ -22,6 +22,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+/**
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
+ */
 @RepositoryRestResource(exported = false)
 public interface DecisionUIModelRepository extends
         CrudRepository<DecisionModel, Long> {

@@ -26,9 +26,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Example UI model to determine a health insurance application risk rating. 
+ * Example UI model to determine a health insurance application risk rating.
  * 
- * @author Tim Stephenson
+ * @deprecated Since 1.2 focus on DMN models as there are now plenty of modeling
+ *             tools.
  */
 @Component
 public class ApplicationRiskRatingModel implements ExampleModel {
