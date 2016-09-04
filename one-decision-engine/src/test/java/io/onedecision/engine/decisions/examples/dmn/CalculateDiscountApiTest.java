@@ -2,9 +2,7 @@ package io.onedecision.engine.decisions.examples.dmn;
 
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.api.DecisionConstants;
-import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
-import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
@@ -15,6 +13,7 @@ import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.dmn.UnaryTests;
 import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
+import io.onedecision.engine.test.DecisionRule;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +29,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -43,9 +43,10 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class CalculateDiscountApiTest implements ExamplesConstants {
 
-    private static ObjectFactory objFact;
+    @ClassRule
+    public static DecisionRule decisionRule = new DecisionRule();
 
-    private static DecisionEngine de;
+    private static ObjectFactory objFact;
 
     private String customerCategory;
     private Number orderSize;
@@ -59,9 +60,7 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
 
     @BeforeClass
     public static void setUpClass() {
-        objFact = new ObjectFactory();
-
-        de = new InMemoryDecisionEngineImpl();
+        objFact = decisionRule.getObjectFactory();
     }
 
     public CalculateDiscountApiTest(String customerCategory, String orderSize) {
@@ -76,12 +75,16 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
 
     @Test
     public void testCalculateDiscount() throws Exception {
-        de.getRepositoryService().createModelForTenant(getDmnModel());
+        decisionRule.getDecisionEngine().getRepositoryService()
+                .createModelForTenant(getDmnModel());
 
         vars.clear();
         vars.put("customerCategory", customerCategory);
         vars.put("orderSize", orderSize);
-        de.getRuntimeService().executeDecision(CD_DEFINITION_ID,
+        decisionRule
+                .getDecisionEngine()
+                .getRuntimeService()
+                .executeDecision(CD_DEFINITION_ID,
                 CD_DECISION_ID, vars, TENANT_ID);
         Assert.assertNotNull(vars.get("totalOrderPrice"));
     }
@@ -208,10 +211,11 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
             throws IOException, FileNotFoundException {
         Assert.assertNotNull("Definitions produced must not be null", dm);
 
-        File dmnFile = new File("target", CD_DEFINITION_ID + ".dmn");
+        File dmnFile = new File(DecisionRule.outputDir, CD_DEFINITION_ID + ".dmn");
         FileWriter out = new FileWriter(dmnFile);
         try {
-            de.getRepositoryService().write(dm, out);
+            decisionRule.getDecisionEngine().getRepositoryService()
+                    .write(dm, out);
         } finally {
             out.close();
         }

@@ -13,24 +13,23 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.model.dmn.validators;
 
+import io.onedecision.engine.decisions.model.dmn.Definitions;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import javax.xml.XMLConstants;
+import javax.validation.ConstraintViolation;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.SchemaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -40,78 +39,38 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class SchemaValidator implements ErrorHandler {
 
+    public static String SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+    public static String XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+    public static String SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
+
     protected static final Logger LOGGER = LoggerFactory
             .getLogger(SchemaValidator.class);
 
-    class LocalResourceResolver implements LSResourceResolver {
-        @Override
-        public LSInput resolveResource(String type, String namespaceURI,
-                String publicId, String systemId, String baseURI) {
-            DOMImplementationRegistry registry;
-            try {
-                registry = DOMImplementationRegistry.newInstance();
-            } catch (Exception e) {
-                return null;
-            }
-            DOMImplementationLS domImplementationLS = (DOMImplementationLS) registry
-                    .getDOMImplementation("LS");
-            LSInput ret = domImplementationLS.createLSInput();
-
-            InputStream is = null;
-            try {
-                is = getResourceAsStreamWrapper("schema/" + systemId);
-            } catch (Exception e) {
-                System.err.println(e.toString());
-            }
-
-            ret.setSystemId(systemId);
-            ret.setByteStream(is);
-            return ret;
-        }
-    }
-
     private List<Exception> errors = new ArrayList<Exception>();
 
-    private InputStream getResourceAsStreamWrapper(String name) {
-        InputStream is = getClass().getResourceAsStream(name);
-        if (is == null)
-            is = getClass().getResourceAsStream("/" + name);
-        return is;
-    }
-
-	public void validate(InputStream obj, Errors errors) {
-        InputStream is = (InputStream) obj;
-
-        SchemaFactory schemaFactory = SchemaFactory
-                .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        schemaFactory.setResourceResolver(new LocalResourceResolver());
+    public Set<ConstraintViolation<Definitions>> validate(InputStream obj) {
+        HashSet<ConstraintViolation<Definitions>> violations = new HashSet<ConstraintViolation<Definitions>>();
 
         try {
-            schemaFactory.newSchema(new StreamSource(
-                    getResourceAsStreamWrapper("schema/dmn.xsd")));
-        } catch (SAXException e1) {
-            errors.reject("Cannot find / read schema",
-                    "Exception: " + e1.getMessage());
+            validateSchema(obj);
+            for (Exception ex : errors) {
+                violations.add(new SchemaConstraintViolation(ex));
+            }
+        } catch (ParserConfigurationException e) {
+            violations.add(new SchemaConstraintViolation(e));
+        } catch (SAXException e) {
+            violations.add(new SchemaConstraintViolation(e));
+        } catch (IOException e) {
+            violations.add(new SchemaConstraintViolation(e));
         }
 
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        // parserFactory.setValidating(true);
-        parserFactory.setNamespaceAware(true);
-        // parserFactory.setSchema(schema);
+        return violations;
+    }
 
-        SAXParser parser = null;
+    public void validate(InputStream obj, Errors errors) {
         try {
-            parser = parserFactory.newSAXParser();
-            XMLReader reader = parser.getXMLReader();
-            reader.setErrorHandler(this);
+            validateSchema(obj);
 
-            try {
-                parser.parse(new InputSource(is), (DefaultHandler) null);
-            } catch (Exception e) {
-                String msg = "Schema validation failed";
-                LOGGER.error(msg, e);
-                errors.reject(msg, "Exception: " + e.getMessage());
-            }
             if (this.errors.size() > 0) {
                 errors.reject("Schema validation failed",
                         this.errors.toString());
@@ -122,7 +81,32 @@ public class SchemaValidator implements ErrorHandler {
         } catch (SAXException e1) {
             errors.reject("Parser cannot be created",
                     "Exception: " + e1.getMessage());
+        } catch (Exception e) {
+            String msg = "Schema validation failed";
+            LOGGER.error(msg, e);
+            errors.reject(msg, "Exception: " + e.getMessage());
         }
+    }
+
+    protected void validateSchema(InputStream obj)
+            throws ParserConfigurationException, SAXException, IOException {
+        InputStream is = (InputStream) obj;
+
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setValidating(true);
+        parserFactory.setNamespaceAware(true);
+
+        SAXParser parser = null;
+        parser = parserFactory.newSAXParser();
+
+        parser.setProperty(SCHEMA_LANGUAGE, XML_SCHEMA);
+        InputStream schema = getClass().getResourceAsStream("/schema/dmn.xsd");
+        parser.setProperty(SCHEMA_SOURCE, schema);
+
+        XMLReader reader = parser.getXMLReader();
+        reader.setErrorHandler(this);
+
+        parser.parse(new InputSource(is), (DefaultHandler) null);
     }
 
     @Override

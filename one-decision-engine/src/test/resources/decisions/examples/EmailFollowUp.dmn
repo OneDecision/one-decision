@@ -3,7 +3,8 @@
 	xmlns:ns2="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
 	xmlns:ol="http://omny.link/decisions"
 	expressionLanguage="http://foo.com/application/javascript"
-	name="Email Follow Up">
+	name="Email Follow Up"
+	namespace="http://onedecision.io/examples">
 	<ns2:description>A decision model to choose how to follow up a customer
 		lead</ns2:description>
 		
@@ -25,7 +26,7 @@
 	
 		<ns2:decisionTable hitPolicy="UNIQUE" id="DetermineEmailToSend_dt">
 			<ns2:description>DT to determine which email to send a contact</ns2:description>
-			<ns2:input name="timeSinceLogin">
+			<ns2:input>
 			  <ns2:inputExpression id="dt0_c0_ie">
           <ns2:description>The time since the contact logged in</ns2:description>
           <ns2:text>contact.timeSinceLogin</ns2:text>
@@ -34,7 +35,7 @@
 					<ns2:text>&lt; P14D,&gt;= P14D</ns2:text>
 				</ns2:inputValues>
 			</ns2:input>
-			<ns2:input name="timeSinceEmail">
+			<ns2:input>
         <ns2:inputExpression id="dt0_c1_ie">
           <ns2:description>The time since we last emailed the contact</ns2:description>
           <ns2:text>contact.timeSinceEmail</ns2:text>

@@ -99,7 +99,7 @@ var ractive = new OneDecisionApp({
       resource[6] = resource[6].substring(0, resource[6].indexOf('?'));
     }
     ractive.set('decisionId', resource[6]);
-    $.getJSON('/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('definitionId'), function( data ) {
+    $.getJSON('/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('definitionId')+'/', function( data ) {
       console.log('loaded model...');
       data.definitions.decisions = data.definitions.decisions.sort(sortByName);
       data.definitions.businessKnowledgeModels = data.definitions.businessKnowledgeModels.sort(sortByName);

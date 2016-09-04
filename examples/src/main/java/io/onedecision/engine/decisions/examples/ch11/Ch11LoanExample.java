@@ -1,7 +1,6 @@
 package io.onedecision.engine.decisions.examples.ch11;
 
 import io.onedecision.engine.decisions.api.DecisionConstants;
-import io.onedecision.engine.decisions.converter.DecisionModelConverter;
 import io.onedecision.engine.decisions.model.dmn.BuiltInAggregator;
 import io.onedecision.engine.decisions.model.dmn.BusinessKnowledgeModel;
 import io.onedecision.engine.decisions.model.dmn.Decision;
@@ -19,8 +18,6 @@ import io.onedecision.engine.decisions.model.dmn.KnowledgeSource;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.dmn.UnaryTests;
-import io.onedecision.engine.decisions.model.ui.DecisionModel;
-import io.onedecision.engine.test.TestHelper;
 
 import java.io.IOException;
 
@@ -52,8 +49,6 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
 
     private static ObjectFactory objFact;
 
-    protected DecisionModelConverter converter;
-
     protected UnaryTests emptyTest;
     protected UnaryTests falseTest;
     protected UnaryTests trueTest;
@@ -65,8 +60,6 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
         emptyTest = objFact.createUnaryTests().withText("-");
         falseTest = objFact.createUnaryTests().withText("false");
         trueTest = objFact.createUnaryTests().withText("true");
-
-        converter = new DecisionModelConverter();
     }
 
     // demonstrate Java API for defining decision.
@@ -617,8 +610,6 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                     postBureauRiskCategoryDecision, routingD,
                     adjudicationD);
 
-            TestHelper.assertSerializationProduced(def);
-
             dm = new DmnModel(def, null, TENANT_ID);
         }
 
@@ -816,39 +807,25 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
     }
 
     protected Decision getStrategyDecision() throws IOException {
-        DecisionModel jsonModel = TestHelper
-                .getJsonModel(CH11_FIG70_JSON_RESOURCE);
-
-        return converter.convert(jsonModel).getDecision(CH11_FIG70_DECISION_ID);
+        // TODO reimplement with fluent API
+        throw new IllegalStateException("Not yet implemented");
     }
 
     protected DecisionTable getBureauCallTypeDecisionTable() throws IOException {
-        DecisionModel jsonModel = TestHelper
-                .getJsonModel(CH11_FIG72_JSON_RESOURCE);
-
-        return converter.convert(jsonModel).getDecision(CH11_FIG72_DECISION_ID)
-                .getDecisionTable();
+        // TODO reimplement with fluent API
+        throw new IllegalStateException("Not yet implemented");
     }
 
     protected DecisionTable getEligibilityRulesDT()
             throws IOException {
-        DecisionModel jsonModel = TestHelper
-                .getJsonModel(CH11_FIG74_JSON_RESOURCE);
-
-        DecisionTable eligibilityRulesDT = converter.convert(jsonModel).getDecision(CH11_FIG74_DECISION_ID).getDecisionTable();
-        eligibilityRulesDT.getOutputs().get(0).setOutputValues(
-                objFact.createUnaryTests().withUnaryTests("INELIGIBLE","ELIGIBLE"));
-        return eligibilityRulesDT;
+        // TODO reimplement with fluent API
+        throw new IllegalStateException("Not yet implemented");
     }
 
     protected DecisionTable getPreBureauRiskCategoryDT()
             throws IOException {
-        DecisionModel jsonModel = TestHelper
-                .getJsonModel(CH11_FIG76_JSON_RESOURCE);
-
-        Decision d = converter.convert(jsonModel).getDecision(
-                CH11_FIG76_DECISION_ID);
-        return d.getDecisionTable();
+        // TODO reimplement with fluent API
+        throw new IllegalStateException("Not yet implemented");
     }
 
     protected DecisionTable getApplicationRiskScoreModelDT() {

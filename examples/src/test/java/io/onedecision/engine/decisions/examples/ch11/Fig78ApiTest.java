@@ -1,14 +1,11 @@
 package io.onedecision.engine.decisions.examples.ch11;
 
-import io.onedecision.engine.decisions.api.DecisionEngine;
-import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
-import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
-import io.onedecision.engine.test.TestHelper;
+import io.onedecision.engine.test.DecisionRule;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -30,9 +28,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class Fig78ApiTest implements ExamplesConstants {
 
-    private static ObjectFactory objFact;
-
-    private static DecisionEngine de;
+    @ClassRule
+    public static DecisionRule decisionRule = new DecisionRule();
 
     private static Ch11LoanExample ch11LoanExample;
 
@@ -53,9 +50,7 @@ public class Fig78ApiTest implements ExamplesConstants {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        objFact = new ObjectFactory();
         ch11LoanExample = new Ch11LoanExample();
-        de = new InMemoryDecisionEngineImpl();
     }
 
     public Fig78ApiTest(String age, String maritalStatus,
@@ -68,12 +63,13 @@ public class Fig78ApiTest implements ExamplesConstants {
 
     @Test
     public void testCalculateDiscount() throws Exception {
-        de.getRepositoryService().createModelForTenant(getDmnModel());
+        decisionRule.getDecisionEngine().getRepositoryService()
+                .createModelForTenant(getDmnModel());
 
         // vars.clear();
         // vars.put("Customer", customer);
         // vars.put("Ordersize", orderSize);
-        // de.getRuntimeService().executeDecision(FIG27_DEFINITION_ID,
+        // decisionRule.getDecisionEngine().getRuntimeService().executeDecision(FIG27_DEFINITION_ID,
         // FIG27_DECISION_ID, vars, TENANT_ID);
         // Assert.assertNotNull(vars.get("discount"));
     }
@@ -82,15 +78,18 @@ public class Fig78ApiTest implements ExamplesConstants {
     private DmnModel getDmnModel() throws Exception {
         if (dm == null) {
             // build item definitions
-            ItemDefinition applicantData = objFact.createItemDefinition()
+            ItemDefinition applicantData = decisionRule.getObjectFactory()
+                    .createItemDefinition()
                     .withId("applicantData").withName("Applicant Data")
                     .withTypeRef(Ch11LoanExample.APPLICANT_DATA);
-            ItemDefinition bureauData = objFact.createItemDefinition()
+            ItemDefinition bureauData = decisionRule.getObjectFactory()
+                    .createItemDefinition()
                     .withId("bureauData").withName("Bureau Data")
                     .withTypeRef(Ch11LoanExample.BUREAU_DATA);
             
             // build definitions container
-            Definitions def = objFact
+            Definitions def = decisionRule
+                    .getObjectFactory()
                     .createDefinitions()
                     .withId(CH11_FIG78_DEFINITION_ID)
                     .withDescription(
@@ -100,17 +99,18 @@ public class Fig78ApiTest implements ExamplesConstants {
             DecisionTable dt = ch11LoanExample
                     .getApplicationRiskScoreModelDT();
 
-            Decision d = objFact.createDecision()
+            Decision d = decisionRule
+                    .getObjectFactory()
+                    .createDecision()
                     .withId("Application risk score model")
                     .withName("Application risk score model")
                     .withInformationItem(
-                            objFact.createInformationItem()
+                            decisionRule.getObjectFactory()
+                                    .createInformationItem()
                                     .withId("bureauData"))
                     .withDecisionTable(dt);
 
             def.withDecisions(d);
-
-            TestHelper.assertSerializationProduced(def);
 
             dm = new DmnModel(def, null, TENANT_ID);
         }

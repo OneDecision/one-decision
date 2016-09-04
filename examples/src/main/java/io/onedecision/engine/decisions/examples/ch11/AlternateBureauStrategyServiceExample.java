@@ -1,7 +1,6 @@
 package io.onedecision.engine.decisions.examples.ch11;
 
 import io.onedecision.engine.decisions.api.DecisionConstants;
-import io.onedecision.engine.decisions.converter.DecisionModelConverter;
 import io.onedecision.engine.decisions.model.dmn.BuiltInAggregator;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DecisionTable;
@@ -15,7 +14,6 @@ import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.KnowledgeSource;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.dmn.UnaryTests;
-import io.onedecision.engine.test.TestHelper;
 
 import javax.xml.namespace.QName;
 
@@ -34,7 +32,8 @@ import javax.xml.namespace.QName;
  *
  * @author Tim Stephenson
  */
-public class AlternateBureauStrategyServiceExample implements DecisionConstants, ExamplesConstants {
+public class AlternateBureauStrategyServiceExample implements
+        DecisionConstants, ExamplesConstants {
 
     public static String LO_URI = "http://onedecision.io/examples/AlternateLoanOrigination";
 
@@ -55,8 +54,6 @@ public class AlternateBureauStrategyServiceExample implements DecisionConstants,
 
     private static ObjectFactory objFact;
 
-    protected DecisionModelConverter converter;
-
     protected UnaryTests emptyTest;
     protected UnaryTests falseTest;
     protected UnaryTests trueTest;
@@ -68,8 +65,6 @@ public class AlternateBureauStrategyServiceExample implements DecisionConstants,
         emptyTest = objFact.createUnaryTests().withText("-");
         falseTest = objFact.createUnaryTests().withText("false");
         trueTest = objFact.createUnaryTests().withText("true");
-
-        converter = new DecisionModelConverter();
     }
 
     // demonstrate Java API for defining decision.
@@ -239,8 +234,6 @@ public class AlternateBureauStrategyServiceExample implements DecisionConstants,
                     .withName("Bureau Strategy Service")
                     .withOutputDecisions(strategyD)
                     .withInputData(applicantData, requestedProduct);
-
-            TestHelper.assertSerializationProduced(def);
 
             dm = new DmnModel(def, null, TENANT_ID);
         }

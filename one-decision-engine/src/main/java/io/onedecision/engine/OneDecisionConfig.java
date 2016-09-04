@@ -4,7 +4,6 @@ import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.impl.SpringDecisionEngineImpl;
 import io.onedecision.engine.decisions.web.DecisionController;
 import io.onedecision.engine.decisions.web.DecisionDmnModelController;
-import io.onedecision.engine.decisions.web.DecisionUIModelController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,15 +27,11 @@ public class OneDecisionConfig {
     @Qualifier("decisionController")
     private DecisionController runSvc;
 
-    @Autowired
-    private DecisionUIModelController modelingSvc;
-
     @Bean
     protected DecisionEngine decisionEngine() {
         SpringDecisionEngineImpl de = new SpringDecisionEngineImpl();
         de.setRepositoryService(repoSvc);
         de.setRuntimeService(runSvc);
-        // de.setModelingService(modelingSvc);
         return de;
     }
 }

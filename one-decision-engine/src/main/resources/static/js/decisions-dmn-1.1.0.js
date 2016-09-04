@@ -136,7 +136,7 @@ var ractive = new OneDecisionApp({
   },
   getLink: function(definition) {
     console.info('getLink');
-    return ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/'+definition.shortId;
+    return ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/'+definition.shortId+'/';
   },
   oninit: function() {
     console.info('oninit');

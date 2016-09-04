@@ -137,6 +137,14 @@ public class DecisionRule extends DmnElement implements Serializable {
         return this;
     }
 
+    public DecisionRule withInputEntries(String... values) {
+        for (String inputEntry : values) {
+            withInputEntry(objFact.createUnaryTests()
+                    .withUnaryTests(inputEntry));
+        }
+        return this;
+    }
+
     public DecisionRule withOutputEntry(LiteralExpression... values) {
         if (values!= null) {
             for (LiteralExpression value: values) {

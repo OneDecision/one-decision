@@ -9,25 +9,21 @@ public interface ExamplesConstants {
 
     // Identifiers from Figure 70 in spec's chapter 11.
     static final String CH11_FIG70_DMN_RESOURCE = "/decisions/examples/Fig70Strategy.dmn";
-    static final String CH11_FIG70_JSON_RESOURCE = "/decisions/examples/Fig70Strategy.json";
     static final String CH11_FIG70_DEFINITION_ID = "StrategyModel";
     static final String CH11_FIG70_DECISION_ID = "_70_d";
 
     // Identifiers from Figure 72 in spec's chapter 11.
     static final String CH11_FIG72_DMN_RESOURCE = "/decisions/examples/Fig72BureauCallType.dmn";
-    static final String CH11_FIG72_JSON_RESOURCE = "/decisions/examples/Fig72BureauCallType.json";
     static final String CH11_FIG72_DEFINITION_ID = "BureauCallTypeModel";
     static final String CH11_FIG72_DECISION_ID = "_72_d";
 
     // Identifiers from Figure 74 in spec's chapter 11.
     static final String CH11_FIG74_DMN_RESOURCE = "/decisions/examples/Fig74EligibilityRules.dmn";
-    static final String CH11_FIG74_JSON_RESOURCE = "/decisions/examples/Fig74EligibilityRules.json";
     static final String CH11_FIG74_DEFINITION_ID = "EligibilityRulesModel";
     static final String CH11_FIG74_DECISION_ID = "_74_d";
 
     // Identifiers from Figure 76 in spec's chapter 11.
     static final String CH11_FIG76_DMN_RESOURCE = "/decisions/examples/Fig76PreBureauRiskCategoryTable.dmn";
-    static final String CH11_FIG76_JSON_RESOURCE = "/decisions/examples/Fig76PreBureauRiskCategoryTable.json";
     static final String CH11_FIG76_DEFINITION_ID = "PreBureauRiskCategoryTable";
     static final String CH11_FIG76_DECISION_ID = "_76_d";
 

@@ -11,7 +11,6 @@
   <xsl:output method="html" omit-xml-declaration="yes"/>
   
   <xsl:template match="/">
-		
 		<xsl:choose>
 		  <xsl:when test="$drgElementId">
 		    <xsl:apply-templates select="//dmn:businessKnowledgeModel[@id=$drgElementId]"/>
@@ -231,12 +230,13 @@
       <xsl:attribute name="title">Hit policy for the table</xsl:attribute>
       <xsl:attribute name="value">
         <xsl:value-of select="substring(.,1,1)"/>
+        
         <xsl:choose>
           <xsl:when test=".='COLLECT' and ../@aggregation='SUM'">+</xsl:when>
           <xsl:when test=".='COLLECT' and ../@aggregation='COUNT'">#</xsl:when>
           <xsl:when test=".='COLLECT' and ../@aggregation='MIN'">&lt;</xsl:when>
           <xsl:when test=".='COLLECT' and ../@aggregation='MAX'">&gt;</xsl:when>
-          <xsl:otherwise></xsl:otherwise>
+          <xsl:otherwise>MISS</xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
     </xsl:element>

@@ -18,13 +18,21 @@ import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
+import io.onedecision.engine.decisions.model.dmn.validators.SchemaValidator;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -45,7 +53,12 @@ public class DecisionModelFactory implements DecisionConstants,
 
     protected List<DmnModel> repo;
 
+    private Validator validator;
+
     public DecisionModelFactory() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         repo = new ArrayList<DmnModel>();
     }
 
@@ -193,6 +206,28 @@ public class DecisionModelFactory implements DecisionConstants,
                     "Unable to delete model for tenant %1$s with id %2$s",
                     tenantId, definitionId));
         }
+    }
+
+    @Override
+    public Set<ConstraintViolation<Definitions>> validate(Definitions def)
+            throws IOException {
+        StringWriter sw = new StringWriter();
+        write(def, sw);
+
+        ByteArrayInputStream is = null;
+        Set<ConstraintViolation<Definitions>> violations = null;
+        try {
+            is = new ByteArrayInputStream(sw.toString().getBytes("UTF-8"));
+            SchemaValidator schemaValidator = new SchemaValidator();
+            violations = schemaValidator.validate(is);
+            if (violations.isEmpty()) {
+                violations = validator.validate(def);
+            }
+        } finally {
+            is.close();
+        }
+
+        return violations;
     }
 
 }

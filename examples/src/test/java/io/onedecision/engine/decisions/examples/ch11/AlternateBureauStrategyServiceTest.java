@@ -2,11 +2,10 @@ package io.onedecision.engine.decisions.examples.ch11;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import io.onedecision.engine.decisions.api.DecisionEngine;
-import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
 import io.onedecision.engine.decisions.impl.TransformUtil;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
+import io.onedecision.engine.test.DecisionRule;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,31 +13,35 @@ import java.io.IOException;
 import java.util.Collections;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 public class AlternateBureauStrategyServiceTest implements ExamplesConstants {
 
-    private static AlternateBureauStrategyServiceExample example;
+    @ClassRule
+    public static DecisionRule decisionRule = new DecisionRule();
 
-    private static DecisionEngine de;
+    private static AlternateBureauStrategyServiceExample example;
 
     protected TransformUtil transformUtil;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         example = new AlternateBureauStrategyServiceExample();
-        de = new InMemoryDecisionEngineImpl();
     }
 
     @Test
     public void testSerialization() throws Exception {
-        de.getRepositoryService().createModelForTenant(example.getDmnModel());
+        DmnModel dm = example.getDmnModel();
+        decisionRule.writeDmn(dm.getDefinitions(), dm.getName());
+        decisionRule.validate(dm.getDefinitions());
     }
 
     @Test
     public void testVisualization() throws Exception {
-        DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-                example.getDmnModel());
+        DmnModel dmnModel = decisionRule.getDecisionEngine()
+                .getRepositoryService()
+                .createModelForTenant(example.getDmnModel());
         String html = getTransformUtil().transform(dmnModel.getDefinitionXml());
         assertNotNull("No visualization created", html);
         for (Decision decision : dmnModel.getDefinitions().getDecisions()) {
@@ -52,15 +55,17 @@ public class AlternateBureauStrategyServiceTest implements ExamplesConstants {
 
     @Test
     public void testBKMVisualization() throws Exception {
-        DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-                example.getDmnModel());
+        DmnModel dmnModel = decisionRule.getDecisionEngine()
+                .getRepositoryService()
+                .createModelForTenant(example.getDmnModel());
         transformAndAssert(dmnModel, "applicationRiskScoreModel_bkm");
     }
 
     @Test
     public void testDecisionVisualization() throws Exception {
-        DmnModel dmnModel = de.getRepositoryService().createModelForTenant(
-                example.getDmnModel());
+        DmnModel dmnModel = decisionRule.getDecisionEngine()
+                .getRepositoryService()
+                .createModelForTenant(example.getDmnModel());
         transformAndAssert(dmnModel, "applicationRiskScoreModel_bkm");
     }
 

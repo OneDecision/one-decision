@@ -6,6 +6,9 @@ import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 
 /**
  * Manage the DMN models known to the engine.
@@ -102,6 +105,17 @@ public interface RepositoryService {
      *            The tenant owning the model.
      */
     void deleteModelForTenant(String definitionId, String tenantId);
+
+    /**
+     * Validate the model, violations include schema, specification and
+     * suitability for execution.
+     * 
+     * @param dm
+     *            DMN model
+     * @return violations
+     */
+    Set<ConstraintViolation<Definitions>> validate(Definitions dm)
+            throws IOException;
 
     /**
      * Experimental. TBD if this is appropriate on the API.

@@ -13,14 +13,14 @@
   </itemDefinition>
   
   <!-- One Input Data required per Information Item (Why?) -->
-  <inputData>
-    <informationItem id="applicant" name="applicant">
+  <inputData name="applicant">
+    <informationItem id="applicant_ii" name="applicant">
       <description>An applicant for health insurance</description>
       <itemDefinition href="#applicantDef"/>
     </informationItem>
   </inputData>
 	
-  <decision id="1_d" name="Determine applicant's risk rating">
+  <decision id="applicantRiskRating_d" name="Determine applicant's risk rating">
     <description>Determines health insurance applicant's risk rating</description>
     <question>What is the risk rating for the specified health insurance applicant?</question>
     <allowedAnswers>"High", "Medium", "Low"</allowedAnswers>
@@ -33,8 +33,7 @@
         aggregation="COLLECT" 
         hitPolicy="UNIQUE" 
         id="dt0" 
-        name="Applicant Risk Rating" 
-        preferedOrientation="Rule-as-Column">
+        preferredOrientation="Rule-as-Column">
       <description>Calculate applicant risk rating based on age and health</description>
       <input label="Applicant Age">
         <inputExpression id="dt0_c0_ie">
@@ -61,24 +60,24 @@
         </outputValues>
       </output>
       <rule>
-        <inputEntry id="over60_ie">
+        <inputEntry>
           <text>>= 60</text>
         </inputEntry>
-        <inputEntry id="inGoodHealth_ie">
+        <inputEntry>
           <text>"Good"</text>
         </inputEntry>
-        <outputEntry id="medium_oe">
+        <outputEntry>
           <text>"Medium"</text>
         </outputEntry>
       </rule>
       <rule>
-        <inputEntry id="over60_ie">
+        <inputEntry>
           <text>>= 60</text>
         </inputEntry>
-        <inputEntry id="inBadHealth_ie">
+        <inputEntry>
           <text>"Bad"</text>
         </inputEntry>
-        <outputEntry id="high_oe">
+        <outputEntry>
           <text>"High"</text>
         </outputEntry>
       </rule>
@@ -87,29 +86,29 @@
         <inputEntry id="between25And60_ie">
           <text>[>=25..&lt;= 60]</text>
         </inputEntry>
-        <outputEntry id="medium_oe">
+        <outputEntry>
           <text>"Medium"</text>
         </outputEntry>
       </rule>-->
       <rule>
-      <inputEntry id="under25_ie">
+      <inputEntry>
           <text>&lt; 25</text>
         </inputEntry>
-        <inputEntry id="inGoodHealth_ie">
+        <inputEntry>
           <text>"Good"</text>
         </inputEntry>
-        <outputEntry id="low_oe">
+        <outputEntry>
           <text>"Low"</text>
         </outputEntry>
       </rule>
       <rule>
-        <inputEntry id="under25_ie">
+        <inputEntry>
           <text>&lt; 25</text>
         </inputEntry>
-        <inputEntry id="inBadHealth_ie">
+        <inputEntry>
           <text>"Bad"</text>
         </inputEntry>
-        <outputEntry id="medium_oe">
+        <outputEntry>
           <text>"Medium"</text>
         </outputEntry>
       </rule>

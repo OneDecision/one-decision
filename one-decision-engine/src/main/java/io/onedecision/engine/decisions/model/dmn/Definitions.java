@@ -487,7 +487,8 @@ public class Definitions extends NamedElement implements Serializable {
         return this;
     }
 
-    public Definitions withDrgElements(JAXBElement<? extends DrgElement> ... values) {
+    public Definitions withDrgElements(
+            @SuppressWarnings("unchecked") JAXBElement<? extends DrgElement>... values) {
         if (values!= null) {
             for (JAXBElement<? extends DrgElement> value: values) {
                 getDrgElements().add(value);
@@ -504,51 +505,58 @@ public class Definitions extends NamedElement implements Serializable {
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void withDecisions(Decision... decisions) {
+    public Definitions withDecisions(Decision... decisions) {
         for (Decision d : decisions) {
             withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "decision"),
                     Decision.class, d));
         }
+        return this;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void withBusinessKnowledgeModels(BusinessKnowledgeModel... bkms) {
+    public Definitions withBusinessKnowledgeModels(
+            BusinessKnowledgeModel... bkms) {
         for (BusinessKnowledgeModel bkm : bkms) {
             withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "businessKnowledgeModel"),
                     BusinessKnowledgeModel.class, bkm));
         }
+        return this;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void withInputData(InputData... data) {
+    public Definitions withInputData(InputData... data) {
         for (InputData id : data) {
             withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "inputData"),
                     InputData.class, id));
         }
+        return this;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void withKnowledgeSources(KnowledgeSource... sources) {
+    public Definitions withKnowledgeSources(KnowledgeSource... sources) {
         for (KnowledgeSource ks : sources) {
             withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "knowledgeSource"),
                     KnowledgeSource.class, ks));
         }
+        return this;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void withDecisionServices(DecisionService... decisionServices) {
+    public Definitions withDecisionServices(DecisionService... decisionServices) {
         for (DecisionService ds : decisionServices) {
             withDrgElements(new JAXBElement(new QName(
                     DecisionConstants.DMN_URI, "decisionService"),
                     DecisionService.class, ds));
         }
+        return this;
     }
 
-    public Definitions withArtifact(JAXBElement<? extends Artifact> ... values) {
+    public Definitions withArtifact(
+            @SuppressWarnings("unchecked") JAXBElement<? extends Artifact>... values) {
         if (values!= null) {
             for (JAXBElement<? extends Artifact> value: values) {
                 getArtifacts().add(value);

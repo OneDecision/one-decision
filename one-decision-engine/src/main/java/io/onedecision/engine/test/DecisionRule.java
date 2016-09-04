@@ -1,5 +1,6 @@
 package io.onedecision.engine.test;
 
+import static org.junit.Assert.fail;
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
@@ -7,12 +8,19 @@ import io.onedecision.engine.decisions.impl.del.DelExpression;
 import io.onedecision.engine.decisions.impl.del.DurationExpression;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
+import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
@@ -55,7 +63,12 @@ public class DecisionRule implements TestRule {
 
     protected List<String> definitionIds = new ArrayList<String>();
 
+    private ObjectFactory objFact;
+
+    public static final File outputDir = new File("target", "decisions");
+
     public DecisionRule() {
+        ;
     }
 
     public DecisionRule(DecisionEngine decisionEngine) {
@@ -158,28 +171,44 @@ public class DecisionRule implements TestRule {
             initializeDecisionEngine();
         }
 
+        // TODO Should this be part of repositoryService?
+        objFact = new ObjectFactory();
+
         // Allow for mock configuration
         configureDecisionEngine();
 
-        // Load resources into engine
         Deployment deployment = description.getAnnotation(Deployment.class);
+        if (deployment != null) {
+            loadResourcesIntoEngine(deployment, description);
+        }
+    }
+
+    private void loadResourcesIntoEngine(Deployment deployment,
+            Description description) throws IOException {
         tenantId = deployment.tenantId();
         for (String resource : deployment.resources()) {
             String model = loadFromClassPath(resource);
             DmnModel dmnModel = null;
-            if (resource.toLowerCase().endsWith(".json")) {
-                Definitions dm = de.getModelingService().convert(model);
-                dmnModel = new DmnModel(dm, tenantId);
-            } else if (resource.toLowerCase().endsWith(".dmn")) {
+            if (resource.toLowerCase().endsWith(".dmn")) {
                 dmnModel = new DmnModel(model, null, null, tenantId);
             } else {
                 throw new IllegalArgumentException(
-                        "Only know how to convert resources with .json or .dmn extensions");
+                        "Only know how to convert resources with .dmn extensions");
             }
             definitionIds.add(dmnModel.getDefinitionId());
-            de.getRepositoryService().createModelForTenant(dmnModel);
+            Set<ConstraintViolation<Definitions>> violations = de
+                    .getRepositoryService().validate(dmnModel.getDefinitions());
+            if (violations.isEmpty()) {
+                de.getRepositoryService().createModelForTenant(dmnModel);
+            } else {
+                for (ConstraintViolation<Definitions> violation : violations) {
+                    System.err.println(violation.getMessage());
+                }
+                String msg = "Resource is not valid, violations have been written to System.err";
+                fail(msg);
+                throw new IllegalArgumentException(msg);
+            }
         }
-
     }
 
     public static String loadFromClassPath(String resource) {
@@ -220,6 +249,32 @@ public class DecisionRule implements TestRule {
 
     public void setDecisionEngine(DecisionEngine de) {
         this.de = de;
+    }
+
+    public ObjectFactory getObjectFactory() {
+        return objFact;
+    }
+
+    public Set<ConstraintViolation<Definitions>> validate(Definitions def)
+            throws IOException {
+        return de.getRepositoryService().validate(def);
+    }
+
+    public void writeDmn(Definitions decisionModel, String filename) {
+        Writer out = null;
+        try {
+            out = new FileWriter(new File(outputDir, filename));
+            getDecisionEngine().getRepositoryService()
+                    .write(decisionModel, out);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+            }
+        }
     }
 
 }

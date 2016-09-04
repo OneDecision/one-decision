@@ -171,7 +171,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         return dmnModel;
     }
 
-    @RequestMapping(value = "/{definitionOrInternalId}", method = RequestMethod.GET, produces = { "application/json" })
+    @RequestMapping(value = "/{definitionOrInternalId}/", method = RequestMethod.GET, produces = { "application/json" })
     public @ResponseBody DmnModel getModelForTenantRestApi(
             @PathVariable("definitionOrInternalId") String id,
             @PathVariable("tenantId") String tenantId) {
@@ -373,6 +373,9 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         LOGGER.info(String.format("Creating decision model for tenant %1$s",
                 model.getTenantId()));
         // indexModel(model);
+        // TODO all decisions (and BKMs and ??) need to be given id if not
+        // present in order to be retrieved later
+        // TODO Also need to add version (default 1 and increment if present)
         model.setDefinitionXml(model.serialize(model.getDefinitions()));
         return repo.save(model);
     }
