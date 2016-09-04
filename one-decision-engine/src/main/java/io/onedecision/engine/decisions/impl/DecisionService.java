@@ -62,14 +62,6 @@ public class DecisionService implements DecisionConstants, RuntimeService {
     private static final List<Character> OPERATORS = Arrays
             .asList(new Character[] { '<', '=', '!', '>' });;
 
-    private static List<String> newArrayList(String... objects) {
-        List<String> list = new ArrayList<String>();
-        for (String s : objects) {
-            list.add(s);
-        }
-        return Collections.unmodifiableList(list);
-    }
-
     public DecisionService() {
         ScriptEngineManager sem = new ScriptEngineManager();
         jsEng = sem.getEngineByName("JavaScript");
@@ -103,8 +95,34 @@ public class DecisionService implements DecisionConstants, RuntimeService {
     // TODO Should we simply return Object as only single value possible?
     public Map<String, Object> execute(Definitions dm, String decisionId,
             Map<String, Object> vars) throws DecisionException {
-        String script = getScript(dm, decisionId);
         Decision decision = dm.getDecision(decisionId);
+
+        StringBuilder sb = new StringBuilder();
+        Expression expr = decision.getExpression().getValue();
+        if (expr instanceof DecisionTable) {
+            for (InputClause input : ((DecisionTable) expr)
+                    .getInputs()) {
+                String varName = input.getInputExpression().getText();
+                if (varName != null && varName.indexOf(".") != -1) {
+                    varName = varName.substring(0, varName.indexOf("."));
+                }
+                if (!vars.keySet().contains(varName)) {
+                    sb.append(varName).append(",");
+                }
+            }
+        } else {
+            LOGGER.debug(String.format(
+                    "Do not know how to check inputs for expression type %1$s",
+                    expr.getClass().getName()));
+        }
+
+        if (sb.length() > 0) {
+            throw new DecisionException(String.format(
+                    "Missing information requirement(s): %1$s", sb.toString()));
+        }
+
+        String script = getScript(dm, decisionId);
+
         Map<String, Object> results = execute(decision,
                 script, vars);
 

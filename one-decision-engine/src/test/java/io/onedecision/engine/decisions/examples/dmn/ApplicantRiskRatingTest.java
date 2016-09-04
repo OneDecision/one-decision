@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -94,8 +93,6 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
     }
 
     @Test
-    @Ignore
-    // TODO currently failing
     public void testApplicantRiskRatingWithBadParams() {
         RuntimeService svc = decisionRule.getDecisionEngine()
                 .getRuntimeService();
