@@ -57,6 +57,8 @@ import org.junit.runners.model.Statement;
  */
 public class DecisionRule implements TestRule {
 
+    public static final File outputDir = new File("target", "decisions");
+
     protected String tenantId;
 
     protected DecisionEngine de;
@@ -64,8 +66,6 @@ public class DecisionRule implements TestRule {
     protected List<String> definitionIds = new ArrayList<String>();
 
     private ObjectFactory objFact;
-
-    public static final File outputDir = new File("target", "decisions");
 
     public DecisionRule() {
         ;
@@ -174,6 +174,8 @@ public class DecisionRule implements TestRule {
         // TODO Should this be part of repositoryService?
         objFact = new ObjectFactory();
 
+        outputDir.mkdirs();
+
         // Allow for mock configuration
         configureDecisionEngine();
 
@@ -263,7 +265,10 @@ public class DecisionRule implements TestRule {
     public void writeDmn(Definitions decisionModel, String filename) {
         Writer out = null;
         try {
-            out = new FileWriter(new File(outputDir, filename));
+            File dmnFile = new File(outputDir, filename);
+            System.out.println(String.format("Writing DMN to %1$s",
+                    dmnFile.getAbsolutePath()));
+            out = new FileWriter(dmnFile);
             getDecisionEngine().getRepositoryService()
                     .write(decisionModel, out);
         } catch (IOException e) {
@@ -272,7 +277,7 @@ public class DecisionRule implements TestRule {
         } finally {
             try {
                 out.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
             }
         }
     }

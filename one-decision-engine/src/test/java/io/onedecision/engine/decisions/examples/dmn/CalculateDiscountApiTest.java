@@ -1,6 +1,5 @@
 package io.onedecision.engine.decisions.examples.dmn;
 
-import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.dmn.Decision;
@@ -12,15 +11,8 @@ import io.onedecision.engine.decisions.model.dmn.ItemDefinition;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
 import io.onedecision.engine.decisions.model.dmn.UnaryTests;
-import io.onedecision.engine.decisions.model.dmn.validators.DmnValidationErrors;
 import io.onedecision.engine.test.DecisionRule;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -195,47 +187,12 @@ public class CalculateDiscountApiTest implements ExamplesConstants {
 
             def.withDecisions(d);
 
-            assertSerializationProduced(def);
+            decisionRule.writeDmn(def, def.getId() + ".dmn");
+            decisionRule.validate(def);
 
             dm = new DmnModel(def, null, TENANT_ID);
         }
         return dm;
-    }
-
-    // String script = svc.getScript(decision.getDecisionTable());
-    // System.out.println("Received script:\n" + script);
-    // assertTrue("Unable to compile decision table", script != null
-    // && script.length() > 0);
-
-    private void assertSerializationProduced(Definitions dm)
-            throws IOException, FileNotFoundException {
-        Assert.assertNotNull("Definitions produced must not be null", dm);
-
-        File dmnFile = new File(DecisionRule.outputDir, CD_DEFINITION_ID + ".dmn");
-        FileWriter out = new FileWriter(dmnFile);
-        try {
-            decisionRule.getDecisionEngine().getRepositoryService()
-                    .write(dm, out);
-        } finally {
-            out.close();
-        }
-        System.out.println("Wrote dmn to: " + dmnFile);
-        assertTrue(dmnFile.exists());
-
-        InputStream fis = null;
-        try {
-            fis = new FileInputStream(dmnFile);
-            DmnValidationErrors errors = new DmnValidationErrors(
-                    dmnFile.getName());
-            // schemaValidator.validate(fis, errors);
-            assertTrue(!errors.hasErrors());
-        } finally {
-            try {
-                fis.close();
-            } catch (Exception e) {
-                ;
-            }
-        }
     }
 
 }
