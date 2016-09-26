@@ -6,6 +6,8 @@ target/
 *.bak
 *.class
 *dis
+*iml
+.idea
 
 # Mac 
 .DS_Store
