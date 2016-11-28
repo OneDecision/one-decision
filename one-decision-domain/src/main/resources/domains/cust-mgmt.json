@@ -1,0 +1,24 @@
+{
+  "id": "",
+  "entities": [
+    {
+      "id":null,"name":"Contact","description":"A Contact is associated with up to one Account, zero to many Notes and zero to many Documents. An Account typically has one contact though may have more.","imageUrl":"images/domain/contact-context.png","firstCreated":null,"lastUpdated":null,"tenantId":null,
+      "fields":[
+        {"id":null,"name":"firstName","label":"First Name","hint":"Your first or given name","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"lastName","label":"Last Name","hint":"Your last or family name","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"title","label":"Title","hint":"Your title / salutation","required":false,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"email","label":"Email Address","hint":"Your business email address","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"phone","label":"Preferred Phone Number","hint":"Your preferred telephone number","required":false,"type":"tel","validation":"\\+?[0-9, ]{0,13}","builtIn":true}
+      ]
+    },
+    {
+      "id":null,
+      "name":"Email",
+      "description":"An email is an action (conclusion) available to the decision table authors.","imageUrl":"images/domain/email-context.png","firstCreated":null,"lastUpdated":null,"tenantId":null,
+      "fields":[
+        {"id":null,"name":"subject","label":"Subject Line","hint":"Subject line for the email","required":true,"type":"text","validation":null,"builtIn":true},
+        {"id":null,"name":"template","label":"Template Name","hint":"Name of email template to use","required":true,"type":"text","validation":null,"builtIn":true}
+      ]
+    }
+  ]
+}

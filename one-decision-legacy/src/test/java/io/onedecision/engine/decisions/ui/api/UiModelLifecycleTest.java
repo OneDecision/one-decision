@@ -16,7 +16,6 @@ package io.onedecision.engine.decisions.ui.api;
 import static org.junit.Assert.assertEquals;
 import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.api.ModelingService;
-import io.onedecision.engine.decisions.examples.ExamplesConstants;
 import io.onedecision.engine.decisions.model.ui.DecisionModel;
 import io.onedecision.engine.decisions.model.ui.examples.ApplicationRiskRatingModel;
 
@@ -40,7 +39,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TestApplication.class)
 @WebAppConfiguration
-public class UiModelLifecycleTest implements ExamplesConstants {
+public class UiModelLifecycleTest {
+
+    static final String TENANT_ID = "examples";
 
     @Autowired
     protected ModelingService svc;

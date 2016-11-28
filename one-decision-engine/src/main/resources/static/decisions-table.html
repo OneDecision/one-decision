@@ -4,9 +4,9 @@
   <meta charset='utf-8'>
   <title>Decision Logic</title>
   <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/one-decision-1.1.0.css" rel="stylesheet">
-  <link href="/css/decisions-1.1.0.css" rel="stylesheet">
-  <link rel="icon" type="image/png" href="images/one-decision-icon-16x16.png" />
+  <link href="/css/one-decision-1.2.0.css" rel="stylesheet">
+  <link href="/css/decisions-1.2.0.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/images/one-decision-icon-16x16.png" />
 </head>
 <body>
   <div class="clearfix" id="messages"></div>
@@ -15,41 +15,8 @@
     {{>profileArea}}
     {{!>titleArea}}
 
-    {{#current.definitions.decisions:idx}}
-      {{#if match(id) }}
-        <h1>
-          <span>{{name}}</span>
-          {{#hasRole('author')}}
-            <span> ({{id}})</span>
-          {{/}}
-        </h1>
-        {{#if ..decisionTable}}
-          {{#if ..decisionTable.preferredOrientation=='RULE_AS_COLUMN'}}
-            {{>dmnDecisionColumnSect}}
-          {{else}}
-            {{>dmnDecisionRowSect}}
-          {{/if}}                      
-        {{/if}}
-      {{/if}}
-    {{/}}
+    {{>dmnTableSect}}
 
-    {{#current.definitions.businessKnowledgeModels:idx}}
-      {{#if match(id) }}
-        <h1>
-          <span>{{name}}</span>
-          {{#hasRole('author')}}
-            <span> ({{id}})</span>
-          {{/}}
-        </h1>
-        {{#if .encapsulatedLogic.decisionTable}}
-          {{#if .encapsulatedLogic.decisionTable.preferredOrientation=='RULE_AS_COLUMN'}}
-            {{>dmnDecisionColumnSect}}
-          {{else}}
-            {{>dmnDecisionRowSect}}
-          {{/if}}                      
-        {{/if}}
-      {{/if}}
-    {{/}}
     {{>poweredBy}}
     {{>sidebar}}
   
@@ -64,14 +31,14 @@
         <h2>
           <span>Decision Logic</span>
           <div class="pull-right">
-            {{#hasRole('author') || hasRole('manage')}}
+            {{#if matchRole('author') || matchRole('manage')}}
               <div class="onoffswitch">
                 <input type="checkbox" name="editOnOffSwitch" class="onoffswitch-checkbox" id="editOnOffSwitch">
                 <label class="onoffswitch-label" for="editOnOffSwitch">
                   <span class="onoffswitch-inner"></span><span class="onoffswitch-switch"></span>
                 </label>
               </div>
-            {{/}}
+            {{/if}}
           </div>
         </h2>
         
@@ -91,7 +58,7 @@
                   <input autocomplete="off" class="author typeahead input" on-blur="save()" placeholder="..." title="{{inputExpression.text}}" value="{{inputExpression.text}}"/>
                 </th>
               {{/each}}
-              {{#hasRole('author')}}
+              {{#matchRole('author')}}
                 <th class="col-add input editCell" rowspan="1">
                   <span class="glyphicon glyphicon-plus" onclick="ractive.addColumnCondition('{{exprType}}',{{idx}})"></span>
                 </th>
@@ -108,7 +75,7 @@
                   <input autocomplete="off" class="author" on-blur="save()" title="{{inputValues.text}}" value="{{inputValues.text}}"/>
                 </th>
               {{/each}}
-              {{#hasRole('author')}}
+              {{#matchRole('author')}}
                 <th class="editCell" rowspan="1">&nbsp;</th>
               {{/}}
               {{#each ..decisionTable.outputs:i}}
@@ -125,7 +92,7 @@
                 {{#each .inputEntry:j}}
                   <td class="expr-name"><input autocomplete="off" class="manage typeahead" on-blur="save()"  title="{{text}}" value="{{text}}"></td>
                 {{/each}}
-                {{#hasRole('author')}}
+                {{#matchRole('author')}}
                   <th class="col-add editCell">&nbsp;</th>
                 {{/}}
                 {{#each outputEntry:j}}
@@ -133,7 +100,7 @@
                 {{/each}}
               </tr>
             {{/each}}
-            {{#hasRole('author')}}
+            {{#matchRole('author')}}
               <tr class="editCell">
                 <td class="expr-name" colspan="{{..decisionTable.inputs.length+..decisionTable.outputs.length+2}}">
                   <span class="author glyphicon glyphicon-plus" onclick="ractive.addRowRule('{{exprType}}',{{idx}})"></span>
@@ -152,8 +119,8 @@
   <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
 
   <script src="/js/md5.min.js"></script>
-  <script src="/js/one-decision-1.1.0.js"></script>
-  <script src="/js/decisions-table-1.1.0.js"></script>
+  <script src="/js/one-decision-1.2.0.js"></script>
+  <script src="/js/decisions-table-1.2.0.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
 </body>
 </html>

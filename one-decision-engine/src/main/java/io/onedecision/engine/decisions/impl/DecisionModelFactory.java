@@ -14,6 +14,7 @@
 package io.onedecision.engine.decisions.impl;
 
 import io.onedecision.engine.decisions.api.DecisionConstants;
+import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
@@ -39,6 +40,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.TransformerConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +56,8 @@ public class DecisionModelFactory implements DecisionConstants,
     protected List<DmnModel> repo;
 
     private Validator validator;
+
+    protected TransformUtil transformUtil;
 
     public DecisionModelFactory() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -116,6 +120,8 @@ public class DecisionModelFactory implements DecisionConstants,
             String msg = "Unable to load decision model from stream";
             LOGGER.error(msg, e);
             throw new IOException(msg, e);
+        } finally {
+            inputStream.close();
         }
     }
 
@@ -161,6 +167,13 @@ public class DecisionModelFactory implements DecisionConstants,
     @Override
     public byte[] getImageForTenant(String definitionId, String tenantId) {
         return getModelForTenant(definitionId, tenantId).getImage();
+    }
+
+    @Override
+    public DmnModel createModelForTenant(String tenantId, InputStream is)
+            throws IOException {
+        Definitions model = load(is);
+        return createModelForTenant(new DmnModel(model, tenantId));
     }
 
     @Override
@@ -228,6 +241,37 @@ public class DecisionModelFactory implements DecisionConstants,
         }
 
         return violations;
+    }
+
+    protected TransformUtil getTransformUtil() {
+        // if (transformUtil == null) {
+            transformUtil = new TransformUtil();
+            try {
+                transformUtil.setXsltResources("/static/xslt/dmn2html.xslt");
+            } catch (TransformerConfigurationException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DecisionException("Unable to render decision model",
+                        e);
+            }
+        // }
+        return transformUtil;
+    }
+
+    @Override
+    public String getDocumentationForTenant(String id, String tenantId) {
+        LOGGER.info(String.format(
+                "Seeking decision model image %1$s for tenant %2$s", id,
+                tenantId));
+
+        DmnModel model = getModelForTenant(id, tenantId);
+        LOGGER.debug(String.format("... result found: %1$s", model));
+
+        return getDocumentationForTenant(model);
+    }
+
+    // Note this is not exposed on RepositoryService API
+    public String getDocumentationForTenant(DmnModel model) {
+        return getTransformUtil().transform(model.getDefinitionXml());
     }
 
 }

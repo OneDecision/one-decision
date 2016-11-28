@@ -6,6 +6,7 @@ public class InMemoryDecisionEngineImpl extends AbstractDecisionEngineImpl
         implements DecisionEngine {
 
     public InMemoryDecisionEngineImpl() {
+        super();
         setRepositoryService(new DecisionModelFactory());
         DecisionService runtimeSvc = new DecisionService();
         runtimeSvc.setDecisionEngine(this);

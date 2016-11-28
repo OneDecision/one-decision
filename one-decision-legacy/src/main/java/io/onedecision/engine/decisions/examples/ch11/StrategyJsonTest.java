@@ -42,7 +42,12 @@ import org.junit.runners.Parameterized.Parameters;
     domainModelUri = "http://onedecision.io/loans", 
     domainModelUrl = "/domains/loans.json", 
     tenantId = "examples")
-public class StrategyJsonTest implements ExamplesConstants {
+public class StrategyJsonTest {
+
+    static final String TENANT_ID = "examples";
+    static final String CH11_FIG70_DMN_RESOURCE = "/decisions/examples/Fig70Strategy.dmn";
+    static final String CH11_FIG70_DEFINITION_ID = "StrategyModel";
+    static final String CH11_FIG70_DECISION_ID = "_70_d";
 
     private String eligibility;
     private String bureauCallType;

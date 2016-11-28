@@ -34,6 +34,7 @@ var OneDecisionApp = Ractive.extend({
     });
   },
   applyBranding: function() {
+    console.info('applyBranding');
     // ajax loader 
     $( "#ajax-loader" ).remove();
     $('body').append('<div id="ajax-loader"><img class="ajax-loader" src="images/one-decision-ajax-loader.gif" alt="Loading..."/></div>');
@@ -43,6 +44,14 @@ var OneDecisionApp = Ractive.extend({
     $( document ).ajaxStop(function() {
       $( "#ajax-loader" ).hide();
     });
+
+    // logo, favicon etc.
+    var tenant = ractive.get('profile').tenant;
+    if (tenant != undefined) {
+      $('link[rel="icon"]').attr('href','images/'+tenant+'-icon-16x16.png');
+      $('head').append('<link href="/css/'+tenant+'-1.0.0.css" rel="stylesheet">');
+      $('.navbar-brand').empty().append('<img src="/images/'+tenant+'-logo.png" alt="logo"/>');
+    }
   },
   fetchProfile: function() {
     console.info('fetchProfile');
@@ -175,7 +184,14 @@ var OneDecisionApp = Ractive.extend({
       $('#messages').fadeOut();
     }, EASING_DURATION*10);
     else $('#messages').append('<span class="text-danger pull-right glyphicon glyphicon-remove" onclick="ractive.hideMessage()"></span>');
-  }
+  },
+  tenantUri: function(entityUri) {
+    console.log('tenantUri: '+entityUri);
+    if (entityUri != undefined && entityUri.indexOf(ractive.get('tenant.id')+'/')==-1) {
+      entityUri = entityUri.replace(ractive.get('entityPath'),'/'+ractive.get('tenant.id')+ractive.get('entityPath'));
+    }
+    return entityUri;
+  },
 });
 
 function selectElementContents(el) {

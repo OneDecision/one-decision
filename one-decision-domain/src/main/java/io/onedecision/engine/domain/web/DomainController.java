@@ -13,23 +13,28 @@
  *******************************************************************************/
 package io.onedecision.engine.domain.web;
 
+import io.onedecision.engine.domain.api.DomainModelFactory;
 import io.onedecision.engine.domain.model.DomainEntity;
 import io.onedecision.engine.domain.model.DomainModel;
-import io.onedecision.engine.domain.model.EntityField;
 import io.onedecision.engine.domain.repositories.DomainModelRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Controller to access a tenant's domain model.
@@ -48,8 +53,17 @@ public class DomainController {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(DomainController.class);
 
+    @Value("${onedecision.domain.defaultDomainUri:}")
+    protected String defaultDomainUri;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Autowired
     private DomainModelRepository repo;
+
+    @Autowired
+    private DomainModelFactory domainModelFactory;
 
     /**
      * @param tenantId
@@ -71,115 +85,42 @@ public class DomainController {
             return model;
         } else {
             LOGGER.info("... not found, reliant on defaults");
-			return getDefaultDomain();
+            String domainUri = defaultDomainUri.substring(0,
+                    defaultDomainUri.lastIndexOf('/'))
+                    + '/' + tenantId;
+            return domainModelFactory.fetchDomain(domainUri);
         }
     }
 
-	protected DomainModel getDefaultDomain() {
-        DomainModel model = new DomainModel();
-		model.setName("Example customer model");
-        model.setDescription("A general purpose and extensible customer model for the web");
+    /**
+     * Imports JSON representation of contacts.
+     * 
+     * <p>
+     * This is a handy link: http://shancarter.github.io/mr-data-converter/
+     * 
+     * @param file
+     *            A file posted in a multi-part request
+     * @return The meta data of the added model
+     * @throws IOException
+     *             If cannot parse the JSON.
+     */
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public @ResponseBody DomainModel handleFileUpload(
+            @PathVariable("tenantId") String tenantId,
+            @RequestParam(value = "file", required = true) MultipartFile file)
+            throws IOException {
+        LOGGER.info(String.format("Uploading domain model for: %1$s", tenantId));
+        String content = new String(file.getBytes());
 
-        List<DomainEntity> entities = new ArrayList<DomainEntity>();
+        DomainModel model = objectMapper.readValue(content,
+                new TypeReference<DomainModel>() {
+                });
+        model.setTenantId(tenantId);
 
-        // Contact
-        DomainEntity entity = new DomainEntity();
-        entity.setName("Contact");
-        entity.setDescription("A Contact is associated with up to one Account, zero to many Notes and zero to many Documents. An Account typically has one contact though may have more.");
-        entity.setImageUrl("images/domain/contact-context.png");
-        List<EntityField> fields = new ArrayList<EntityField>();
-        fields.add(new EntityField("firstName", "First Name",
-                "Your first or given name", true, "text"));
-        fields.add(new EntityField("lastName", "Last Name",
-                "Your last or family name", true, "text"));
-        fields.add(new EntityField("title", "Title", "Your title / salutation",
-                false, "text"));
-        fields.add(new EntityField("email", "Email Address",
-                "Your business email address", true, "text"));
-        fields.add(new EntityField("phone1", "Preferred Phone Number",
-                "Your preferred telephone number", false, "tel",
-                "\\+?[0-9, ]{0,13}"));
-        fields.add(new EntityField("phone2", "Other Phone Number",
-                "A backup telephone number", false, "tel", "\\+?[0-9, ]{0,13}"));
-        fields.add(new EntityField("address1", "Address",
-                "House or apartment name or number", false, "text"));
-        fields.add(new EntityField("address2", "", "Stree", false, "text"));
-        fields.add(new EntityField("countyOrCity", "City or County", "", false,
-                "text"));
-        fields.add(new EntityField("postCode", "Post Code",
-				"Postal code, for example in London N1 9DH", false, "text", ""));
-        fields.add(new EntityField("stage", "Stage",
-                "The point in the sales funnel of this lead", false, "text"));
-        fields.add(new EntityField(
-                "enquiryType",
-                "Enquiry Type",
-                "The nature of the enquiry, typically specific to the tenant's business",
-                false, "text"));
-        fields.add(new EntityField("accountType", "Account Type",
-                "Customer, Partner etc.", false, "text"));
-        fields.add(new EntityField("owner", "Owner",
-                "The sales person for this account", false, "text"));
-        fields.add(new EntityField("doNotCall", "Do Not Call",
-                "Is it ok to call this lead?", false, "boolean"));
-        fields.add(new EntityField("doNotEmail", "Do Not Email",
-                "Is it ok to email this lead?", false, "boolean"));
-        fields.add(new EntityField("timeSinceEmail", "Time since email",
-                "Time since our last email to contact (milliseconds)", false,
-                "number"));
-        fields.add(new EntityField("timeSinceLogin", "Time since login",
-                "Time since last login (milliseconds)", false, "number"));
-        fields.add(new EntityField("timeSinceRegistered",
-                "Time since registered",
-                "Time since last registered (milliseconds)", false, "number"));
-        fields.add(new EntityField("tenantId", "Tenant",
-				"Name of the tenant's account", true, "text"));
-        fields.add(new EntityField("firstContact", "First Contact",
-                "Date of first contact with this business", true, "date"));
-        fields.add(new EntityField("lastUpdated", "Last Updated",
-                "Date of last update to this account", true, "date"));
-        entity.setFields(fields);
-        entities.add(entity);
+        LOGGER.info(String.format("  found model with %1$d entities", model
+                .getEntities().size()));
+        updateModelForTenant(tenantId, model);
 
-        // Account
-        entity = new DomainEntity();
-        entity.setName("Account");
-        entity.setDescription("An account is associated with zero to many Notes and zero to many Documents. It typically has one Contact though may have more.");
-        entity.setImageUrl("images/domain/account-context.png");
-        fields = new ArrayList<EntityField>();
-        fields.add(new EntityField("name", "Name",
-                "Name of the company or organisation", true, "text"));
-        fields.add(new EntityField(
-                "companyNumber",
-                "Company Number",
-                "The number for this company issued by the registrar of companies in your country.",
-                false, "number"));
-        fields.add(new EntityField("businessWebsite", "Business Website",
-                "The primary website for the business", false, "url"));
-        fields.add(new EntityField("description", "Description",
-                "A fuller description", false, "text"));
-        fields.add(new EntityField("tenantId", "Tenant",
-				"Name of the tenant's account", true, "text"));
-        fields.add(new EntityField("firstContact", "First Contact",
-                "Date of first contact with this business", true, "date"));
-        fields.add(new EntityField("lastUpdated", "Last Updated",
-                "Date of last update to this account", true, "date"));
-        entity.setFields(fields);
-        entities.add(entity);
-
-        // Email actions
-        entity = new DomainEntity();
-        entity.setName("Email");
-        entity.setDescription("An email is an action (conclusion) available to the decision table authors.");
-        entity.setImageUrl("images/domain/email-context.png");
-        fields = new ArrayList<EntityField>();
-        fields.add(new EntityField("subjectLine", "Subject Line",
-                "Subject line for the email", true, "text"));
-        fields.add(new EntityField("templateName", "Template Name",
-                "Name of email template to use", true, "text"));
-        entity.setFields(fields);
-        entities.add(entity);
-
-        model.setEntities(entities);
         return model;
     }
 
@@ -193,7 +134,7 @@ public class DomainController {
      *            The new domain model.
      */
     @RequestMapping(value = "/", method = RequestMethod.PUT)
-    public @ResponseBody void updateModelForTenant(
+    public @ResponseBody DomainModel updateModelForTenant(
             @PathVariable("tenantId") String tenantId, @RequestBody DomainModel model) {
         LOGGER.info(String.format("Updating domain model for tenant %1$s",
                 tenantId));
@@ -201,9 +142,15 @@ public class DomainController {
         for (DomainEntity entity : model.getEntities()) {
             entity.setTenantId(tenantId);
         }
-        // TODO perform checks that the model changes are not destructive.
 
-        repo.save(model);
+        // DomainModel existingModel = repo.findByName(tenantId);
+        // if (existingModel == null) {
+        // model.setRevision(1l);
+        // } else {
+        // // TODO perform checks that the model changes are not destructive.
+        // model.setRevision(existingModel.getRevision() + 1);
+        // }
+        return repo.save(model);
     }
 
     /**

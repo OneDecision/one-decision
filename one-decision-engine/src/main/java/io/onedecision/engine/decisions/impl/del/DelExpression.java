@@ -19,6 +19,5 @@ package io.onedecision.engine.decisions.impl.del;
  */
 public interface DelExpression {
 
-	String compile(String script);
-
+    String compile(String script, String input);
 }

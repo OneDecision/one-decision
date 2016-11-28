@@ -195,7 +195,8 @@ tfoot th {
   z-index: 200; 
 }
 .btn {
-  min-width: 80px;
+  line-height: 2.2em;
+	min-width: 80px;
 }
 .btn-h2 {
   margin-top: -7px;
@@ -249,6 +250,28 @@ h2 a.glyphicon:hover {
 }
 .navbar-brand img {
   height: 80px;	
+}
+.navbar-top {
+   background-color:white;
+   z-index:200;
+   position:relative;
+   margin-top: 0;
+   padding-top: 20px;
+}
+.navbar-sticky {
+  background-color: white;
+  padding-left: 0;
+  position: fixed;
+  left: auto;
+  right: auto;
+  top: 0;
+  z-index: 100;
+}
+.navbar-sticky h2 { 
+  margin-top:0;
+}
+.navbar-sticky h2 span.profile-img {
+  font-size: 16px;
 }
 .search {
 	border-radius:15px;

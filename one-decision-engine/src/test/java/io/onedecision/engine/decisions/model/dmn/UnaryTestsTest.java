@@ -49,4 +49,5 @@ public class UnaryTestsTest {
         assertEquals("1", unaryTests.getUnaryTests().get(0));
         assertEquals("2", unaryTests.getUnaryTests().get(1));
     }
+
 }

@@ -1,24 +1,19 @@
 package io.onedecision.engine.decisions.examples.ch11;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.impl.TransformUtil;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.test.DecisionRule;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 
 public class Ch11LoanExampleTest implements ExamplesConstants {
 
@@ -37,8 +32,8 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
     @Test
     public void testSerialization() throws Exception {
         DmnModel dm = ch11LoanExample.getDmnModel();
-        decisionRule.writeDmn(dm.getDefinitions(), dm.getName());
-        decisionRule.validate(dm.getDefinitions());
+        decisionRule.writeDmn(dm.getDefinitions(), dm.getName() + ".dmn");
+        assertEquals(0, decisionRule.validate(dm.getDefinitions()).size());
     }
 
     @Test
@@ -47,15 +42,16 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
                 .getRepositoryService()
                 .createModelForTenant(
                 ch11LoanExample.getDmnModel());
-        String html = getTransformUtil().transform(dmnModel.getDefinitionXml());
+        String html = ((DecisionModelFactory) decisionRule.getDecisionEngine()
+                .getRepositoryService()).getDocumentationForTenant(dmnModel);
         assertNotNull("No visualization created", html);
         for (Decision decision : dmnModel.getDefinitions().getDecisions()) {
             assertTrue(
                     "Cannot find visualisation for " + decision.getId(),
-                    html.contains("<section id=\"" + decision.getId()
+                    html.contains("id=\"" + decision.getId()
                             + "Sect\""));
         }
-        write(html, dmnModel.getDefinitionId() + ".html");
+        decisionRule.writeHtml(html, dmnModel.getDefinitionId() + ".html");
     }
 
     @Test
@@ -76,60 +72,13 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
         transformAndAssert(dmnModel, "applicationRiskScoreModel_bkm");
     }
 
-    @Test
-    public void testJsonDeserialization() throws Exception {
-        InputStream is = null;
-        try {
-            is = getClass().getResourceAsStream(
-                    "/decisions/examples/Ch11LoanExample.json");
-            ObjectMapper mapper = new ObjectMapper();
-            // we'll be reading instances of MyBean
-            ObjectReader reader = mapper.readerFor(DmnModel.class);
-            // and then do other configuration, if any, and read:
-            DmnModel result = reader.readValue(is);
-            assertNotNull(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            // fail("unable to find test resource");
-        }
-        // DmnModel dmnModel =
-        // decisionRule.getDecisionEngine().getRepositoryService().createModelForTenant(
-        // ch11LoanExample.getDmnModel());
-        // transformAndAssert(dmnModel, "applicationRiskScoreModel_bkm");
-    }
-
     private void transformAndAssert(DmnModel dmnModel, String drgElementId)
             throws Exception, IOException {
-        String html = getTransformUtil().transform(dmnModel.getDefinitionXml(),
-                Collections.singletonMap("drgElementId", drgElementId));
+        String html = ((DecisionModelFactory) decisionRule.getDecisionEngine()
+                .getRepositoryService()).getDocumentationForTenant(dmnModel);
         assertNotNull("No visualization created for " + drgElementId,
                 html.contains("<section id=\"" + drgElementId + "Sect\""));
-        write(html, drgElementId + ".html");
-    }
-
-    protected void write(String html, String fileName) throws IOException {
-        File file = new File("target", fileName);
-        FileWriter writer = null;
-        try {
-            writer = new FileWriter(file);
-            if (!html.contains("<html>")) {
-                writer.write("<html><body>");
-            }
-            writer.write(html);
-            if (!html.contains("<html>")) {
-                writer.write("</body><html>");
-            }
-        } finally {
-            writer.close();
-        }
-    }
-
-    protected TransformUtil getTransformUtil() throws Exception {
-        if (transformUtil == null) {
-            transformUtil = new TransformUtil();
-            transformUtil.setXsltResources("/static/xslt/dmn2html.xslt");
-        }
-        return transformUtil;
+        decisionRule.writeHtml(html, drgElementId + ".html");
     }
 
 }

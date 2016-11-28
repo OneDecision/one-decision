@@ -87,8 +87,8 @@ public class UnaryTests extends DmnElement implements Serializable {
         StringBuilder sb = new StringBuilder();
         for (String t : tests) {
             char c = t.trim().charAt(0);
-            if (c != '-' && c != '{' && c != '[' && c != '"'
-                    && !Character.isDigit(c)) {
+            if (Character.isAlphabetic(c) && !"true".equalsIgnoreCase(t)
+                    && !"false".equalsIgnoreCase(t)) {
                 sb.append('"').append(t).append('"').append(',');
             } else {
                 sb.append(t).append(',');
@@ -126,6 +126,29 @@ public class UnaryTests extends DmnElement implements Serializable {
         return this;
     }
 
+    public UnaryTests withUnaryTests(boolean... tests) {
+        if (tests.length == 0) {
+            return this;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (boolean t : tests) {
+            sb.append(t).append(',');
+        }
+        setText(sb.deleteCharAt(sb.length() - 1).toString());
+        return this;
+    }
+
+    public UnaryTests withUnaryTests(Number... tests) {
+        if (tests.length == 0) {
+            return this;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Number t : tests) {
+            sb.append(t).append(',');
+        }
+        setText(sb.deleteCharAt(sb.length() - 1).toString());
+        return this;
+    }
     public UnaryTests withUnaryTests(String... tests) {
         setUnaryTests(tests);
         return this;

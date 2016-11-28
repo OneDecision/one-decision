@@ -65,11 +65,11 @@ import javax.xml.namespace.QName;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
     "imports",
-    "itemDefinitions",
-    "drgElements",
-    "artifacts",
+    "itemDefinition",
+    "drgElement", 
+    "artifact",
     "elementCollection",
-    "businessContextElements"
+    "businessContextElement"
 })
 public class Definitions extends NamedElement implements Serializable {
 
@@ -77,14 +77,14 @@ public class Definitions extends NamedElement implements Serializable {
 
     @XmlElement(name = "import")
     protected List<Import> imports;
-    protected List<ItemDefinition> itemDefinitions;
+    protected List<ItemDefinition> itemDefinition;
     @XmlElementRef(name = "drgElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends DrgElement>> drgElements;
+    protected List<JAXBElement<? extends DrgElement>> drgElement;
     @XmlElementRef(name = "artifact", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends Artifact>> artifacts;
+    protected List<JAXBElement<? extends Artifact>> artifact;
     protected List<ElementCollection> elementCollection;
     @XmlElementRef(name = "businessContextElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends BusinessContextElement>> businessContextElements;
+    protected List<JAXBElement<? extends BusinessContextElement>> businessContextElement;
     @XmlAttribute(name = "expressionLanguage")
     @XmlSchemaType(name = "anyURI")
     protected String expressionLanguage;
@@ -151,10 +151,19 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<ItemDefinition> getItemDefinitions() {
-        if (itemDefinitions == null) {
-            itemDefinitions = new ArrayList<ItemDefinition>();
+        if (itemDefinition == null) {
+            itemDefinition = new ArrayList<ItemDefinition>();
         }
-        return this.itemDefinitions;
+        return this.itemDefinition;
+    }
+
+    public ItemDefinition getItemDefinition(@NotNull String name) {
+        for (ItemDefinition itemDef : getItemDefinitions()) {
+            if (name.equals(itemDef.getName())) {
+                return itemDef;
+            }
+        }
+        return null;
     }
 
     /**
@@ -180,14 +189,54 @@ public class Definitions extends NamedElement implements Serializable {
      * {@link JAXBElement }{@code <}{@link KnowledgeSource }{@code >}
      * {@link JAXBElement }{@code <}{@link BusinessKnowledgeModel }{@code >}
      * {@link JAXBElement }{@code <}{@link Decision }{@code >}
-     * 
-     * 
      */
     public List<JAXBElement<? extends DrgElement>> getDrgElements() {
-        if (drgElements == null) {
-            drgElements = new ArrayList<JAXBElement<? extends DrgElement>>();
+        if (drgElement == null) {
+            drgElement = new ArrayList<JAXBElement<? extends DrgElement>>();
         }
-        return this.drgElements;
+        return this.drgElement;
+    }
+
+    public Set<InputData> getInputData() {
+        HashSet<InputData> inputData = new HashSet<InputData>();
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null && el.getValue() instanceof InputData) {
+                inputData.add((InputData) el.getValue());
+            }
+        }
+        return inputData;
+    }
+
+    public InputData getInputData(@NotNull String name) {
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null && el.getValue() instanceof InputData
+                    && name.equals(el.getName())) {
+                return (InputData) el.getValue();
+            }
+        }
+        return null;
+    }
+
+    public Set<KnowledgeSource> getKnowledgeSource() {
+        HashSet<KnowledgeSource> kSource = new HashSet<KnowledgeSource>();
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null
+                    && el.getValue() instanceof KnowledgeSource) {
+                kSource.add((KnowledgeSource) el.getValue());
+            }
+        }
+        return kSource;
+    }
+
+    public KnowledgeSource getKnowledgeSource(@NotNull String name) {
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null
+                    && el.getValue() instanceof KnowledgeSource
+                    && name.equals(el.getName())) {
+                return (KnowledgeSource) el.getValue();
+            }
+        }
+        return null;
     }
 
     /**
@@ -214,10 +263,12 @@ public class Definitions extends NamedElement implements Serializable {
         }
     }
 
-    public Decision getDecision(@NotNull String decisionId) {
+    public Decision getDecision(@NotNull String decisionName) {
         for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            // match on Id is for backwards compatibility only
             if (el.getValue() != null && el.getValue() instanceof Decision
-                    && decisionId.equals(el.getValue().getId())) {
+                    && (decisionName.equals(el.getValue().getName()) || decisionName
+                            .equals(el.getValue().getId()))) {
                 return (Decision) el.getValue();
             }
         }
@@ -261,10 +312,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends Artifact>> getArtifacts() {
-        if (artifacts == null) {
-            artifacts = new ArrayList<JAXBElement<? extends Artifact>>();
+        if (artifact == null) {
+            artifact = new ArrayList<JAXBElement<? extends Artifact>>();
         }
-        return this.artifacts;
+        return this.artifact;
     }
 
     /**
@@ -321,10 +372,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends BusinessContextElement>> getBusinessContextElements() {
-        if (businessContextElements == null) {
-            businessContextElements = new ArrayList<JAXBElement<? extends BusinessContextElement>>();
+        if (businessContextElement == null) {
+            businessContextElement = new ArrayList<JAXBElement<? extends BusinessContextElement>>();
         }
-        return this.businessContextElements;
+        return this.businessContextElement;
     }
 
     /**
@@ -649,5 +700,4 @@ public class Definitions extends NamedElement implements Serializable {
         setLabel(value);
         return this;
     }
-
 }

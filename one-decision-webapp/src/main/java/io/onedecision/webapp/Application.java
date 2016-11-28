@@ -15,6 +15,8 @@ package io.onedecision.webapp;
 
 //import io.onedecision.engine.decisions.impl.LocationHeaderInterceptor;
 import io.onedecision.engine.decisions.impl.RedirectingAuthenticationSuccessHandler;
+import io.onedecision.engine.domain.api.DomainModelFactory;
+import io.onedecision.engine.domain.impl.ClasspathDomainModelFactory;
 
 import java.util.Arrays;
 
@@ -67,6 +69,11 @@ public class Application extends WebMvcConfigurerAdapter {
 				LOGGER.info("  " + beanName);
 			}
 		}
+    }
+
+    @Bean
+    protected DomainModelFactory domainModelFactory() {
+        return new ClasspathDomainModelFactory();
     }
 
 //    @Override

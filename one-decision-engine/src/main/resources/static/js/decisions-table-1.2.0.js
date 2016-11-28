@@ -32,15 +32,21 @@ var ractive = new OneDecisionApp({
       if (timeString==undefined) return 'n/a';
       return new Date(timeString).toLocaleString(navigator.languages);
     },
-    hasRole: function(role) {
-      return ractive.hasRole(role);
-    },
     match: function(obj) {
       if (obj == ractive.get('decisionId')) return true;
       else return false;
     },
-    //saveObserver:false,
+    matchRole: function(role) {
+      console.info('matchRole: '+role)
+      if (role==undefined || ractive.hasRole(role)) {
+        $('.'+role).show();
+        return true;
+      } else {
+        return false;
+      }
+    },
     stdPartials: [
+      { "name": "dmnTableSect", "url": "/partials/decision-table-sect.html"},
       { "name": "poweredBy", "url": "/partials/powered-by.html"},
       { "name": "profileArea", "url": "/partials/profile-area.html"},
       { "name": "sidebar", "url": "/partials/sidebar.html"},

@@ -7,6 +7,10 @@ target/
 *.class
 *dis
 
+# Idea
+*.iml
+.idea
+
 # Mac 
 .DS_Store
 

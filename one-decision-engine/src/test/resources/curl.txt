@@ -8,3 +8,8 @@ curl \
   -F "file=@order-discount.dmn" \
   http://admin:onedecision@demo.onedecision.io/onedecision/decision-models/upload
   http://admin:onedecision@localhost:8090/onedecision/decision-models/upload
+  
+# Invoke a decision
+curl -X POST -v \
+  -d 'age=10' -d 'priority=true' \
+  -u admin:onedecision http://localhost:8090/onedecision/onedecision/A.1/calcPrice_d

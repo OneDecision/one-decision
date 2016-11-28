@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class OneDecisionConfig {
 
     @Autowired
+    @Qualifier("decisionDmnModelController")
     private DecisionDmnModelController repoSvc;
 
     @Autowired

@@ -4,7 +4,7 @@
         <span>{{current.name}}</span>
         <span class="pull-right">
           <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.definitionId}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
-          {{#hasRole('admin')}}
+          {{#matchRole('admin')}}
             <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
           {{/}}
         </span>
@@ -61,7 +61,7 @@
             <h3>
               <span>Decisions</span>
               <span class="pull-right">
-                {{#hasRole('author')}}
+                {{#matchRole('author')}}
                   <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addDecision()" title="Add a new decision"></a>
                 {{/}}
               </span>
@@ -70,14 +70,14 @@
               {{#current.definitions.decisions:idx}}
                 <li style="clear:both">
                   <label>{{name}}</label>
-                  {{#hasRole('author')}}
+                  {{#matchRole('author')}}
                     <span> ({{id}})</span>
                   {{/}}
                   <span>{{question}} {{allowedAnswers}}</span>
                   <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newtab">
                     <span class="glyphicon glyphicon-eye-open"></span>
                   </a>
-                  {{#hasRole('manage')}}
+                  {{#matchRole('manage')}}
                     <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}?edit" target="_newtab">
                       <span class="glyphicon glyphicon-pencil"></span>
                     </a>
@@ -93,14 +93,14 @@
               {{#current.definitions.businessKnowledgeModels:idx}}
                 <li style="clear:both">
                     <label>{{name}}</label>
-                    {{#hasRole('author')}}
+                    {{#matchRole('author')}}
                       <span> ({{id}})</span>
                     {{/}}
                     <span>{{question}} {{allowedAnswers}}</span>
                     <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}" target="_newtab">
                       <span class="glyphicon glyphicon-eye-open"></span>
                     </a>
-                    {{#hasRole('manage')}}
+                    {{#matchRole('manage')}}
                       <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}?edit" target="_newtab">
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>

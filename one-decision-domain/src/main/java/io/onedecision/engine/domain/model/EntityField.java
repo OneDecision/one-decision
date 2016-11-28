@@ -60,7 +60,7 @@ public class EntityField {
     protected String validation;
 
     @JsonProperty
-    protected boolean builtIn = true;
+    protected boolean builtIn = false;
     
     public EntityField() {}
 

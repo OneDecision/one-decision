@@ -141,4 +141,13 @@ public class DomainModel {
 	public void setEntities(List<DomainEntity> entities) {
 		this.entities = entities;
 	}
+
+    public DomainEntity getEntity(String name) {
+        for (DomainEntity entity : entities) {
+            if (entity.getName().equals(name)) {
+                return entity;
+            }
+        }
+        return null;
+    }
 }

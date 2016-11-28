@@ -141,4 +141,13 @@ public class DomainEntity {
 	public void setFields(List<EntityField> fields) {
 		this.fields = fields;
 	}
+
+    public EntityField getField(String name) {
+        for (EntityField field : fields) {
+            if (field.getName().equals(name)) {
+                return field;
+            }
+        }
+        return null;
+    }
 }

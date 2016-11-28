@@ -437,7 +437,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                              .withLiteralExpression("Application risk score"))
                     );
             ;
-            Decision requiredMonthlyInstallmentD = getRequiredMonthylInstallmentDecision(
+            Decision requiredMonthlyInstallmentD = getRequiredMonthlyInstallmentDecision(
                     requestedProduct, requestedProductDef,
                     installmentCalculationBKM);
 
@@ -725,30 +725,24 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                 .withName("Credit Contingency Factor"))
                 .withRules(
                         objFact.createDecisionRule()
-                                .withInputEntry(
-                                        objFact.createUnaryTests().withText(
-                                                "\"HIGH\",\"DECLINE\""))
+                                .withInputEntries("HIGH", "DECLINE")
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("0.6")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
-                                        objFact.createUnaryTests().withText(
-                                                "MEDIUM"))
+                                .withInputEntries("MEDIUM")
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("0.7")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
-                                        objFact.createUnaryTests().withText(
-                                                "\"LOW\",\"VERY LOW\""))
+                                .withInputEntries("LOW", "VERY LOW")
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("0.8")));
         return dt;
     }
 
-    private Decision getRequiredMonthylInstallmentDecision(
+    private Decision getRequiredMonthlyInstallmentDecision(
             InputData requestedProduct, ItemDefinition requestedProductDef,
             BusinessKnowledgeModel installmentCalculation) {
         return objFact
@@ -807,25 +801,167 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
     }
 
     protected Decision getStrategyDecision() throws IOException {
-        // TODO reimplement with fluent API
-        throw new IllegalStateException("Not yet implemented");
+        DecisionTable strategyDT = objFact
+                .createDecisionTable()
+                .withId("_76_dt")
+                .withHitPolicy(HitPolicy.UNIQUE)
+                .withPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW)
+                .withInputs(
+                        objFact.createInputClause().withLabel("Eligibility")
+                                .withInputExpression("Eligibility"),
+                        objFact.createInputClause()
+                                .withLabel("Bureau Call Type")
+                                .withInputExpression("bureauCallType"))
+                .withOutputs(
+                        objFact.createOutputClause()
+                                .withName("Strategy")
+                                .withOutputValues("DECLINE", "BUREAU",
+                                        "THROUGH"))
+                .withRules(
+                        objFact.createDecisionRule()
+                                .withInputEntries("INELIGIBLE")
+                                .withInputEntries("-")
+                                .withOutputEntries("DECLINE"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("ELIGIBLE")
+                                .withInputEntries("FULL", "MINI")
+                                .withOutputEntries("BUREAU"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("ELIGIBLE")
+                                .withInputEntries("NONE")
+                                .withOutputEntries("THROUGH"));
+
+        Decision strategyD = objFact.createDecision()
+                .withId("_76_d")
+                .withName("Strategy")
+                .withDescription(
+                        "The Strategy decision logic defines a complete, unique-hit decision table deriving Strategy from Eligibility and Bureau Call Type.")
+                .withQuestion("Is credit bureau call required?")
+                .withAllowedAnswers("Yes: Bureau; No: Decline or Through")
+                .withDecisionTable(strategyDT);
+        return strategyD;
     }
 
     protected DecisionTable getBureauCallTypeDecisionTable() throws IOException {
-        // TODO reimplement with fluent API
-        throw new IllegalStateException("Not yet implemented");
+        DecisionTable bureauCallTypeDT = objFact
+                .createDecisionTable()
+                .withId("_78_dt")
+                .withHitPolicy(HitPolicy.UNIQUE)
+                .withPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW)
+                .withInputs(
+                        objFact.createInputClause()
+                                .withLabel("Pre-Bureau Risk Category")
+                                .withInputExpression("Pre-Bureau Risk Category"))
+                .withOutputs(
+                        objFact.createOutputClause()
+                                .withName("Bureau Call Type"))
+                .withRules(
+                        objFact.createDecisionRule()
+                                .withInputEntries("HIGH", "MEDIUM")
+                                .withOutputEntries("FULL"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("LOW")
+                                .withOutputEntries("MINI"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("VERY LOW", "DECLINE")
+                                .withOutputEntries("NONE"));
+        return bureauCallTypeDT;
     }
 
     protected DecisionTable getEligibilityRulesDT()
             throws IOException {
-        // TODO reimplement with fluent API
-        throw new IllegalStateException("Not yet implemented");
+        DecisionTable eligibilityRulesDT = objFact
+                .createDecisionTable()
+                .withHitPolicy(HitPolicy.PRIORITY)
+                .withPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW)
+                .withInputs(
+                        objFact.createInputClause()
+                                .withLabel("Pre-Bureau Risk Category")
+                                .withInputExpression("Pre-Bureau Risk Category"),
+                        objFact.createInputClause()
+                                .withLabel("Pre-Bureau Affordability")
+                                .withInputExpression("Pre-Bureau Affordability"),
+                        objFact.createInputClause()
+                                .withLabel("Age")
+                                .withInputExpression("Age"))
+                .withOutputs(
+                        objFact.createOutputClause().withName("Eligibility")
+                                .withOutputValues("INELIGIBLE", "ELIGIBLE"))
+                .withRules(
+                        objFact.createDecisionRule()
+                                .withInputEntries("DECLINE")
+                                .withInputEntries("-")
+                                .withInputEntries("-")
+                                .withOutputEntries("INELIGIBLE"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("-")
+                                .withInputEntries( "false")
+                                .withInputEntries("-")
+                                .withOutputEntries("INELIGIBLE"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("-")
+                                .withInputEntries("-")
+                                .withInputEntries("<18")
+                                .withOutputEntries("INELIGIBLE"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("-")
+                                .withInputEntries("-")
+                                .withInputEntries("-")
+                                .withOutputEntries("ELIGIBLE"));
+        return eligibilityRulesDT;
     }
 
     protected DecisionTable getPreBureauRiskCategoryDT()
             throws IOException {
-        // TODO reimplement with fluent API
-        throw new IllegalStateException("Not yet implemented");
+        DecisionTable preBureauRiskCategoryDT = objFact
+                .createDecisionTable()
+                .withId("_82_dt")
+                .withHitPolicy(HitPolicy.UNIQUE)
+                .withPreferredOrientation(DecisionTableOrientation.RULE_AS_ROW)
+                .withInputs(
+                        objFact.createInputClause()
+                                .withLabel("Existing Customer")
+                                .withInputExpression("Existing Customer"),
+                        objFact.createInputClause()
+                                .withLabel("Application Risk Score")
+                                .withInputExpression("Application Risk Score"))
+                .withOutputs(
+                        objFact.createOutputClause().withName(
+                                "Pre-Bureau Risk Category"))
+                .withRules(
+                        objFact.createDecisionRule()
+                                .withInputEntries("false")
+                                .withInputEntries("<100")
+                                .withOutputEntries("HIGH"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("false")
+                                .withInputEntries("[100..120)")
+                                .withOutputEntries("MEDIUM"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("false")
+                                .withInputEntries("[120..130]")
+                                .withOutputEntries("LOW"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("false")
+                                .withInputEntries("> 130")
+                                .withOutputEntries("VERY LOW"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("true")
+                                .withInputEntries("<80")
+                                .withOutputEntries("DECLINE"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("true")
+                                .withInputEntries("[80..90)")
+                                .withOutputEntries("HIGH"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("true")
+                                .withInputEntries("[90..110]")
+                                .withOutputEntries("MEDIUM"),
+                        objFact.createDecisionRule()
+                                .withInputEntries("true")
+                                .withInputEntries("> 110")
+                                .withOutputEntries("LOW"));
+        return preBureauRiskCategoryDT;
     }
 
     protected DecisionTable getApplicationRiskScoreModelDT() {
@@ -867,7 +1003,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                 .withName("Partial score"))
                 .withRules(
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[18..21]"), emptyTest,
                                         emptyTest)
@@ -875,7 +1011,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("32")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[22..25]"), emptyTest,
                                         emptyTest)
@@ -883,7 +1019,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("35")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[26..35]"), emptyTest,
                                         emptyTest)
@@ -891,7 +1027,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("40")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[36..49]"), emptyTest,
                                         emptyTest)
@@ -899,14 +1035,14 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("43")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 ">=50"), emptyTest, emptyTest)
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("48")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         objFact.createUnaryTests()
                                                 .withUnaryTests("S"), emptyTest)
@@ -914,7 +1050,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("25")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         objFact.createUnaryTests()
                                                 .withUnaryTests("M"), emptyTest)
@@ -922,7 +1058,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("45")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -931,7 +1067,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("15")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -940,7 +1076,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("18")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -949,7 +1085,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("45")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -994,7 +1130,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                                         "REFER", "ACCEPT")))
                 .withRules(
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         objFact.createUnaryTests().withText(
                                                 "false"), emptyTest, emptyTest)
@@ -1002,7 +1138,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("DECLINE")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests().withText(
@@ -1011,7 +1147,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("DECLINE")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "\"HIGH\""), emptyTest,
                                         emptyTest, emptyTest)
@@ -1019,7 +1155,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("REFER")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         emptyTest,
@@ -1029,7 +1165,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"REFER\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(emptyTest, emptyTest,
+                                .withInputEntries(emptyTest, emptyTest,
                                         emptyTest, emptyTest)
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
@@ -1060,7 +1196,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                 .withName("Post Bureau Risk Category"))
                 .withRules(
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         falseTest,
                                         objFact.createUnaryTests()
                                                 .withText("<120"),
@@ -1070,7 +1206,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"HIGH\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         falseTest,
                                         objFact.createUnaryTests()
                                                 .withText("<120"),
@@ -1081,7 +1217,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"MEDIUM\"")),
                        objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         falseTest,
                                         objFact.createUnaryTests()
                                                 .withText("<120"),
@@ -1091,7 +1227,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("LOW")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         falseTest,
                                         objFact.createUnaryTests()
                                                 .withText("[120..130]"),
@@ -1101,7 +1237,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"HIGH\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         falseTest,
                                         objFact.createUnaryTests()
                                                 .withText("[120..130]"),
@@ -1111,7 +1247,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"MEDIUM\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         falseTest,
                                         objFact.createUnaryTests()
                                                 .withText("[120..130]"),
@@ -1121,7 +1257,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"LOW\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         falseTest,
                                         objFact.createUnaryTests().withText(
                                                 ">130"), emptyTest)
@@ -1129,7 +1265,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"VERY LOW\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         trueTest,
                                         objFact.createUnaryTests()
                                                 .withText("<=100"),
@@ -1139,7 +1275,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"HIGH\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         trueTest,
                                         objFact.createUnaryTests()
                                                 .withText("<=100"),
@@ -1149,7 +1285,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"MEDIUM\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         trueTest,
                                         objFact.createUnaryTests()
                                                 .withText("<=100"),
@@ -1159,7 +1295,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"LOW\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         trueTest,
                                         objFact.createUnaryTests()
                                                 .withText(">100"),
@@ -1169,7 +1305,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"HIGH\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         trueTest,
                                         objFact.createUnaryTests()
                                                 .withText(">100"),
@@ -1179,7 +1315,7 @@ public class Ch11LoanExample implements DecisionConstants, ExamplesConstants {
                                         objFact.createLiteralExpression()
                                                 .withText("\"MEDIUM\"")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         trueTest,
                                         objFact.createUnaryTests()
                                                 .withText(">100"),

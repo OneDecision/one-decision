@@ -674,6 +674,13 @@ public class Decision extends DrgElement implements
         return this;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public Decision withContext(Context context) {
+        setExpression(new JAXBElement(DecisionConstants.CONTEXT, Context.class,
+                context));
+        return this;
+    }
+
     public Decision withDecisionTable(DecisionTable dt) {
         setDecisionTable(dt);
         return this;

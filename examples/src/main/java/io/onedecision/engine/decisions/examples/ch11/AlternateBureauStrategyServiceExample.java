@@ -279,7 +279,7 @@ public class AlternateBureauStrategyServiceExample implements
                                 .withName("Partial score"))
                 .withRules(
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[18..21]"), emptyTest,
                                         emptyTest)
@@ -287,7 +287,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("32")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[22..25]"), emptyTest,
                                         emptyTest)
@@ -295,7 +295,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("35")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[26..35]"), emptyTest,
                                         emptyTest)
@@ -303,7 +303,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("40")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 "[36..49]"), emptyTest,
                                         emptyTest)
@@ -311,14 +311,14 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("43")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(
                                                 ">=50"), emptyTest, emptyTest)
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("48")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         objFact.createUnaryTests()
                                                 .withUnaryTests("S"), emptyTest)
@@ -326,7 +326,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("25")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         objFact.createUnaryTests()
                                                 .withUnaryTests("M"), emptyTest)
@@ -334,7 +334,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("45")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -343,7 +343,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("15")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -352,7 +352,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("18")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -361,7 +361,7 @@ public class AlternateBureauStrategyServiceExample implements
                                         objFact.createLiteralExpression()
                                                 .withText("45")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         emptyTest,
                                         objFact.createUnaryTests()
@@ -389,17 +389,17 @@ public class AlternateBureauStrategyServiceExample implements
                         objFact.createOutputClause().withName("Affordable"))
                 .withRules(
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText("DisposableIncome * 0.6 >= PMT(Rate, Term, Amount)"))
                                 .withOutputEntry(
                                         objFact.createLiteralExpression().withText("YES")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText("DisposableIncome * 0.8 >= PMT(Rate, Term, Amount)"))
                                 .withOutputEntry(
                                         objFact.createLiteralExpression().withText("MAYBE")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText("DisposableIncome * 0.8 < PMT(Rate, Term, Amount)"))
                                 .withOutputEntry(
                                         objFact.createLiteralExpression().withText("NO")));
@@ -433,35 +433,35 @@ public class AlternateBureauStrategyServiceExample implements
                                 .withName("Strategy"))
                 .withRules(
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(">=120"),
                                         objFact.createUnaryTests().withText("YES"))
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("THROUGH")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText("<120"),
                                         objFact.createUnaryTests().withText("YES"))
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("BUREAU")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText(">=100"),
                                         objFact.createUnaryTests().withText("MAYBE"))
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("BUREAU")),
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         objFact.createUnaryTests().withText("<100"),
                                         objFact.createUnaryTests().withText("MAYBE"))
                                 .withOutputEntry(
                                         objFact.createLiteralExpression()
                                                 .withText("DECLINE")) ,
                         objFact.createDecisionRule()
-                                .withInputEntry(
+                                .withInputEntries(
                                         emptyTest,
                                         objFact.createUnaryTests().withText("NO"))
                                 .withOutputEntry(

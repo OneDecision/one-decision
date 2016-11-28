@@ -17,6 +17,7 @@ package io.onedecision.engine.decisions.model.dmn;
 import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.InvalidDmnException;
+import io.onedecision.engine.decisions.web.DecisionDmnModelController;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -48,10 +49,10 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.hateoas.Identifiable;
 import org.springframework.hateoas.Link;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -188,7 +189,7 @@ public class DmnModel implements Serializable, Identifiable<Link> {
         setDeploymentMessage(deploymentMessage);
     }
 
-    @JsonIgnore
+    // @JsonIgnore
     public Link getId() {
         return getLink(Link.REL_SELF);
 	}
@@ -220,6 +221,11 @@ public class DmnModel implements Serializable, Identifiable<Link> {
     @XmlElement(name = "link", namespace = Link.ATOM_NAMESPACE)
     @JsonProperty("links")
     public List<Link> getLinks() {
+        if (links.size() == 0) {
+            links.add(new Link(DecisionDmnModelController.class.getAnnotation(
+                    RepositoryRestResource.class).path()
+                    + "/" + shortId));
+        }
         return links;
     }
 
@@ -228,6 +234,7 @@ public class DmnModel implements Serializable, Identifiable<Link> {
         this.links = links;
     }
 
+    @JsonProperty
     public Long getShortId() {
         return shortId;
     }

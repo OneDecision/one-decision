@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -126,6 +127,16 @@ public class LiteralExpression extends Expression implements Serializable {
      */
     public void setExpressionLanguage(String value) {
         this.expressionLanguage = value;
+    }
+
+    public LiteralExpression withText(boolean value) {
+        this.text = Boolean.toString(value);
+        return this;
+    }
+
+    public LiteralExpression withText(BigDecimal value) {
+        this.text = value == null ? null : value.toString();
+        return this;
     }
 
     public LiteralExpression withText(String value) {
