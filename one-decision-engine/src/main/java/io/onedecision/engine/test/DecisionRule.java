@@ -2,10 +2,8 @@ package io.onedecision.engine.test;
 
 import static org.junit.Assert.fail;
 import io.onedecision.engine.decisions.api.DecisionEngine;
-import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.impl.InMemoryDecisionEngineImpl;
-import io.onedecision.engine.decisions.impl.del.DelExpression;
-import io.onedecision.engine.decisions.impl.del.DurationExpression;
+import io.onedecision.engine.decisions.impl.TransformUtil;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.ObjectFactory;
@@ -59,6 +57,8 @@ public class DecisionRule implements TestRule {
 
     public static final File outputDir = new File("target", "decisions");
 
+    protected TransformUtil transformUtil;
+
     protected String tenantId;
 
     protected DecisionEngine de;
@@ -68,7 +68,6 @@ public class DecisionRule implements TestRule {
     private ObjectFactory objFact;
 
     public DecisionRule() {
-        ;
     }
 
     public DecisionRule(DecisionEngine decisionEngine) {
@@ -228,10 +227,6 @@ public class DecisionRule implements TestRule {
 
     protected void initializeDecisionEngine() {
         de = new InMemoryDecisionEngineImpl();
-
-        List<DelExpression> compilers = new ArrayList<DelExpression>();
-        compilers.add(new DurationExpression());
-        ((DecisionService) de.getRuntimeService()).setDelExpressions(compilers);
     }
 
     protected void configureDecisionEngine() {
@@ -279,6 +274,26 @@ public class DecisionRule implements TestRule {
                 out.close();
             } catch (Exception e) {
             }
+        }
+    }
+
+    public void writeHtml(String html, String fileName) throws IOException {
+        File file = new File(DecisionRule.outputDir, fileName);
+        System.out.println(String.format("Writing html to %1$s",
+                file.getAbsolutePath()));
+
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(file);
+            if (!html.contains("<html>")) {
+                writer.write("<html><body>");
+            }
+            writer.write(html);
+            if (!html.contains("<html>")) {
+                writer.write("</body><html>");
+            }
+        } finally {
+            writer.close();
         }
     }
 

@@ -13,29 +13,29 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.web;
 
-import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.impl.IdHelper;
-import io.onedecision.engine.decisions.impl.TransformUtil;
 import io.onedecision.engine.decisions.model.dmn.Decision;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.TransformerConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -57,30 +58,15 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 @Controller
 @RequestMapping(value = "/{tenantId}/decision-models")
+@RepositoryRestResource(path = "/{tenantId}/decision-models")
 public class DecisionDmnModelController extends DecisionModelFactory implements
         RepositoryService {
-    private static final Logger LOGGER = LoggerFactory
+    public static final Logger LOGGER = LoggerFactory
             .getLogger(DecisionDmnModelController.class);
 
     @Autowired
-    private DecisionDmnModelRepository repo;
+    public DecisionDmnModelRepository repo;
 
-    protected TransformUtil transformUtil ;
-
-    protected TransformUtil getTransformUtil() {
-        // if (transformUtil == null) {
-            transformUtil = new TransformUtil();
-            try {
-                transformUtil.setXsltResources("/static/xslt/dmn2html.xslt");
-            } catch (TransformerConfigurationException e) {
-                LOGGER.error(e.getMessage(), e);
-                throw new DecisionException("Unable to render decision model",
-                        e);
-            }
-        // }
-        return transformUtil;
-    }
-    
     /**
      * @see io.onedecision.engine.decisions.api.RepositoryService#listForTenant(java.lang.String)
      */
@@ -94,7 +80,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         List<DmnModel> list = repo.findAllForTenant(tenantId);
         LOGGER.info(String.format("Found %1$s decision models", list.size()));
 
-        return list;
+        return wrap(list);
     }
 
     @RequestMapping(value = "/{definitionOrInternalId}", method = RequestMethod.GET, produces = { "text/html" })
@@ -114,6 +100,13 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         }
 
         return "decisionModel";
+    }
+
+    @RequestMapping(value = "/{id}.html", method = RequestMethod.GET, produces = { "text/html" })
+    @ResponseBody
+    public String getDocumentationForTenant(@PathVariable("id") String id,
+            @PathVariable("tenantId") String tenantId) {
+        return super.getDocumentationForTenant(id, tenantId);
     }
 
     @RequestMapping(value = "/{definitionId}/{drgElementId}", method = RequestMethod.GET, produces = { "text/html" })
@@ -217,7 +210,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         DmnModel model = repo.findByDefinitionId(definitionId, tenantId);
         if (model == null) {
             throw new DecisionNotFoundException(String.format(
-                    "Decision model %1$s not not exist for tenant %2$s",
+                    "Decision model %1$s does not exist for tenant %2$s",
                     definitionId, tenantId));
         }
         // indexModel(model);
@@ -435,4 +428,32 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
             repo.delete(dmnModel.getShortId());
         }
     }
+
+    protected List<DmnModel> wrap(List<DmnModel> list) {
+        for (DmnModel model : list) {
+            wrap(model);
+        }
+        return list;
+    }
+
+    private DmnModel wrap(DmnModel model) {
+        model.addLink(new Link(getGlobalUri(model).toString(), Link.REL_SELF));
+        return model;
+    }
+
+    protected URI getGlobalUri(DmnModel model) {
+        try {
+            UriComponentsBuilder builder = MvcUriComponentsBuilder
+                    .fromController(getClass());
+            String uri = builder.build().toUriString()
+                    .replace("{tenantId}/", "");
+            return new URI(String.format("%1$s/%2$d", uri, model.getShortId()));
+        } catch (URISyntaxException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+
+
 }

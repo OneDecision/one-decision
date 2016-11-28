@@ -65,11 +65,11 @@ import javax.xml.namespace.QName;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDefinitions", propOrder = {
     "imports",
-    "itemDefinitions",
-    "drgElements",
-    "artifacts",
+    "itemDefinition",
+    "drgElement", 
+    "artifact",
     "elementCollection",
-    "businessContextElements"
+    "businessContextElement"
 })
 public class Definitions extends NamedElement implements Serializable {
 
@@ -77,14 +77,14 @@ public class Definitions extends NamedElement implements Serializable {
 
     @XmlElement(name = "import")
     protected List<Import> imports;
-    protected List<ItemDefinition> itemDefinitions;
+    protected List<ItemDefinition> itemDefinition;
     @XmlElementRef(name = "drgElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends DrgElement>> drgElements;
+    protected List<JAXBElement<? extends DrgElement>> drgElement;
     @XmlElementRef(name = "artifact", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends Artifact>> artifacts;
+    protected List<JAXBElement<? extends Artifact>> artifact;
     protected List<ElementCollection> elementCollection;
     @XmlElementRef(name = "businessContextElement", namespace = "http://www.omg.org/spec/DMN/20151101/dmn.xsd", type = JAXBElement.class, required = false)
-    protected List<JAXBElement<? extends BusinessContextElement>> businessContextElements;
+    protected List<JAXBElement<? extends BusinessContextElement>> businessContextElement;
     @XmlAttribute(name = "expressionLanguage")
     @XmlSchemaType(name = "anyURI")
     protected String expressionLanguage;
@@ -151,10 +151,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<ItemDefinition> getItemDefinitions() {
-        if (itemDefinitions == null) {
-            itemDefinitions = new ArrayList<ItemDefinition>();
+        if (itemDefinition == null) {
+            itemDefinition = new ArrayList<ItemDefinition>();
         }
-        return this.itemDefinitions;
+        return this.itemDefinition;
     }
 
     /**
@@ -184,10 +184,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends DrgElement>> getDrgElements() {
-        if (drgElements == null) {
-            drgElements = new ArrayList<JAXBElement<? extends DrgElement>>();
+        if (drgElement == null) {
+            drgElement = new ArrayList<JAXBElement<? extends DrgElement>>();
         }
-        return this.drgElements;
+        return this.drgElement;
     }
 
     /**
@@ -261,10 +261,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends Artifact>> getArtifacts() {
-        if (artifacts == null) {
-            artifacts = new ArrayList<JAXBElement<? extends Artifact>>();
+        if (artifact == null) {
+            artifact = new ArrayList<JAXBElement<? extends Artifact>>();
         }
-        return this.artifacts;
+        return this.artifact;
     }
 
     /**
@@ -321,10 +321,10 @@ public class Definitions extends NamedElement implements Serializable {
      * 
      */
     public List<JAXBElement<? extends BusinessContextElement>> getBusinessContextElements() {
-        if (businessContextElements == null) {
-            businessContextElements = new ArrayList<JAXBElement<? extends BusinessContextElement>>();
+        if (businessContextElement == null) {
+            businessContextElement = new ArrayList<JAXBElement<? extends BusinessContextElement>>();
         }
-        return this.businessContextElements;
+        return this.businessContextElement;
     }
 
     /**

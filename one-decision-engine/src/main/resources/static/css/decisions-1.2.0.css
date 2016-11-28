@@ -18,12 +18,14 @@
 .parameter input,
 .rule input {
   border: none;
+  box-shadow: none;
   cursor: pointer;
   text-overflow: ellipsis;
 	width: 100%;
 }
 .expr input {
   border: none;
+  box-shadow: none;
   cursor: pointer;
   text-overflow: ellipsis;
   width: 100%;

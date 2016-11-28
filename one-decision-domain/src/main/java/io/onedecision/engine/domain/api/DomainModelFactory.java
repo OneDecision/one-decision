@@ -15,7 +15,17 @@ package io.onedecision.engine.domain.api;
 
 import io.onedecision.engine.domain.model.DomainModel;
 
+import java.io.IOException;
+
+/**
+ * Factory interface for domain models to allow implementations from classpath,
+ * URL etc.
+ *
+ * @author Tim Stephenson
+ */
 public interface DomainModelFactory {
+
+    void put(String key, String jsonResource) throws IOException;
 
     DomainModel fetchDomain(String domainModelUri);
 }

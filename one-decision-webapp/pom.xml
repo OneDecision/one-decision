@@ -27,6 +27,11 @@
         <artifactId>onedecision-engine</artifactId>
         <version>${project.version}</version>
     </dependency>
+    <dependency>
+        <groupId>io.onedecision</groupId>
+        <artifactId>onedecision-domain</artifactId>
+        <version>${project.version}</version>
+    </dependency>
     <!-- Override scope so we can provide test helpers  -->
     <dependency>
       <groupId>junit</groupId>

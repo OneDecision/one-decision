@@ -118,7 +118,7 @@
               <tr class="{{builtIn ? 'builtIn' : 'custom' }}" data-href="{{name}}" on-click="editField(this)">
                 <td>{{j+1}}</td>
                 <td>{{name}}</td>
-                <td>{{label}}</td>
+                <td>{{#label}}{{label}}{{else}}{{name.toLabel()}}{{/}}</td>
                 <td>{{type}}</td>
                 <td>{{required}}</td>
                 <td>{{defaultValue}}</td>

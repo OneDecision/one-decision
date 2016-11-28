@@ -68,7 +68,6 @@ public class ApplicantRiskRatingTest implements ExamplesConstants {
 
     @BeforeClass
     public static void setUpClass() {
-        // de = new InMemoryDecisionEngineImpl();
     }
 
     public ApplicantRiskRatingTest(String applicant, String policy) {

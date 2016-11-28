@@ -28,7 +28,7 @@ public class DurationExpression implements DelExpression {
             .getLogger(DurationExpression.class);
 
 	@Override
-	public String compile(String script) {
+    public String compile(String script, String input) {
 		Pattern pattern = Pattern
                 .compile(".*(P(\\d+Y)*(\\d+M)*(\\d+D)*(\\d+W)*T?(\\d+H)*(\\d+M)*(\\d+S)*).*");
 		Matcher matcher = pattern.matcher(script);
@@ -57,11 +57,14 @@ public class DurationExpression implements DelExpression {
                 long hours = toMillis(getPart(inputDuration, 'H'), 'H');
                 long minutes = toMillis(getPart(inputDuration, 'M'), 'M');
                 long secs = toMillis(getPart(inputDuration, 'S'), 'S');
-                String s = script.replace(inputDuration,
+                String s = input
+                        + " "
+                        + script.replace(
+                                inputDuration,
                         String.valueOf(years + weeks + days + hours + minutes
                                 + secs));
                 LOGGER.debug("converted script to " + s);
-                return compile(s);
+                return compile(s, input);
             } catch (IllegalArgumentException e) {
                 throw new DecisionException("Cannot parse inputDuration");
 			}
@@ -111,7 +114,7 @@ public class DurationExpression implements DelExpression {
 
     // Although ISO 8601 includes PxW to specify a number of weeks this
     // is apparently not supported by javax.xml.datatype.Duration class.
-    private String convertWeeks(String inputDuration) {
+    protected String convertWeeks(String inputDuration) {
         if (inputDuration.endsWith("W")) {
             BigDecimal weeks = new BigDecimal(inputDuration.substring(1,
                     inputDuration.length() - 1));

@@ -13,6 +13,9 @@ public abstract class AbstractDecisionEngineImpl implements DecisionEngine {
 
     protected RuntimeService runtimeService;
 
+    protected AbstractDecisionEngineImpl() {
+    }
+
     public ModelingService getModelingService() {
         return modelingService;
     }

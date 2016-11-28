@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.onedecision.engine.domain.test;
+package io.onedecision.engine.domain.impl;
 
 import static org.junit.Assert.assertNotNull;
 import io.onedecision.engine.domain.api.DomainModelFactory;
@@ -21,22 +21,40 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class MockDomainModelFactory implements DomainModelFactory {
+public class ClasspathDomainModelFactory implements DomainModelFactory {
+
     protected static ObjectMapper mapper = new ObjectMapper();
+
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(ClasspathDomainModelFactory.class);
+
+    @Value("${onedecision.domain.defaultDomainUri:http://onedecision.io/domains/cust-mgmt}")
+    protected String defaultDomainUri;
+
+    @Value("${onedecision.domain.defaultDomainResource:/domains/cust-mgmt.json}")
+    protected String defaultDomainResource;
 
     protected Map<String, DomainModel> domains;
 
-    public MockDomainModelFactory() {
+    public ClasspathDomainModelFactory() {
         domains = new HashMap<String, DomainModel>();
     }
 
-    public MockDomainModelFactory(String key, String jsonResource)
-            throws JsonParseException, JsonMappingException, IOException {
+    public ClasspathDomainModelFactory(String key, String jsonResource)
+            throws IOException {
         this();
+        put(key, jsonResource);
+    }
+
+    public void put(String key, String jsonResource) throws IOException {
         domains.put(key, getJsonModel(jsonResource));
     }
 
@@ -44,6 +62,20 @@ public class MockDomainModelFactory implements DomainModelFactory {
     public DomainModel fetchDomain(String domainModelUri) {
         if (domains.containsKey(domainModelUri)) {
             return domains.get(domainModelUri);
+        } else if (domainModelUri.equals(defaultDomainUri)) {
+            LOGGER.warn(String
+                    .format("Using default domain URI (%1$s) defined in classpath resource (%2$s). To override this replace the resource or inject your own DomainModelFactory",
+                            defaultDomainUri, defaultDomainResource));
+            try {
+                put(defaultDomainUri, defaultDomainResource);
+                return domains.get(defaultDomainUri);
+            } catch (Exception e) {
+                String msg = String
+                        .format("The default domain URI (%1$s) was not found at the classpath resource %2$s as expected",
+                                defaultDomainUri, defaultDomainResource);
+                LOGGER.error(msg);
+                throw new IllegalStateException(msg);
+            }
         } else {
             throw new IllegalStateException(String.format(
                     "No domain model registered for URI: %1$s", domainModelUri));

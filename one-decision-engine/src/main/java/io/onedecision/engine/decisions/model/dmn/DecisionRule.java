@@ -9,6 +9,7 @@
 package io.onedecision.engine.decisions.model.dmn;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -114,7 +115,7 @@ public class DecisionRule extends DmnElement implements Serializable {
         return this.outputEntry;
     }
 
-    public DecisionRule withInputEntry(UnaryTests... values) {
+    public DecisionRule withInputEntries(UnaryTests... values) {
         if (values!= null) {
             for (UnaryTests value: values) {
                 getInputEntry().add(value);
@@ -130,18 +131,19 @@ public class DecisionRule extends DmnElement implements Serializable {
         return this;
     }
 
-    public DecisionRule withInputEntry(String... values) {
-        if (values != null) {
-            withInputEntry(objFact.createUnaryTests().withUnaryTests(values));
-        }
+    public DecisionRule withInputEntries(boolean... values) {
+        withInputEntries(objFact.createUnaryTests().withUnaryTests(values));
         return this;
     }
 
+    public DecisionRule withInputEntries(Number... values) {
+        withInputEntries(objFact.createUnaryTests().withUnaryTests(values));
+        return this;
+    }
+
+
     public DecisionRule withInputEntries(String... values) {
-        for (String inputEntry : values) {
-            withInputEntry(objFact.createUnaryTests()
-                    .withUnaryTests(inputEntry));
-        }
+        withInputEntries(objFact.createUnaryTests().withUnaryTests(values));
         return this;
     }
 
@@ -154,9 +156,9 @@ public class DecisionRule extends DmnElement implements Serializable {
         return this;
     }
 
-    public DecisionRule withOutputEntry(String... values) {
-        if (values!= null) {
-            for (String value: values) {
+    public DecisionRule withOutputEntries(boolean... values) {
+        if (values != null) {
+            for (boolean value : values) {
                 withOutputEntry(objFact.createLiteralExpression().withText(
                         value));
             }
@@ -164,7 +166,36 @@ public class DecisionRule extends DmnElement implements Serializable {
         return this;
     }
 
-    public DecisionRule withOutputEntry(Collection<LiteralExpression> values) {
+    public DecisionRule withOutputEntries(BigDecimal... values) {
+        if (values != null) {
+            for (BigDecimal value : values) {
+                withOutputEntry(objFact.createLiteralExpression().withText(
+                        value));
+            }
+        }
+        return this;
+    }
+
+    public DecisionRule withOutputEntries(String... values) {
+        if (values != null) {
+            StringBuilder sb = new StringBuilder();
+            for (String t : values) {
+                char c = t.charAt(0);
+                if (Character.isAlphabetic(c) && !"true".equalsIgnoreCase(t)
+                        && !"false".equalsIgnoreCase(t)) {
+                    sb.append('"').append(t).append('"').append(',');
+                } else {
+                    sb.append(t).append(',');
+                }
+            }
+            sb.deleteCharAt(sb.length() - 1).toString();
+            withOutputEntry(objFact.createLiteralExpression().withText(
+                    sb.toString()));
+        }
+        return this;
+    }
+
+    public DecisionRule withOutputEntries(Collection<LiteralExpression> values) {
         if (values!= null) {
             getOutputEntry().addAll(values);
         }

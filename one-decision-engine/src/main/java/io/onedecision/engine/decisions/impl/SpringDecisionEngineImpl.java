@@ -7,5 +7,4 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpringDecisionEngineImpl extends AbstractDecisionEngineImpl
         implements DecisionEngine {
-
 }

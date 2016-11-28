@@ -49,6 +49,15 @@ public interface RepositoryService {
      *            The definition id in the DMN model.
      * @param tenantId
      *            The tenant owning the model.
+     * @return HTML documentation produced from the model.
+     */
+    String getDocumentationForTenant(String definitionId, String tenantId);
+
+    /**
+     * @param definitionId
+     *            The definition id in the DMN model.
+     * @param tenantId
+     *            The tenant owning the model.
      * @return Any image available for the model, may be null.
      */
     byte[] getImageForTenant(String definitionId, String tenantId);

@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/one-decision-1.1.0.css" rel="stylesheet">
-  <link href="/css/decisions-1.1.0.css" rel="stylesheet">
+  <link href="/css/one-decision-1.2.0.css" rel="stylesheet">
+  <link href="/css/decisions-1.2.0.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="images/one-decision-icon-16x16.png" />
 <head>
 <body>
@@ -18,7 +18,7 @@
   <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
 
   <script src="/js/md5.min.js"></script>
-  <script src="/js/one-decision-1.1.0.js"></script>
-  <script src="/js/decisions-table-1.1.0.js"></script>
+  <script src="/js/one-decision-1.2.0.js"></script>
+  <script src="/js/decisions-table-1.2.0.js"></script>
 </body>
 </html>
