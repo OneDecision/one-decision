@@ -13,11 +13,6 @@
  *******************************************************************************/
 package io.onedecision.webapp;
 
-//import io.onedecision.engine.decisions.impl.LocationHeaderInterceptor;
-import io.onedecision.engine.decisions.impl.RedirectingAuthenticationSuccessHandler;
-import io.onedecision.engine.domain.api.DomainModelFactory;
-import io.onedecision.engine.domain.impl.ClasspathDomainModelFactory;
-
 import java.util.Arrays;
 
 import javax.sql.DataSource;
@@ -43,6 +38,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+//import io.onedecision.engine.decisions.impl.LocationHeaderInterceptor;
+import io.onedecision.engine.decisions.impl.RedirectingAuthenticationSuccessHandler;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
@@ -69,11 +66,6 @@ public class Application extends WebMvcConfigurerAdapter {
 				LOGGER.info("  " + beanName);
 			}
 		}
-    }
-
-    @Bean
-    protected DomainModelFactory domainModelFactory() {
-        return new ClasspathDomainModelFactory();
     }
 
 //    @Override

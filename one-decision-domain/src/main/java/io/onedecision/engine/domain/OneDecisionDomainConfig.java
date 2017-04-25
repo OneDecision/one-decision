@@ -1,7 +1,11 @@
 package io.onedecision.engine.domain;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import io.onedecision.engine.domain.api.DomainModelFactory;
+import io.onedecision.engine.domain.impl.ClasspathDomainModelFactory;
 
 /**
  * Spring configuration for the onedecision-domain module.
@@ -11,4 +15,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 public class OneDecisionDomainConfig {
+
+    @Bean
+    protected DomainModelFactory domainModelFactory() {
+        return new ClasspathDomainModelFactory();
+    }
 }

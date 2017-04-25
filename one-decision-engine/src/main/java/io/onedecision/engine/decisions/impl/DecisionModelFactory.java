@@ -273,5 +273,4 @@ public class DecisionModelFactory implements DecisionConstants,
     public String getDocumentationForTenant(DmnModel model) {
         return getTransformUtil().transform(model.getDefinitionXml());
     }
-
 }
