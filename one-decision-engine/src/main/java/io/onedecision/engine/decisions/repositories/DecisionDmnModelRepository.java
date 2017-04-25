@@ -13,8 +13,6 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.repositories;
 
-import io.onedecision.engine.decisions.model.dmn.DmnModel;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,6 +20,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+import io.onedecision.engine.decisions.model.dmn.DmnModel;
 
 @RepositoryRestResource(exported = false)
 public interface DecisionDmnModelRepository extends
@@ -39,7 +39,7 @@ public interface DecisionDmnModelRepository extends
     List<DmnModel> findAllForTenant(@Param("tenantId") String tenantId);
 
     @Override
-    @Query("UPDATE #{#entityName} x set x.deleted = true where x.id = ?1")
+    @Query("UPDATE #{#entityName} x set x.deleted = true where x.id = :id")
     @Modifying(clearAutomatically = true)
-    public void delete(Long id);
+    public void delete(@Param("id") Long id);
 }

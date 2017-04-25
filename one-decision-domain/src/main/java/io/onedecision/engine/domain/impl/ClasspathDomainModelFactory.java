@@ -14,8 +14,6 @@
 package io.onedecision.engine.domain.impl;
 
 import static org.junit.Assert.assertNotNull;
-import io.onedecision.engine.domain.api.DomainModelFactory;
-import io.onedecision.engine.domain.model.DomainModel;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,15 +21,22 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.onedecision.engine.domain.api.DomainModelFactory;
+import io.onedecision.engine.domain.model.DomainModel;
+
+@Component
 public class ClasspathDomainModelFactory implements DomainModelFactory {
 
-    protected static ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ClasspathDomainModelFactory.class);
@@ -84,7 +89,7 @@ public class ClasspathDomainModelFactory implements DomainModelFactory {
 
     private DomainModel getJsonModel(String resource)
             throws JsonParseException, JsonMappingException, IOException {
-        DomainModel jsonModel = mapper.readValue(getClass()
+        DomainModel jsonModel = objectMapper.readValue(getClass()
                 .getResourceAsStream(resource), DomainModel.class);
         assertNotNull(jsonModel);
         return jsonModel;
