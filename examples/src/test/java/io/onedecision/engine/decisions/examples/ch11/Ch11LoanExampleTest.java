@@ -3,17 +3,19 @@ package io.onedecision.engine.decisions.examples.ch11;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import io.onedecision.engine.decisions.impl.DecisionModelFactory;
-import io.onedecision.engine.decisions.impl.TransformUtil;
-import io.onedecision.engine.decisions.model.dmn.Decision;
-import io.onedecision.engine.decisions.model.dmn.DmnModel;
-import io.onedecision.engine.test.DecisionRule;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import io.onedecision.engine.decisions.impl.DecisionModelFactory;
+import io.onedecision.engine.decisions.impl.TransformUtil;
+import io.onedecision.engine.decisions.model.dmn.Decision;
+import io.onedecision.engine.decisions.model.dmn.DmnModel;
+import io.onedecision.engine.test.DecisionRule;
 
 public class Ch11LoanExampleTest implements ExamplesConstants {
 
@@ -30,10 +32,18 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
     }
 
     @Test
-    public void testSerialization() throws Exception {
+    public void testDmnSerialization() throws Exception {
         DmnModel dm = ch11LoanExample.getDmnModel();
         decisionRule.writeDmn(dm.getDefinitions(), dm.getName() + ".dmn");
         assertEquals(0, decisionRule.validate(dm.getDefinitions()).size());
+    }
+
+    @Test
+    public void testJsonSerialization() throws Exception {
+        DmnModel dm = ch11LoanExample.getDmnModel();
+        String fileName = dm.getName().replaceAll(" ", "_") + ".json";
+        File file = decisionRule.writeJson(dm.getDefinitions(), fileName);
+        assertTrue(file.exists());
     }
 
     @Test

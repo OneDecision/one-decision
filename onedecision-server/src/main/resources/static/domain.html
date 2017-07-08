@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang='en-GB'>
+<head>
+  <meta charset='utf-8'>
+  <title>Domain Model</title>
+  <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+  <link href="onedecision/1.2.0/css/onedecision.css" rel="stylesheet">
+  <link href="onedecision/1.2.0/css/domain.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/one-decision-icon-16x16.png" />  
+</head>
+<body>
+  <div class="clearfix" id="messages"></div>
+  <div class="container" id="container"></div>
+  <script id='template' type='text/ractive'>
+    {{>profileArea}}
+    {{>titleArea}}
+    {{>loginSect}}
+
+    {{>domainSect}}
+    {{>sidebar}}
+  </script>
+
+  <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+  <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
+  <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
+
+  <script src="js/md5.min.js"></script>
+  <script src="js/string-functions-0.1.0.js"></script>
+  
+  <script src="js/env.js"></script>
+  
+  <script src="onedecision/1.2.0/js/i18n.js"></script>
+  <script src="onedecision/1.2.0/js/base.js"></script>
+  <script src="onedecision/1.2.0/js/domain.js"></script>
+  <script src="/webjars/auth/1.0.0/js/auth.js"></script>
+  
+</body>
+</html>

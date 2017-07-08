@@ -1,0 +1,11 @@
+{ 
+  "about.label": "About",
+  "dashboard.label": "Dashboard",
+  "definition.label": "Definitions",
+  "instance.label": "Instances",
+  "message.label": "Send Message",
+  "privacy.label": "Privacy",
+  "sop.label": "SOPs",
+  "sop.title": "Standard Operating Procedures",
+  "upload.label": "Upload"
+}

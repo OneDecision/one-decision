@@ -1,0 +1,149 @@
+{{#each domain.entities:i}}
+  <section id="entity{{i}}Sect" class="{{# i==entityIdx }} active {{/}} entity" style="display:none">
+    <h2>
+      <span class="clickable glyphicon glyphicon-chevron-left" aria-hidden="true" on-click="previousEntity()" style="{{# i==0 }} visibility: hidden {{/}}"></span>
+      <span>{{formatString(name)}} {{#matchRole('admin')}}({{name}}){{/}}</span>
+      <span class="pull-right clickable glyphicon glyphicon-chevron-right" aria-hidden="true" on-click="nextEntity()"  style="{{# i==domain.entities.length-1 }} visibility: hidden {{/}}"></span>
+    </h2>
+
+    <section id="entity{{i}}DiagramSect" class="entity-context">
+      <h3>
+        <span class="ol-collapse glyphicon glyphicon-triangle-right" onclick="ractive.toggleSection($(this).closest('section'))"></span>
+        <span>Entity in context</span>
+      </h3>
+
+      <div class="domain-model" style="display:none">
+        <img class="domain-model" src="{{imageUrl}}" alt="{{description}}"/>
+      </div>
+    </section>
+
+    <section id="entity{{i}}FieldsSect" class="entity-fields">
+      <h3>
+        <span class="ol-collapse glyphicon glyphicon-triangle-right" onclick="ractive.toggleSection($(this).closest('section'))"></span>
+        <span>Fields</span>
+        <!--  span class="clickable glyphicon glyphicon-plus" aria-hidden="true" data-toggle="modal" data-target="#fieldModal" title="Add a custom field"></span-->
+        <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
+        <span class="glyphicon glyphicon-search" aria-hidden="true" title="Search for matching fields"></span>
+      </h3>
+
+      <div style="display:none">
+        <table id="fields{{i}}Table" class="table table-striped">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Field Name</th>
+              <th>Label</th>
+              <th>Type</th>
+              <th>Required?</th>
+              <th>Default</th>
+              <th>Hint text</th>
+              <th>Validation</th>
+              <th>Access control</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each fields:j}}
+              {{# searchTerm!=undefined && (
+                  this.name!=undefined && this.name.toLowerCase().indexOf(searchTerm.toLowerCase())===0
+                ) }}
+                <tr class="{{builtIn ? 'builtIn' : 'custom' }}" data-href="{{name}}" on-click="editField(this)">
+                  <td>{{j+1}}</td>
+                  <td>{{name}}</td>
+                  <td>{{formatString(name, label)}}</td>
+                  <td>{{type}}</td>
+                  <td>{{required}}</td>
+                  <td>{{defaultValue}}</td>
+                  <td>{{formatString(name+'Hint', hint)}}</td>
+                  <td>{{pattern}}{{validation}}</td>
+                  <td>{{#requiredRole}}{{requiredRole}}{{/}}{{^requiredRole}}User{{/}}</td>
+                </tr>
+              {{/}}
+            {{/each}}
+          </tbody>
+          <tfoot>
+            <tr><th colspan="12">
+              {{searchMatched == 0 ? 'No' : searchMatched}} matching fields
+            </th></tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  </section>
+{{/each}}
+
+<!--div class="pull-right">
+  <button class="btn" type="button">Validate</button>
+  <button class="btn btn-primary" on-click="save()" type="button">Save</button>
+</div-->
+
+<!-- Modal -->
+<div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="fieldModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="fieldModalLabel">Details of new field</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="fieldName">Name</label>
+            <input type="text" class="form-control" id="fieldName" placeholder="Name of new field" value="{{newField.name}}"/>
+          </div>
+          <div class="form-group">
+            <label for="fieldLabel">Label</label>
+            <input type="text" class="form-control" id="fieldLabel" placeholder="Label of the new field" value="{{newField.label}}"/>
+          </div>
+          <div class="form-group">
+            <label for="fieldType">Type</label>
+            <select class="form-control" id="fieldType" value="{{newField.type}}">
+              <option value="date">Date</option>
+              <option value="email">Email</option>
+              <option value="number">Number</option>
+              <option value="tel">Telephone</option>
+              <option selected value="text">Text</option>
+              <option value="year">Year</option>
+            </select>
+            <!--<p class="help-block"> help text here.</p>-->
+          </div>
+          <div class="form-group">
+            <label for="fieldRequired">Mandatory?</label>
+            <div class="radio">
+              <label>
+                <input type="radio" name="fieldRequired" id="fieldRequired" value="true" checked>
+                Yes
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="fieldRequired" id="fieldRequired" value="false">
+                No
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fieldDefault">Default</label>
+            <input type="text" class="form-control" id="fieldDefault" placeholder="Default value for the new field" value="{{newField.default}}"/>
+          </div>
+          <div class="form-group">
+            <label for="fieldHint">Hint</label>
+            <input type="text" class="form-control" id="fieldHint" placeholder="Hint text for the new field" value="{{newField.hint}}"/>
+          </div>
+          <div class="form-group">
+            <label for="fieldValidation">Validation</label>
+            <input type="text" class="form-control" id="fieldValidation" placeholder="Validation rule for the new field" value="{{newField.validation}}"/>
+            <!--<p class="help-block"> help text here.</p>-->
+          </div>
+          <!--<div class="form-group">
+            <label for="builtIn">Built in</label>
+            <input type="text" class="form-control" id="builtIn" disabled readonly type="checkbox" value="{{newField.validation}}"/>
+          </div>-->
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-default" on-click="addField('newField')">Add Field</button>
+      </div>
+    </div>
+  </div>
+</div>
