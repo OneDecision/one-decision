@@ -15,7 +15,7 @@
         <label class="col-md-3" for="deploymentName">Deployment Message</label>
         <input id="file" multiple="multiple" name="file" style="display: none" required type="file">
         <input name="tenantId" id="tenantId" type="hidden" value="{{tenant.id}}">
-        <input class="col-md-6 form-control" name="deploymentMessage" id="deploymentMessage" placeholder="Name or tag of this decision model deployment">
+        <input class="col-md-6 form-control input-lg" name="deploymentMessage" id="deploymentMessage" placeholder="Name or tag of this decision model deployment">
         <button class="btn btn-default btn-file" on-click="addDeploymentResource()" type="button">Select Files</button>
         <button class="btn btn-primary pull-right" on-click="upload('uploadForm')" type="button">Upload</button>
       </fieldset>

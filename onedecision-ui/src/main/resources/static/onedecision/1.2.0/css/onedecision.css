@@ -369,7 +369,7 @@ form#upload {
   margin-right: 25%;
   padding: 0 10px 0 10px;
   width: 50%;
-  z-index: 10;
+  z-index: 500;
 }
 #messages.text-danger { 
   font-style: italic;
