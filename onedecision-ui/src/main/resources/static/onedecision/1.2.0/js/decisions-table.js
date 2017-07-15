@@ -119,7 +119,7 @@ var ractive = new BaseRactive({
     if (resource[6].indexOf('?')!=-1) {
       resource[6] = resource[6].substring(0, resource[6].indexOf('?'));
     }
-    ractive.set('decisionId', resource[6]);
+    ractive.set('decisionId', resource[6].indexOf('.html')==-1 ? resource[6] : resource[6].substring(0,resource[6].indexOf('.html')));
     $.getJSON('/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('definitionId')+'/', function( data ) {
       console.log('loaded model...');
       data.definitions.decisions = data.definitions.decisions.sort(sortByName);
