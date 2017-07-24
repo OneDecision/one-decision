@@ -20,6 +20,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.onedecision.engine.domain.api.DomainModelFactory;
 import io.onedecision.engine.domain.model.DomainModel;
 
+@Service
 public class ClasspathDomainModelFactory implements DomainModelFactory {
 
     protected static ObjectMapper mapper = new ObjectMapper();
