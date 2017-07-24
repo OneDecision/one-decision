@@ -60,7 +60,7 @@
               {{/each}}
               {{#matchRole('author')}}
                 <th class="col-add input editCell" rowspan="1">
-                  <span class="glyphicon glyphicon-plus" onclick="ractive.addColumnCondition('{{exprType}}',{{idx}})"></span>
+                  <span class="glyphicon glyphicon-btn glyphicon-plus" onclick="ractive.addColumnCondition('{{exprType}}',{{idx}})"></span>
                 </th>
               {{/}}
               {{#each ..decisionTable.outputs:i}}
@@ -103,7 +103,7 @@
             {{#matchRole('author')}}
               <tr class="editCell">
                 <td class="expr-name" colspan="{{..decisionTable.inputs.length+..decisionTable.outputs.length+2}}">
-                  <span class="author glyphicon glyphicon-plus" onclick="ractive.addRowRule('{{exprType}}',{{idx}})"></span>
+                  <span class="author glyphicon glyphicon-btn glyphicon-plus" onclick="ractive.addRowRule('{{exprType}}',{{idx}})"></span>
                 </td>
               </tr>
             {{/}}
@@ -115,7 +115,6 @@
   
   <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
   <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  <script src="/webjars/Bootstrap-3-Typeahead/3.1.1/bootstrap3-typeahead.js"></script>
   <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
 
   <script src="/js/md5.min.js"></script>

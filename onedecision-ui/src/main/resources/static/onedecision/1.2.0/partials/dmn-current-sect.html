@@ -3,9 +3,9 @@
       <h2>
         <span>{{current.name}}</span>
         <span class="pull-right">
-          <a class="glyphicon glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.definitionId}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
+          <a class="glyphicon glyphicon-btn glyphicon-cloud-download" href="/{{tenant.id}}/decision-models/{{current.definitionId}}.dmn" target="_newtab" title="Download the DMN representation of the decision"></a>
           {{#matchRole('admin')}}
-            <a class="clickable glyphicon glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
+            <a class="clickable glyphicon glyphicon-btn glyphicon-remove" aria-hidden="true" onclick="ractive.delete(ractive.get('current'))" title="Delete this definition"></a>
           {{/}}
         </span>
       </h2>
@@ -62,7 +62,7 @@
               <span>Decisions</span>
               <span class="pull-right">
                 {{#matchRole('author')}}
-                  <a class="clickable glyphicon glyphicon-plus" aria-hidden="true" on-click="addDecision()" title="Add a new decision"></a>
+                  <a class="clickable glyphicon glyphicon-btn glyphicon-plus" aria-hidden="true" on-click="addDecision()" title="Add a new decision"></a>
                 {{/}}
               </span>
             </h3>
@@ -75,11 +75,11 @@
                   {{/}}
                   <span>{{question}} {{allowedAnswers}}</span>
                   <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}.html" target="_newtab">
-                    <span class="glyphicon glyphicon-eye-open"></span>
+                    <span class="glyphicon glyphicon-btn glyphicon-eye-open"></span>
                   </a>
                   {{#matchRole('manage')}}
                     <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}.html?edit" target="_newtab">
-                      <span class="glyphicon glyphicon-pencil"></span>
+                      <span class="glyphicon glyphicon-btn glyphicon-pencil"></span>
                     </a>
                   {{/}}
                 </li>
@@ -98,11 +98,11 @@
                     {{/}}
                     <span>{{question}} {{allowedAnswers}}</span>
                     <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}.html" target="_newtab">
-                      <span class="glyphicon glyphicon-eye-open"></span>
+                      <span class="glyphicon glyphicon-btn glyphicon-btn glyphicon-eye-open"></span>
                     </a>
                     {{#matchRole('manage')}}
                       <a class="pull-right" href="/{{tenant.id}}/decision-models/{{current.definitionId}}/{{id}}.html?edit" target="_newtab">
-                        <span class="glyphicon glyphicon-pencil"></span>
+                        <span class="glyphicon glyphicon-btn glyphicon-pencil"></span>
                       </a>
                     {{/}}
                 </li>

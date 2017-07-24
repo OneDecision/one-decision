@@ -7,7 +7,7 @@
 <section class="resultsSect" id="decisionsSect">
   <h2 class="navbar-top">
     {{>navbar}}
-    <a class="clickable glyphicon glyphicon-cloud-upload pull-right" aria-hidden="true" on-click="toggleUpload()" title="Upload new BPMN"></a>
+    <a class="clickable glyphicon glyphicon-btn glyphicon-cloud-upload pull-right" aria-hidden="true" on-click="toggleUpload()" title="Upload new BPMN"></a>
   </h2>
   <div id="upload" style="display:none">
     <form action="/{{tenant.id}}/decision-models/upload" class="well form-inline" enctype="multipart/form-data" id="uploadForm" method="post">
@@ -40,7 +40,7 @@
             <td>{{deploymentMessage}}</td>
             <td>{{formatDate(created)}}</td>
             <td class="col-actions">
-              <a class="clickable glyphicon glyphicon-pencil" aria-hidden="true" onclick="ractive.select(this);ractive.toggleResults();" title="View or edit this decision"></a>
+              <a class="clickable glyphicon glyphicon-btn glyphicon-pencil" aria-hidden="true" onclick="ractive.select(this);ractive.toggleResults();" title="View or edit this decision"></a>
             </td>
           </tr>
       {{/}}
