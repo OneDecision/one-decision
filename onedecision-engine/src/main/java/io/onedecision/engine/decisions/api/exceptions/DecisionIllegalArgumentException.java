@@ -1,4 +1,6 @@
-package io.onedecision.engine.decisions.api;
+package io.onedecision.engine.decisions.api.exceptions;
+
+import io.onedecision.engine.decisions.api.DecisionException;
 
 public class DecisionIllegalArgumentException extends DecisionException {
 

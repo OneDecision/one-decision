@@ -16,6 +16,7 @@ package io.onedecision.engine.decisions.impl;
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.RuntimeService;
+import io.onedecision.engine.decisions.api.exceptions.MissingInformationRequirementException;
 import io.onedecision.engine.decisions.impl.del.DelExpression;
 import io.onedecision.engine.decisions.impl.del.DurationExpression;
 import io.onedecision.engine.decisions.impl.del.MatchAllExpression;
@@ -150,7 +151,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         }
 
         if (sb.length() > 0) {
-            throw new DecisionException(String.format(
+            throw new MissingInformationRequirementException(String.format(
                     "Missing information requirement(s): %1$s", sb.toString()));
         }
 

@@ -11,7 +11,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.onedecision.engine.decisions.api;
+package io.onedecision.engine.decisions.api.exceptions;
+
+import io.onedecision.engine.decisions.api.DecisionException;
 
 /**
  * Reported when a requested model is not found in the engine's repository.

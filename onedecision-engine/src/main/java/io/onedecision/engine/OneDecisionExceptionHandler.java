@@ -14,9 +14,10 @@
 package io.onedecision.engine;
 
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.api.DecisionNotFoundException;
-import io.onedecision.engine.decisions.api.InvalidDmnException;
-import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
+import io.onedecision.engine.decisions.api.exceptions.DecisionNotFoundException;
+import io.onedecision.engine.decisions.api.exceptions.InvalidDmnException;
+import io.onedecision.engine.decisions.api.exceptions.MissingInformationRequirementException;
+import io.onedecision.engine.decisions.api.exceptions.NoDmnFileInUploadException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -49,7 +50,6 @@ public class OneDecisionExceptionHandler {
     @ResponseBody
     public InvalidDmnException handleInvalidDmn(InvalidDmnException e) {
         LOGGER.error(e.getMessage(), e);
-
         return e;
     }
 
@@ -59,6 +59,14 @@ public class OneDecisionExceptionHandler {
     public InvalidDmnException handleInvalidDmn(ConstraintViolationException e) {
         LOGGER.error(e.getMessage(), e);
         return InvalidDmnException.wrap((e.getConstraintViolations()));
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MissingInformationRequirementException.class)
+    @ResponseBody
+    public MissingInformationRequirementException handleInvalidInvocation(MissingInformationRequirementException e) {
+        LOGGER.error(e.getMessage(), e);
+        return e;
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

@@ -41,8 +41,8 @@ import org.springframework.stereotype.Component;
 
 import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.RepositoryService;
+import io.onedecision.engine.decisions.api.exceptions.DecisionNotFoundException;
 import io.onedecision.engine.decisions.model.dmn.Definitions;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.validators.SchemaValidator;

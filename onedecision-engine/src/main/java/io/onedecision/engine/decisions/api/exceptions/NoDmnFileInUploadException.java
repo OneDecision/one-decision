@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package io.onedecision.engine.decisions.api;
+package io.onedecision.engine.decisions.api.exceptions;
 
 /**
  * A very specific exception in response to an attempt to upload files not

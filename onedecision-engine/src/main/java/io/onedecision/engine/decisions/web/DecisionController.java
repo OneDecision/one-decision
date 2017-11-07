@@ -14,15 +14,14 @@
 package io.onedecision.engine.decisions.web;
 
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.api.DecisionNotFoundException;
 import io.onedecision.engine.decisions.api.RuntimeService;
+import io.onedecision.engine.decisions.api.exceptions.DecisionNotFoundException;
 import io.onedecision.engine.decisions.impl.DecisionService;
 import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.repositories.DecisionDmnModelRepository;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,9 +78,8 @@ public class DecisionController extends DecisionService implements
         return super.execute(dmnModel.getDefinitions(), decisionId, params);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{definitionId}/{decisionId}", headers = "Accept=application/json")
-    @ResponseBody
-    public final String execute(
+    @RequestMapping(method = RequestMethod.POST, value = "/{definitionId}/{decisionId}", headers = "Accept=application/json", produces = "application/json")
+    public final @ResponseBody Map<String, Object> execute(
             @PathVariable("definitionId") String definitionId,
             @PathVariable("decisionId") String decisionId,
             @RequestParam Map<String, Object> params,
@@ -95,29 +93,7 @@ public class DecisionController extends DecisionService implements
                 params, tenantId);
 
         LOGGER.info(String.format("decision conclusion: %1$s", results));
-        return toJson(results);
+        return results;
     }
 
-    private String toJson(Map<String, Object> results) throws IOException {
-        StringBuffer sb = new StringBuffer("{");
-        for (Entry<String, Object> entry : results.entrySet()) {
-            sb.append("\"").append(entry.getKey()).append("\":");
-            Object val = entry.getValue();
-            if (val instanceof String && val.equals("{}")) {
-                sb.append(val);
-            } else {
-                val = objectMapper.writeValueAsString(val);
-                if (val instanceof String && ((String) val).startsWith("\"{")) {
-                    val = ((String) val).substring(1,
-                            ((String) val).length() - 1);
-                }
-                sb.append(((String) val).replaceAll("\\\\", ""));
-            }
-            sb.append(",");
-        }
-        if (sb.lastIndexOf(",") != -1) {
-            sb.deleteCharAt(sb.lastIndexOf(",")).append("}");
-        }
-        return sb.toString();
-    }
 }

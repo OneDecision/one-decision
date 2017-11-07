@@ -53,7 +53,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionException;
-import io.onedecision.engine.decisions.api.InvalidDmnException;
+import io.onedecision.engine.decisions.api.exceptions.InvalidDmnException;
 import io.onedecision.engine.decisions.web.DecisionDmnModelController;
 
 /**

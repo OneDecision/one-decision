@@ -43,9 +43,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.onedecision.engine.decisions.api.DecisionNotFoundException;
-import io.onedecision.engine.decisions.api.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.api.RepositoryService;
+import io.onedecision.engine.decisions.api.exceptions.DecisionNotFoundException;
+import io.onedecision.engine.decisions.api.exceptions.NoDmnFileInUploadException;
 import io.onedecision.engine.decisions.impl.DecisionModelFactory;
 import io.onedecision.engine.decisions.impl.IdHelper;
 import io.onedecision.engine.decisions.model.dmn.Decision;
