@@ -7,7 +7,7 @@
   <groupId>io.onedecision</groupId>
   <artifactId>onedecision-root</artifactId>
   <packaging>pom</packaging>
-  <version>1.2.0-RC1</version>
+  <version>3.0.0-beta-1</version>
   
   <organization>
     <name>OneDecision.io</name>
@@ -23,10 +23,11 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <icons.version>3.0.0-SNAPSHOT</icons.version>
     <java.version>1.8</java.version>
-    <kp-auth.version>[1.0,1.1)</kp-auth.version>
-    <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
-    <spring.security.version>3.2.3.RELEASE</spring.security.version>
+    <kp-auth.version>1.1.0</kp-auth.version>
+    <plantuml.version>8059</plantuml.version>
+    <springfox.version>2.8.0</springfox.version>
   </properties>
 
   <url>http://onedecision.io/</url>
@@ -109,6 +110,33 @@
             <mavenExecutorId>forked-path</mavenExecutorId>
             <useReleaseProfile>false</useReleaseProfile>
             <arguments>${arguments} -Psonatype-oss-release</arguments>
+          </configuration>
+        </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>com.github.jeluard</groupId>
+                    <artifactId>
+                      plantuml-maven-plugin
+                    </artifactId>
+                    <versionRange>[1.2.1,)</versionRange>
+                    <goals>
+                      <goal>generate</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
           </configuration>
         </plugin>
       </plugins>

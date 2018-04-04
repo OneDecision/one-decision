@@ -11,11 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-var ractive = new OneDecisionApp({
+var ractive = new BaseRactive({
   el: 'container',
   lazy: true,
   template: '#template',
   data: {
+    server: window['$env'] == undefined ? '' : $env.server,
     stdPartials: [
       { "name": "poweredBy", "url": "/partials/powered-by.html"},
       { "name": "profileArea", "url": "/partials/profile-area.html"},
@@ -26,11 +27,11 @@ var ractive = new OneDecisionApp({
     title: "Home",
     
   },
-  oninit: function() {
-    console.info('oninit');
-    this.ajaxSetup();
-    this.loadStandardPartials(this.get('stdPartials'));
-  }
+//  oninit: function() {
+//    console.info('oninit');
+//    this.ajaxSetup();
+//    this.loadStandardPartials(this.get('stdPartials'));
+//  }
 });
 
 $(document).ready(function() {

@@ -84,7 +84,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         List<DmnModel> list = repo.findAllForTenant(tenantId);
         LOGGER.info(String.format("Found %1$s decision models", list.size()));
 
-        return wrap(list);
+        return addLinks(list);
     }
 
     @RequestMapping(value = "/{definitionOrInternalId}.html", method = RequestMethod.GET, produces = { "text/html" })
@@ -165,7 +165,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         }
         // TODO should reduce this to only the requested or inferred decisions
 
-        return dmnModel;
+        return addLinks(dmnModel);
     }
 
     /**
@@ -201,7 +201,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         // indexModel(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
-        return model;
+        return addLinks(model);
     }
 
     /**
@@ -225,7 +225,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         // indexModel(model);
         LOGGER.debug(String.format("... result from db: %1$s", model));
 
-        return model;
+        return addLinks(model);
     }
 
     /**
@@ -233,17 +233,20 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
      *      java.lang.String)
      */
     @Override
-    @RequestMapping(value = "/{id}.dmn", method = RequestMethod.GET, produces = { "application/xml" })
+    @RequestMapping(value = "/{definitionOrInternalId}.dmn", method = RequestMethod.GET, produces = { "application/xml" })
     public @ResponseBody String getDmnForTenant(
-            @PathVariable("id") String id,
+            @PathVariable("definitionOrInternalId") String id,
             @PathVariable("tenantId") String tenantId) {
         LOGGER.info(String.format(
                 "Seeking decision model (dmn) %1$s for tenant %2$s", id,
                 tenantId));
-
-        DmnModel model = repo.findByDefinitionId(id, tenantId);
+        DmnModel model;
+        try {
+            model = repo.findOne(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            model = repo.findByDefinitionId(id, tenantId);
+        }
         LOGGER.debug(String.format("... result from db: %1$s", model));
-
         return model.getDefinitionXml();
     }
 
@@ -442,14 +445,19 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         }
     }
 
+    /** @deprecated Use {@link addLinks} */
     protected List<DmnModel> wrap(List<DmnModel> list) {
+        return addLinks(list);
+    }
+
+    protected List<DmnModel> addLinks(List<DmnModel> list) {
         for (DmnModel model : list) {
-            wrap(model);
+            addLinks(model);
         }
         return list;
     }
 
-    private DmnModel wrap(DmnModel model) {
+    private DmnModel addLinks(DmnModel model) {
         model.addLink(new Link(getGlobalUri(model).toString(), Link.REL_SELF));
         return model;
     }

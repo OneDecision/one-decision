@@ -107,24 +107,18 @@ var BaseRactive = Ractive.extend({
       if (ractive.get('tenant.theme.iconUrl')!=undefined) {
           $('link[rel="icon"]').attr('href',ractive.get('tenant.theme.iconUrl'));
       }
-      // ajax loader
-      if ($('#ajax-loader').length==0) $('body').append('<div id="ajax-loader"><img class="ajax-loader" src="'+ractive.getServer()+'/images/one-decision-ajax-loader.gif" style="width:10%" alt="Loading..."/></div>');
-      $( document ).ajaxStart(function() {
-        $( "#ajax-loader" ).show();
-      });
-      $( document ).ajaxStop(function() {
-        $( "#ajax-loader" ).hide();
-      });
       ractive.initContentEditable();// required here for the tenant switcher
       // tenant partial templates
       $.each(ractive.get('tenant').partials, function(i,d) {
         $.get(d.url, function(response){
 //          console.log('partial '+d.url+' response: '+response);
           try {
+            ractive.set('saveObserver', false);
           ractive.resetPartial(d.name,response);
           } catch (e) {
             console.error('Unable to reset partial '+d.name+': '+e);
           }
+          ractive.set('saveObserver', true);
         });
       });
       ractive.applyAccessControl();
@@ -153,6 +147,36 @@ var BaseRactive = Ractive.extend({
     console.info('cancelNote');
     ractive.get('current.notes').splice(0, 1);
   },
+    download: function(entityName) {
+    console.info('download');
+    $.ajax({
+      headers: {
+        "Accept": "text/csv"
+      },
+      url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/'+entityName+'/',
+      crossDomain: true,
+      success: function( data ) {
+        console.info('CSV received, first record: '+data.substring(0,data.indexOf('\n')));
+        var entityLabel = ractive.get('tenant.strings.'+entityName.toCamelCase())==undefined ? entityName : ractive.get('tenant.strings.'+entityName.toCamelCase());
+        try {
+          var blob = new Blob([data], {type : 'text/csv'});
+          ractive.downloadUri(URL.createObjectURL(blob), entityLabel+".csv");
+        } catch (e) {
+          ractive.showError('Your browser does not support downloading large files, please try a more modern one.');
+        }
+      }
+    });
+  },
+  downloadUri: function(uri, name) {
+    ractive.set('uri', uri);
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    delete link;
+  },
   entityName: function(entity) {
     console.info('entityName');
     var id = ractive.uri(entity);
@@ -164,96 +188,6 @@ var BaseRactive = Ractive.extend({
     $.getJSON('/configuration', function(data) {
       ractive.set('server',data.clientContext);
     });
-  },
-  fetchDocs: function() {
-    $.getJSON(ractive.uri(ractive.get('current'))+'/documents',  function( data ) {
-      if (data['_embedded'] != undefined) {
-        console.log('found docs '+data);
-        ractive.merge('current.documents', data['_embedded'].documents);
-        // sort most recent first
-        ractive.get('current.documents').sort(function(a,b) { return new Date(b.created)-new Date(a.created); });
-      }
-      ractive.set('saveObserver',true);
-    });
-  },
-//  fetchNotes: function() {
-//    $.getJSON(ractive.uri(ractive.get('current'))+'/notes',  function( data ) {
-//      if (data['_embedded'] != undefined) {
-//        console.log('found notes '+data);
-//        ractive.merge('current.notes', data['_embedded'].notes);
-////      } else if (data['content'] != undefined) {
-////        console.log('found notes '+data);
-////        ractive.merge('current.notes', data['content']);
-//      }
-//      // sort most recent first
-//      if (ractive.get('current.notes') != undefined) {
-//        ractive.get('current.notes').sort(function(a,b) { return new Date(b.created)-new Date(a.created); });
-//      }
-//    });
-//  },
-  fetchStockCategories: function() {
-    if (ractive.get('tenant.features.stockCategory')!=true) return;
-    console.info('fetchCategories...');
-    ractive.set('saveObserver', false);
-    $.ajax({
-      dataType : "json",
-      url : ractive.getServer() + '/' + ractive.get('tenant.id') + '/stock-categories/',
-      crossDomain : true,
-      success : function(data) {
-        if (data['_embedded'] != undefined) {
-          data = data['_embedded'].stockCategories;
-        }
-        ractive.set('stockCategories', data);
-        console.log('fetched ' + data.length + ' stock categories');
-        // HTML5 style only
-        $('datalist#stockCategories').remove();
-        $('body').append('<datalist id="stockCategories">');
-        $.each(ractive.get('stockCategories'), function (i,d) {
-          $('datalist#stockCategories').append('<option value="'+d.name+'">'+d.name+'</option>');
-        });
-
-        ractive.set('saveObserver', true);
-      }
-    });
-  },
-  fetchStockItems: function() {
-    console.info('fetchStockItems...');
-    ractive.set('saveObserver', false);
-    $.ajax({
-      dataType : "json",
-      url : ractive.getServer() + '/' + ractive.get('tenant.id') + '/stock-items/',
-      crossDomain : true,
-      success : function(data) {
-        if (data['_embedded'] != undefined) {
-          data = data['_embedded'].stockItems;
-        }
-        ractive.set('stockItems', data);
-        console.log('fetched ' + data.length + ' stock items');
-        var stockItemData = jQuery.map(data, function(n, i) {
-          return ({
-            "id": ractive.id(n),
-            "name": n.name
-          });
-        });
-        ractive.set('stockItemsTypeahead', stockItemData);
-        if (ractive['initStockItemTypeahead']!= undefined) ractive.initStockItemTypeahead();
-
-        // HTML5 style
-        $('datalist#stockItems').remove();
-        $('body').append('<datalist id="stockItems">');
-        $.each(ractive.get('stockItems'), function (i,d) {
-          $('datalist#stockItems').append('<option value="'+d.name+'">'+d.name+'</option>');
-        });
-
-        ractive.set('saveObserver', true);
-      }
-    });
-  },
-  getCookie: function(name) {
-    //console.log('getCookie: '+name)
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
-    if (parts.length == 2) return parts.pop().split(";").shift();
   },
   /*getProfile: function() {
     console.log('getProfile: '+this.get('username'));
@@ -312,11 +246,6 @@ var BaseRactive = Ractive.extend({
     console.log('hideUpload...');
     $('#upload').slideUp();
   },
-  id: function(entity) {
-    console.log('id: '+entity);
-    var id = ractive.uri(entity);
-    return id.substring(id.lastIndexOf('/')+1);
-  },
   initAutoComplete: function() {
     console.log('initAutoComplete');
     if (ractive.get('tenant.typeaheadControls')!=undefined && ractive.get('tenant.typeaheadControls').length>0) {
@@ -369,44 +298,10 @@ var BaseRactive = Ractive.extend({
     console.log('initControls');
     ractive.initAutoComplete();
     ractive.initAutoNumeric();
-    ractive.initDatepicker();
     ractive.initContentEditable();
-    ractive.initHelp();
+    ractive.initShortKeys();
   },
-  initDatepicker: function() {
-    console.log('initDatepicker');
-    if ($('.datepicker')!=undefined && $('.datepicker').length>0) {
-      $('.datepicker').datepicker({
-        format: "dd/mm/yyyy",
-        autoclose: trinitialAccountStage: function(idx) {
-          console.log('initialAccountStage: '+idx);
-          var rtn = '';
-          $.each(ractive.get('accountStages'), function(i,d) {
-            if (parseInt(d['idx'])==idx) rtn = d.name;
-          });
-          return rtn;
-        },
-        initialContactStage: function(idx) {
-          console.log('initialContactStage: '+idx);
-          var rtn = '';
-          $.each(ractive.get('contactStages'), function(i,d) {
-            if (parseInt(d['idx'])==idx) rtn = d.name;
-          });
-          return rtn;
-        },
-        initialOrderStage: function() {
-          console.log('initialOrderStage: '+idx);
-          var rtn = '';
-          $.each(ractive.get('orderStages'), function(i,d) {
-            if (parseInt(d['idx'])==idx) rtn = d.name;
-          });
-          return rtn;
-        },ue,
-        todayHighlight: true
-      });
-    }
-  },
-  initHelp: function() {
+  initShortKeys: function() {
     $( "body" ).keypress(function( event ) {
       if (event.target.tagName.toLowerCase() == 'input' || event.target.tagName.toLowerCase() == 'textarea') return;
       switch (event.which) { // ref http://keycode.info/
@@ -440,30 +335,6 @@ var BaseRactive = Ractive.extend({
         ractive.set($(event.target).data('bind'),$(event.target).val());
       }
     });
-  },
-  initialAccountStage: function(idx) {
-    console.log('initialAccountStage: '+idx);
-    var rtn = '';
-    $.each(ractive.get('accountStages'), function(i,d) {
-      if (parseInt(d['idx'])==idx) rtn = d.name;
-    });
-    return rtn;
-  },
-  initialContactStage: function(idx) {
-    console.log('initialContactStage: '+idx);
-    var rtn = '';
-    $.each(ractive.get('contactStages'), function(i,d) {
-      if (parseInt(d['idx'])==idx) rtn = d.name;
-    });
-    return rtn;
-  },
-  initialOrderStage: function() {
-    console.log('initialOrderStage: '+idx);
-    var rtn = '';
-    $.each(ractive.get('orderStages'), function(i,d) {
-      if (parseInt(d['idx'])==idx) rtn = d.name;
-    });
-    return rtn;
   },
   loadStandardPartial: function(name,url) {
     //console.log('loading...: '+d.name)
@@ -506,58 +377,7 @@ var BaseRactive = Ractive.extend({
       return id;
     }
   },
-  saveDoc: function() {
-    console.log('saveDoc');
-    if (ractive.get('current.documents')==undefined || ractive.get('current.documents').length==0) return;
-    var n = ractive.get('current.documents.0');
-//    n.name = $('#docName').val();
-//    n.url = $('#doc').val();
-    var url = ractive.uri(ractive.get('current'))+'/documents';
-    url = url.replace(ractive.entityName(ractive.get('current')),ractive.get('tenant.id')+'/'+ractive.entityName(ractive.get('current')));
-    if (n.url != undefined && n.url.trim().length > 0) {
-      $.ajax({
-        url: url,
-        type: 'POST',
-        data: n,
-        success: completeHandler = function(data) {
-          console.log('response: '+ data);
-          ractive.showMessage('Document link saved successfully');
-          ractive.set('saveObserver',false);
-          ractive.set('current.documents.0.created',data.created);
-          ractive.set('saveObserver',true);
-          $('#doc,#docName').val(undefined);
-        }
-      });
-    }
-  },
-  saveNote: function(n) {
-    console.info('saveNote '+JSON.stringify(n)+' ...');
-    /// TODO this is temporary for backwards compatibility with older workflow forms
-    if (n == undefined) {
-      n = ractive.get('current.notes.0');
-      n.content = $('#note').val();
-    }
-    n.contact = ractive.uri(ractive.get('current'));
-    var url = ractive.uri(ractive.get('current'))+'/notes';
-    url = url.replace(ractive.entityName(ractive.get('current')),ractive.get('tenant.id')+'/'+ractive.entityName(ractive.get('current')));
-    console.log('  url:'+url);
-    if (n.content != undefined && n.content.trim().length > 0) {
-      $.ajax({
-        url: url,
-        type: 'POST',
-        data: n,
-        success: completeHandler = function(data) {
-          console.log('response: '+ data);
-          ractive.showMessage('Note saved successfully');
-          ractive.set('saveObserver',false);
-          ractive.set('current.notes.0.created',data.created);
-          ractive.set('saveObserver',true);
-          $('#note').val(undefined);
-        }
-      });
-    }
-  },
-  shortId: function(uri) {
+  localId: function(uri) {
     return uri.substring(uri.lastIndexOf('/')+1);
   },
   showDisconnected: function(msg) {
@@ -615,16 +435,6 @@ var BaseRactive = Ractive.extend({
     console.log('showUpload...');
     $('#upload').slideDown();
   },
-  showSocial: function(networkName, keypath) {
-    console.log('showSocial: '+networkName);
-    ractive.set('network', { name: networkName, keypath: keypath, value: ractive.get(keypath) });
-    $('#socialModalSect').modal('show');
-  },
-  submitSocial: function(network) {
-    console.log('submitSocial: '+network);
-    ractive.set(network.keypath,ractive.get('network.value'));
-    $('#socialModalSect').modal('hide');
-  },
   sortChildren: function(childArray, sortBy, asc) {
     console.info('sortChildren');
     if (ractive.get('current.'+childArray)==undefined) return 0;
@@ -652,7 +462,7 @@ var BaseRactive = Ractive.extend({
     if (object != undefined) {
       var singularEntityName = ractive.entityName(object).toCamelCase().singular();
       instanceToStart.processVariables[singularEntityName+'Id'] = ractive.uri(object);
-      instanceToStart.processVariables[singularEntityName+'ShortId'] = ractive.shortId(ractive.uri(object));
+      instanceToStart.processVariables[singularEntityName+'LocalId'] = ractive.localId(ractive.uri(object));
     }
     console.log(JSON.stringify(instanceToStart));
     // save what we know so far...
@@ -692,33 +502,6 @@ var BaseRactive = Ractive.extend({
     } else {
       ractive.showFormError('customActionForm','Please correct the highlighted fields');
     }
-  },
-  stripProjection: function(link) {
-    if (link==undefined) return;
-    var idx = link.indexOf('{projection');
-    if (idx==-1) {
-      idx = link.indexOf('{?projection');
-      if (idx==-1) {
-        return link;
-      } else {
-        return link.substring(0,idx);
-      }
-    } else {
-      return link.substring(0,idx);
-    }
-  },
-  switchToTenant: function(tenant) {
-    if (tenant==undefined || typeof tenant != 'string') {
-      return false;
-    }
-    console.log('switchToTenant: '+tenant);
-    $.ajax({
-      method: 'PUT',
-      url: ractive.getServer()+"/admin/tenant/"+$auth.getClaim('sub')+'/'+tenant,
-      success: function() {
-        window.location.reload();
-      }
-    })
   },
   tenantUri: function(entity, entityPath) {
     //console.log('tenantUri: '+entity);
@@ -786,10 +569,20 @@ var BaseRactive = Ractive.extend({
 });
 
 $(document).ready(function() {
+  ractive.set('saveObserver', false);
+  if ($('#ajax-loader').length==0) $('body').append('<div id="ajax-loader"><img class="ajax-loader" src="'+ractive.getServer()+'/images/one-decision-ajax-loader.gif" style="width:10%" alt="Loading..."/></div>');  
+  $( document ).ajaxStart(function() {
+    $( "#ajax-loader" ).show();
+  });
+  $( document ).ajaxStop(function() {
+    $( "#ajax-loader" ).hide();
+  });
+
   ractive.loadStandardPartials(ractive.get('stdPartials'));
   
   $( document ).ajaxComplete(function( event, jqXHR, ajaxOptions ) {
     if (jqXHR.status > 0) ractive.showReconnected();
+    $( "#ajax-loader" ).hide();
   });
 
   ractive.observe('tenant', function(newValue, oldValue, keypath) {
@@ -815,7 +608,11 @@ $(document).ready(function() {
 
   ractive.observe('searchTerm', function(newValue, oldValue, keypath) {
     console.log('searchTerm changed');
-    if (typeof ractive['showResults'] == 'function') ractive.showResults();
+    if (typeof ractive['showResults'] == 'function') {
+      $( "#ajax-loader" ).show();
+      ractive.showResults();
+      $( "#ajax-loader" ).hide();
+    }
     setTimeout(ractive.showSearchMatched, 1000);
   });
 
@@ -825,7 +622,16 @@ $(document).ready(function() {
   } else if (params['q']!=undefined) {
     ractive.set('searchTerm',decodeURIComponent(params['q']));
   }
-  window.i18n = new I18nController($env.server+'/onedecision/1.2.0');
+  if (params['s']!=undefined) {
+    ractive.set('sortColumn',decodeURIComponent(params['s']));
+  }
+  if (params['asc']!=undefined && params['asc']=='true') {
+    ractive.set('sortAsc',true);
+  } else {
+    ractive.set('sortAsc',false);
+  }
+  window.i18n = new I18nController(ractive.getServer()+'/webjars/onedecision/3.0.0');
+  ractive.set('saveObserver', true);
 });
 
 function selectElementContents(el) {

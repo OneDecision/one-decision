@@ -1,14 +1,14 @@
 {{#each domain.entities:i}}
   <section id="entity{{i}}Sect" class="{{# i==entityIdx }} active {{/}} entity" style="display:none">
     <h2>
-      <span class="clickable glyphicon glyphicon-btn glyphicon-chevron-left" aria-hidden="true" on-click="previousEntity()" style="{{# i==0 }} visibility: hidden {{/}}"></span>
+      <span class="clickable glyphicon icon-btn glyphicon-chevron-left" aria-hidden="true" on-click="previousEntity()" style="{{# i==0 }} visibility: hidden {{/}}"></span>
       <span>{{formatString(name)}} {{#matchRole('admin')}}({{name}}){{/}}</span>
-      <span class="pull-right clickable glyphicon glyphicon-btn glyphicon-chevron-right" aria-hidden="true" on-click="nextEntity()"  style="{{# i==domain.entities.length-1 }} visibility: hidden {{/}}"></span>
+      <span class="pull-right clickable glyphicon icon-btn glyphicon-chevron-right" aria-hidden="true" on-click="nextEntity()"  style="{{# i==domain.entities.length-1 }} visibility: hidden {{/}}"></span>
     </h2>
 
     <section id="entity{{i}}DiagramSect" class="entity-context">
       <h3>
-        <span class="ol-collapse glyphicon glyphicon-btn glyphicon-btn glyphicon-triangle-right" onclick="ractive.toggleSection($(this).closest('section'))"></span>
+        <span class="ol-collapse glyphicon icon-btn icon-btn glyphicon-triangle-right" onclick="ractive.toggleSection($(this).closest('section'))"></span>
         <span>Entity in context</span>
       </h3>
 
@@ -19,11 +19,11 @@
 
     <section id="entity{{i}}FieldsSect" class="entity-fields">
       <h3>
-        <span class="ol-collapse glyphicon glyphicon-btn glyphicon-triangle-right" onclick="ractive.toggleSection($(this).closest('section'))"></span>
+        <span class="ol-collapse glyphicon icon-btn glyphicon-triangle-right" onclick="ractive.toggleSection($(this).closest('section'))"></span>
         <span>Fields</span>
-        <!--  span class="clickable glyphicon glyphicon-btn glyphicon-plus" aria-hidden="true" data-toggle="modal" data-target="#fieldModal" title="Add a custom field"></span-->
+        <!--  span class="clickable glyphicon icon-btn glyphicon-plus" aria-hidden="true" data-toggle="modal" data-target="#fieldModal" title="Add a custom field"></span-->
         <input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
-        <span class="glyphicon glyphicon-btn glyphicon-search" aria-hidden="true" title="Search for matching fields"></span>
+        <span class="glyphicon icon-btn glyphicon-search" aria-hidden="true" title="Search for matching fields"></span>
       </h3>
 
       <div style="display:none">

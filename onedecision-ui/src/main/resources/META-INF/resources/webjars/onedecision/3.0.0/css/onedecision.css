@@ -1,17 +1,11 @@
 /* FONTS */ 
 @import url('//fonts.googleapis.com/css?family=Roboto:400italic,400,700');
-@font-face {
-  font-family: 'barmenoregular';
-  src: url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.eot');
-  src: url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.woff') format('woff'),
-       url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.ttf') format('truetype'),
-       url('/webjars/barmeno/1.0.0/barmeno_regular-webfont.svg#barmenoregular') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css?family=Signika');
+@import url('/webjars/knowprocess-icons/3.0.0/style.css ');
+
 h1, h2, h3, h4, h5, h6 {
- font-family: 'barmenoregular';
+ font-family: 'Signika', sans-serif;
+ font-weight: 500;
 }
 
 /* END FONTS */
@@ -216,6 +210,9 @@ tfoot th {
 }
 .field-text { 
 }
+.icon-btn {
+  border: solid 1px;
+}
 .glyphicon { 
 	font-size: 20px;
   border: solid 1px;
@@ -258,7 +255,7 @@ h2 a.glyphicon:hover {
    margin-top: 0;
    padding-top: 20px;
 }
-.navbar-sticky {
+.container-sticky {
   background-color: white;
   padding-left: 0;
   position: fixed;
@@ -282,20 +279,6 @@ h2 a.glyphicon:hover {
 }
 /* END BOOTSTRAP OVERRIDES */
 
-.beta {
-  border: solid 1px #ff6c06;
-  color: #ff6c06;
-  font-family: barmenoregular, sans-serif;
-  font-style: italic;
-  line-height: 1.1em;
-  opacity: 0.75;
-  padding: 0;
-  position: absolute;
-  left: 10px;
-  text-align: center;
-  top: 10px;
-  width: 40px;  
-}
 .clickable:hover {
 	cursor: pointer; 
 }

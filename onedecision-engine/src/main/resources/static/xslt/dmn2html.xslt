@@ -236,7 +236,7 @@
           <xsl:when test=".='COLLECT' and ../@aggregation='COUNT'">#</xsl:when>
           <xsl:when test=".='COLLECT' and ../@aggregation='MIN'">&lt;</xsl:when>
           <xsl:when test=".='COLLECT' and ../@aggregation='MAX'">&gt;</xsl:when>
-          <xsl:otherwise>MISS</xsl:otherwise>
+          <xsl:otherwise><xsl:comment>No hit policy found</xsl:comment></xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
     </xsl:element>

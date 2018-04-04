@@ -25,6 +25,7 @@ var ractive = new BaseRactive({
     decisions: [],
     entities: [],
     filter: undefined,
+    server: window['$env'] == undefined ? '//localhost:8090' : $env.server,
     featureEnabled: function(feature) {
       console.log('featureEnabled: '+feature);
       if (feature==undefined || feature.length==0) return true;
@@ -52,14 +53,15 @@ var ractive = new BaseRactive({
     },
     //saveObserver:false,
     stdPartials: [
-      { "name": "dmnCurrentSect", "url": "/onedecision/1.2.0/partials/dmn-current-sect.html"},
-      { "name": "dmnListSect", "url": "/onedecision/1.2.0/partials/dmn-list-sect.html"},
-      { "name": "loginSect", "url": "/webjars/auth/1.0.0/partials/login-sect.html"},
-      { "name": "navbar", "url": "/onedecision/1.2.0/partials/dmn-navbar.html"},
+      { "name": "dmnCurrentSect", "url": "/webjars/onedecision/3.0.0/partials/dmn-current-sect.html"},
+      { "name": "dmnListSect", "url": "/webjars/onedecision/3.0.0/partials/dmn-list-sect.html"},
+      { "name": "loginSect", "url": "/webjars/auth/1.1.0/partials/login-sect.html"},
+      { "name": "navbar", "url": "/webjars/onedecision/3.0.0/partials/dmn-navbar.html"},
       { "name": "profileArea", "url": "/partials/profile-area.html"},
       { "name": "sidebar", "url": "/partials/sidebar.html"},
       { "name": "titleArea", "url": "/partials/title-area.html"}
     ],
+    tenant: { id: 'onedecision' },
     title: "Decision Model Repository",
   },
   partials: {
@@ -112,7 +114,7 @@ var ractive = new BaseRactive({
    */
   create: function() {
     console.info('create');
-    var jqXHR = $.post('/'+ractive.get('tenant.id')+'/decision-models/', function( data ) {
+    var jqXHR = $.post(ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/', function( data ) {
       console.log('created definition...');
       var location = jqXHR.getResponseHeader('Location');
 //      data._links = {self:{href:location}};
@@ -135,13 +137,45 @@ var ractive = new BaseRactive({
         }
     });
   },
+  download: function() {
+    console.info('download');
+    $.ajax({
+      headers: {
+        "Accept": "application/xml"
+      },
+      url: ractive.tenantUri(ractive.get('current'))+'.dmn',
+      crossDomain: true,
+      success: function( data ) {
+        console.warn('response;'+data);
+        var serializer = new XMLSerializer();
+        var dmn = serializer.serializeToString(data);
+        ractive.downloadUri("data:application/xml," + encodeURIComponent(dmn),ractive.get('current.definitionId')+".dmn");
+      }
+    });
+  },
+  view: function(id) {
+    console.info('view');
+    $.ajax({
+      headers: {
+        "Accept": "text/html"
+      },
+      url: ractive.tenantUri(ractive.get('current'))+'/'+id+'.html',
+      crossDomain: true,
+      success: function( data ) {
+        console.warn('response;'+data);
+        var serializer = new XMLSerializer();
+        var dmn = serializer.serializeToString(data);
+        ractive.downloadUri("data:text/html," + encodeURIComponent(dmn),ractive.get('current.definitionId')+'/'+id+'.html');
+      }
+    });
+  },
   /**
    * Fetch list of model summaries for tenant.
    */
   fetch: function () {
     $.ajax({
       dataType: "json",
-      url: '/'+ractive.get('tenant.id')+'/decision-models/',
+      url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/',
       crossDomain: true,
       success: function( data ) {
         if (data['_embedded'] == undefined) {
@@ -267,7 +301,7 @@ var ractive = new BaseRactive({
     var formData = new FormData(formElement);
     return $.ajax({
         type: 'POST',
-        url: '/'+ractive.get('tenant.id')+'/decision-models/upload',
+        url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/upload',
         data: formData,
         cache: false,
         contentType: false,

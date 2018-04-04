@@ -1,0 +1,10 @@
+@startuml
+!include stylesheet.puml.txt
+
+class Email << C, ff6c06 >>
+note right of [Email]
+  Represents a templated memo to be used in a mail merge
+  Typically this will be the output of a decision
+end note
+  
+@enduml

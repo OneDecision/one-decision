@@ -1,0 +1,8 @@
+<a id="decisionsTableToggle" class="glyphicon icon-btn kp-icon-caret-down" aria-hidden="true" on-click="toggleResults()" title="Collapse or expand the decision model table"></a>
+<span>Decision Models</span>
+{{#matchRole('author')}}
+  <a class="glyphicon icon-btn kp-icon-plus" aria-hidden="true" on-click="create()" title="Add a new decision model"></a>
+{{/}}
+<a class="glyphicon icon-btn kp-icon-refresh" aria-hidden="true" on-click="fetch()" title="Refresh the list"></a>
+<input type="search" class="form-control search" placeholder="Search" value="{{searchTerm}}">
+<a class="glyphicon icon-btn kp-icon-search" aria-hidden="true" title="Search for matching decisions"></a>

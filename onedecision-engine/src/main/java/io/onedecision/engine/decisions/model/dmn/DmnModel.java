@@ -45,7 +45,6 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.hateoas.Identifiable;
 import org.springframework.hateoas.Link;
 
@@ -54,7 +53,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.onedecision.engine.decisions.api.DecisionConstants;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.exceptions.InvalidDmnException;
-import io.onedecision.engine.decisions.web.DecisionDmnModelController;
 
 /**
  * Persistent wrapper for DMN model adding repository attributes such as
@@ -227,11 +225,11 @@ public class DmnModel implements Serializable, Identifiable<Link> {
     @XmlElement(name = "link", namespace = Link.ATOM_NAMESPACE)
     @JsonProperty("links")
     public List<Link> getLinks() {
-        if (links.size() == 0) {
-            links.add(new Link(DecisionDmnModelController.class.getAnnotation(
-                    RepositoryRestResource.class).path()
-                    + "/" + shortId));
-        }
+//        if (links.size() == 0) {
+//            links.add(new Link(DecisionDmnModelController.class.getAnnotation(
+//                    RepositoryRestResource.class).path()
+//                    + "/" + shortId));
+//        }
         return links;
     }
 

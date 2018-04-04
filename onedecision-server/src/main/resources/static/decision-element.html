@@ -4,9 +4,9 @@
   <meta charset='utf-8'>
   <title>Decision Logic</title>
   <link href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/one-decision-1.2.0.css" rel="stylesheet">
-  <link href="/css/decisions-1.2.0.css" rel="stylesheet">
-  <link rel="icon" type="image/png" href="/images/one-decision-icon-16x16.png" />
+  <link href="/webjars/onedecision/3.0.0/css/onedecision.css" rel="stylesheet">
+  <link href="/webjars/onedecision/3.0.0/css/decisions.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/one-decision-icon-16x16.png" />
 </head>
 <body>
   <div class="clearfix" id="messages"></div>
@@ -15,6 +15,7 @@
     {{>profileArea}}
     {{!>titleArea}}
 
+    <div id="drgElement"></div>
     {{>dmnTableSect}}
 
     {{>poweredBy}}
@@ -113,13 +114,14 @@
     {{/partial}}
   </script>
   
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
   <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
   <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="/webjars/ractive/0.7.3/ractive.min.js"></script>
-
   <script src="/js/md5.min.js"></script>
-  <script src="/js/one-decision-1.2.0.js"></script>
-  <script src="/js/decisions-table-1.2.0.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+
+  <script src="/webjars/onedecision/3.0.0/js/i18n.js"></script>
+  <script src="/webjars/onedecision/3.0.0/js/base.js"></script>
+  <script src="/webjars/onedecision/3.0.0/js/decision-element.js"></script>
 </body>
 </html>

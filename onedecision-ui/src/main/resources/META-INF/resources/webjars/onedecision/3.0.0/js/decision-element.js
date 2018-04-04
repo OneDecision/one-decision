@@ -18,6 +18,9 @@ var ractive = new BaseRactive({
   el: 'container',
   lazy: true,
   template: '#template',
+  parser: new DOMParser(),
+  serializer: new XMLSerializer(),
+  transformer: new XSLTProcessor(),
   data: {
     age: function(timeString) {
       return i18n.getAgeString(new Date(timeString))
@@ -25,6 +28,7 @@ var ractive = new BaseRactive({
     decisions: [],
     entities: [],
     filter: undefined,
+    server: window['$env'] == undefined ? '//localhost:8090' : $env.server,
     featureEnabled: function(feature) {
       console.log('featureEnabled: '+feature);
       if (feature==undefined || feature.length==0) return true;
@@ -51,8 +55,8 @@ var ractive = new BaseRactive({
       }
     },
     stdPartials: [
-      { "name": "dmnTableSect", "url": "/onedecision/1.2.0/partials/decision-table-sect.html"},
-      { "name": "loginSect", "url": "/webjars/auth/1.0.0/partials/login-sect.html"},
+      { "name": "dmnTableSect", "url": "/webjars/onedecision/3.0.0/partials/decision-table-sect.html"},
+      { "name": "loginSect", "url": "/webjars/auth/1.1.0/partials/login-sect.html"},
       { "name": "profileArea", "url": "/partials/profile-area.html"},
       { "name": "sidebar", "url": "/partials/sidebar.html"},
       { "name": "titleArea", "url": "/partials/title-area.html"}
@@ -113,18 +117,16 @@ var ractive = new BaseRactive({
   fetch: function() {
     console.info('fetch:'+window.location.href);
     ractive.set('saveObserver', false);
-    var resource = window.location.href.split('/');
-    ractive.set('tenant.id', resource[3]);
-    ractive.set('definitionId', resource[5]);
-    if (resource[6].indexOf('?')!=-1) {
-      resource[6] = resource[6].substring(0, resource[6].indexOf('?'));
-    }
-    ractive.set('decisionId', resource[6].indexOf('.html')==-1 ? resource[6] : resource[6].substring(0,resource[6].indexOf('.html')));
-    $.getJSON('/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('definitionId')+'/', function( data ) {
+    ractive.set('definitionId', getSearchParameters()['definitionId']);
+    ractive.set('elementId', getSearchParameters()['elementId']);
+    $.getJSON(ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('definitionId')+'/', function( data ) {
       console.log('loaded model...');
       data.definitions.decisions = data.definitions.decisions.sort(sortByName);
       data.definitions.businessKnowledgeModels = data.definitions.businessKnowledgeModels.sort(sortByName);
       ractive.set('current', data);
+      var el = ractive.get('current.definitions.drgElements').find(function(el) { return el.value.id == ractive.get('elementId'); });
+      ractive.set('title', el.declaredType.substring(el.declaredType.lastIndexOf('.')+1));
+      ractive.renderDmnElement();
       ractive.set('saveObserver',true);
       
       $('#editOnOffSwitch').click(function(ev) {
@@ -137,26 +139,36 @@ var ractive = new BaseRactive({
       }
     });
   },
+  fetchRenderer: function() {
+    $.get(ractive.getServer()+'/xslt/dmn2html.xslt', function(data) {
+      ractive.transformer.importStylesheet(data);
+    });
+  },
+  oncomplete: function() {
+    this.fetchRenderer();
+    this.on('tenantConfigLoaded', this.onTenantConfigLoaded);
+  },
+  onTenantConfigLoaded: function() {
+    console.info('onTenantConfigLoaded');
+    ractive.fetch();
+  },
+  renderDmnElement: function() {
+    if (ractive.get('current.dmn') == undefined) {
+      ractive.set('current.dmn',ractive.parser.parseFromString(ractive.get('current.definitionXml'), "text/xml"));
+    }
+    ractive.transformer.clearParameters();
+    ractive.transformer.setParameter('http://www.omg.org/spec/BPMN/20100524/MODEL', 'drgElementId', ractive.get('elementId'));
+    var result = ractive.transformer.transformToDocument(ractive.get('current.dmn'));
+    if (result == undefined) {
+      ractive.showError("Unable to render image of DMN element "+ractive.get('elementId'));
+    } else {
+      // debugging...
+      ractive.set('current.html',ractive.serializer.serializeToString(result.firstElementChild));
+      $('#drgElement').empty().append(result.querySelector('#'+ractive.get('elementId')+'Sect'));
+    }
+  },
   save: function() { 
     console.warn('save is not implemented on this public demo system');
-    
-    // remove drgElements (this is denormalisation) 
-    /*ractive.set('current.definitions.drgElements',[]);
-    for(idx in ractive.get('current.definitions.decisions')) {
-      var d = ractive.get('current.definitions.decisions.'+idx);
-      delete ractive.get('current.definitions.decisions.'+idx)['expression'];
-    }
-    
-    $.ajax({
-      url: ractive.getServer()+'/'+ractive.get('tenant.id')+'/decision-models/'+ractive.get('current.definitions.id'),
-      type: 'PUT',
-      contentType: 'application/json',
-      data: JSON.stringify(ractive.get('current')),
-      success: completeHandler = function(data, textStatus, jqXHR) {
-        console.log('data: '+ data);
-        ractive.showMessage('Saved');
-      }
-    });*/
   },
   toggleEdit: function() {
     console.info('toggleEdit:'+!$('#editOnOffSwitch').prop('checked'));

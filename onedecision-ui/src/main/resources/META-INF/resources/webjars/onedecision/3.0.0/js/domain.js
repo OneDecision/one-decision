@@ -23,7 +23,7 @@ var ractive = new BaseRactive({
     entityIdx:0,
     newField: {},
     searchTerm: undefined,
-    server: $env.server,
+    server: window['$env'] == undefined ? '' : $env.server,
     formatString: function(key, defaultValue) {
       if (ractive.get('tenant.strings')[key.toCamelCase()] == undefined) {
         return defaultValue == undefined ? key : defaultValue;

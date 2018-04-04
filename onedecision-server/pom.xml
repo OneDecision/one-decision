@@ -8,7 +8,7 @@
   <parent>
     <groupId>io.onedecision</groupId>
     <artifactId>onedecision-root</artifactId>
-    <version>1.2.0-RC1</version>
+    <version>3.0.0-beta-1</version>
     <relativePath>..</relativePath>
   </parent>
 
@@ -26,11 +26,6 @@
   </repositories>
   
   <dependencies>
-    <dependency>
-      <groupId>com.knowprocess</groupId>
-      <artifactId>auth</artifactId>
-      <version>${kp-auth.version}</version>
-    </dependency>
     <dependency>
         <groupId>io.onedecision</groupId>
         <artifactId>onedecision-engine</artifactId>
@@ -56,12 +51,12 @@
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger2</artifactId>
-      <version>2.0.0</version>
+      <version>${springfox.version}</version>
     </dependency>
     <dependency>
       <groupId>io.springfox</groupId>
       <artifactId>springfox-swagger-ui</artifactId>
-      <version>2.0.0</version>
+      <version>${springfox.version}</version>
     </dependency>
     <dependency>
       <groupId>org.webjars</groupId>
@@ -74,10 +69,9 @@
         <version>0.7.3</version>
     </dependency>
     <dependency>
-      <groupId>link.omny</groupId>
-      <artifactId>fonts</artifactId>
-      <version>[1.0,)</version>
-      <optional>true</optional>
+      <groupId>com.knowprocess</groupId>
+      <artifactId>icons</artifactId>
+      <version>${icons.version}</version>
     </dependency>
     <!-- TEST dependencies -->
     <dependency>
