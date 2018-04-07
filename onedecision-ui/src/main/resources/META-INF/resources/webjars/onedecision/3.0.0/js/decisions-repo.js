@@ -62,7 +62,7 @@ var ractive = new BaseRactive({
       { "name": "titleArea", "url": "/partials/title-area.html"}
     ],
     tenant: { id: 'onedecision' },
-    title: "Decision Model Repository",
+    title: "Decision Models",
   },
   partials: {
     dmnCurrentSect: '',
