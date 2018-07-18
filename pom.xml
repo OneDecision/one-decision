@@ -49,6 +49,17 @@
     <developerConnection>scm:git:git@github.com:OneDecision/onedecision.git</developerConnection>
   </scm>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>kp-plugin-repo</id>
+      <url>https://knowprocess.com/maven/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
