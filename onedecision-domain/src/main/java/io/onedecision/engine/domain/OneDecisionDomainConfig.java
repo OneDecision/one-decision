@@ -3,8 +3,10 @@ package io.onedecision.engine.domain;
 import java.io.IOException;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import io.onedecision.engine.domain.api.DomainModelFactory;
 import io.onedecision.engine.domain.impl.ClasspathDomainModelFactory;
@@ -16,6 +18,8 @@ import io.onedecision.engine.domain.impl.ClasspathDomainModelFactory;
  */
 @Configuration
 @EnableAutoConfiguration
+@EntityScan({ "io.onedecision.engine.domain.model" })
+@EnableJpaRepositories({ "io.onedecision.engine.domain.repositories" })
 public class OneDecisionDomainConfig {
 
     @Bean
