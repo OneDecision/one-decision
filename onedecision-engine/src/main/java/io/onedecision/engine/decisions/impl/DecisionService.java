@@ -13,6 +13,23 @@
  *******************************************************************************/
 package io.onedecision.engine.decisions.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.onedecision.engine.decisions.api.DecisionEngine;
 import io.onedecision.engine.decisions.api.DecisionException;
 import io.onedecision.engine.decisions.api.RuntimeService;
@@ -29,26 +46,10 @@ import io.onedecision.engine.decisions.model.dmn.DmnModel;
 import io.onedecision.engine.decisions.model.dmn.Expression;
 import io.onedecision.engine.decisions.model.dmn.HitPolicy;
 import io.onedecision.engine.decisions.model.dmn.Import;
+import io.onedecision.engine.decisions.model.dmn.InformationRequirement;
 import io.onedecision.engine.decisions.model.dmn.InputClause;
 import io.onedecision.engine.decisions.model.dmn.LiteralExpression;
 import io.onedecision.engine.decisions.model.dmn.UnaryTests;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
-
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DecisionService implements DecisionConstants, RuntimeService {
 
@@ -69,7 +70,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
     private static final String INDENT = "  ";
 
     private ScriptEngineManager sem;
-            
+
     public DecisionService() {
         sem = new ScriptEngineManager();
 
@@ -129,10 +130,10 @@ public class DecisionService implements DecisionConstants, RuntimeService {
     // TODO Should we simply return Object as only single value possible?
     public Map<String, Object> execute(Definitions dm, String decisionId,
             Map<String, Object> vars) throws DecisionException {
-        Decision decision = dm.getDecision(decisionId);
+        Decision d = dm.getDecision(decisionId);
 
         StringBuilder sb = new StringBuilder();
-        Expression expr = decision.getExpression().getValue();
+        Expression expr = d.getExpression().getValue();
         if (expr instanceof DecisionTable) {
             for (InputClause input : ((DecisionTable) expr)
                     .getInputs()) {
@@ -143,6 +144,16 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                 if (!vars.keySet().contains(varName)) {
                     sb.append(varName).append(",");
                 }
+            }
+        } else if (expr instanceof LiteralExpression) {
+            for (InformationRequirement ir : d.getInformationRequirement()) {
+//                sb.append("var ")
+//                        .append(dm.getInputDataById(ir.getRequiredInput().getFragment()).getName())
+//                        .append(";").append(CRLF);
+                String varName = dm.getInputDataById(ir.getRequiredInput().getFragment()).getName();
+//                if (!vars.keySet().contains(varName)) {
+//                    sb.append(varName).append(",");
+//                }
             }
         } else {
             LOGGER.debug(String.format(
@@ -157,11 +168,11 @@ public class DecisionService implements DecisionConstants, RuntimeService {
 
         String script = getScript(dm, decisionId);
 
-        Map<String, Object> results = execute(decision,
+        Map<String, Object> results = execute(d,
                 script, vars);
 
-        return Collections.singletonMap(decision.getVariable().getName(),
-                results.get(decision.getVariable().getName()));
+        return Collections.singletonMap(d.getVariable().getName(),
+                results.get(d.getVariable().getName()));
     }
 
     protected Map<String, Object> execute(Decision d,
@@ -194,6 +205,14 @@ public class DecisionService implements DecisionConstants, RuntimeService {
                 }
             } else {
                 jsEng.put(o.getKey(), val);
+            }
+        }
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Bound variables: ");
+            Bindings bindings = jsEng.getBindings(ScriptContext.ENGINE_SCOPE);
+            for (Entry<String, Object> b : bindings.entrySet()) {
+                LOGGER.debug("  {}: {}", b.getKey(), b.getValue());
             }
         }
 
@@ -235,7 +254,29 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         // init vars
         // root objects must be listed as InputData at the Definitions level
         // but we'll leave that as a task for the validator for now.
-        Decision d = dm.getDecision(decisionId); 
+        Decision d = dm.getDecision(decisionId);
+        Expression expr = d.getExpression().getValue();
+        if (expr instanceof LiteralExpression) {
+            getScript(dm, d, (LiteralExpression) expr, sb);
+        } else if (expr instanceof DecisionTable) {
+            getScript(dm, d, (DecisionTable) expr, sb);
+        } else {
+            throw new DecisionException(String.format(
+                    "Unable to execute expression of type %1$s",
+                    expr.getClass().getName()));
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(String.format(
+                    "script constructed: %1$s", sb.toString()));
+        }
+        return sb.toString();
+    }
+
+    private void getScript(Definitions dm, Decision d, LiteralExpression le, StringBuilder sb) {
+        sb.append(d.getVariable().getName()).append(" = ").append(le.getText()).append(";").append(CRLF);
+    }
+
+    private void getScript(Definitions dm, Decision d, DecisionTable dt, StringBuilder sb) {
         for (InputClause input : d.getDecisionTable().getInputs()) {
             String varName = input.getInputExpression().getText();
             // if (varName.indexOf('.') >= 0) {
@@ -268,7 +309,7 @@ public class DecisionService implements DecisionConstants, RuntimeService {
         // if (cache.containsKey(d.getId())) {
         // return cache.get(d.getId());
         // } else {
-            return getScript(sb, d);
+            getScript(sb, d);
         // }
     }
 
@@ -415,17 +456,17 @@ IdHelper.toIdentifier(varName),
         return sb.toString();
     }
 
-    private boolean isLiteral(String expr) {
-        expr = expr.trim();
-        return expr.startsWith("\"") && expr.endsWith("\"");
-        // char c = expr.trim().charAt(0);
-        //
-        // if (OPERATORS.contains(c)) {
-        // return false;
-        // } else {
-        // return true;
-        // }
-    }
+//    private boolean isLiteral(String expr) {
+//        expr = expr.trim();
+//        return expr.startsWith("\"") && expr.endsWith("\"");
+//        // char c = expr.trim().charAt(0);
+//        //
+//        // if (OPERATORS.contains(c)) {
+//        // return false;
+//        // } else {
+//        // return true;
+//        // }
+//    }
 
     protected String createFunctionName(String id) {
         if (Character.isDigit(id.charAt(0))) {
@@ -455,7 +496,7 @@ IdHelper.toIdentifier(varName),
 		}
         return compile(input, (String) expr);
 	}
-	
+
     protected String compile(String input, String expr) {
 		String rtn = expr;
         for (DelExpression compiler : getDelExpressions()) {
@@ -481,10 +522,10 @@ IdHelper.toIdentifier(varName),
     }
 
     public static String loadScriptFromClassPath(String resource) {
-        InputStream is = null;
+        Scanner is = null;
         try {
-            is = DecisionRule.class.getResourceAsStream(resource);
-            return new Scanner(is).useDelimiter("\\A").next();
+            is = new Scanner(DecisionRule.class.getResourceAsStream(resource));
+            return is.useDelimiter("\\A").next();
         } finally {
             try {
                 is.close();

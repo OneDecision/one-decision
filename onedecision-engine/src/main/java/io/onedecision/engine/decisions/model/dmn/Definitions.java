@@ -8,8 +8,6 @@
 
 package io.onedecision.engine.decisions.model.dmn;
 
-import io.onedecision.engine.decisions.api.DecisionConstants;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +25,8 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
+
+import io.onedecision.engine.decisions.api.DecisionConstants;
 
 
 
@@ -207,10 +207,20 @@ public class Definitions extends NamedElement implements Serializable {
         return inputData;
     }
 
+    public InputData getInputDataById(@NotNull String id) {
+        for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
+            if (el.getValue() != null && el.getValue() instanceof InputData
+                    && id.equals(el.getValue().getId())) {
+                return (InputData) el.getValue();
+            }
+        }
+        return null;
+    }
+
     public InputData getInputData(@NotNull String name) {
         for (JAXBElement<? extends DrgElement> el : getDrgElements()) {
             if (el.getValue() != null && el.getValue() instanceof InputData
-                    && name.equals(el.getName())) {
+                    && name.equals(el.getValue().getName())) {
                 return (InputData) el.getValue();
             }
         }
