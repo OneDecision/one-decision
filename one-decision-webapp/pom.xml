@@ -71,10 +71,9 @@
         <version>0.7.3</version>
     </dependency>
     <dependency>
-      <groupId>link.omny</groupId>
-      <artifactId>fonts</artifactId>
-      <version>1.0.0</version>
-      <optional>true</optional>
+      <groupId>com.knowprocess.icons</groupId>
+      <artifactId>icons</artifactId>
+      <version>${kp-icons.version}</version>
     </dependency>
     <!-- TEST dependencies -->
     <dependency>

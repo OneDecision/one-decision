@@ -27,6 +27,7 @@
     <java.version>1.7</java.version>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
     <spring.security.version>3.2.3.RELEASE</spring.security.version>
+    <kp-icons.version>3.1.0</kp-icons.version>
   </properties>
 
   <url>http://onedecision.io/</url>
