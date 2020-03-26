@@ -73,15 +73,14 @@
       <artifactId>icons</artifactId>
       <version>${icons.version}</version>
     </dependency>
-    <!-- TEST dependencies -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 
