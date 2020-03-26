@@ -157,14 +157,14 @@ var ractive = new BaseRactive({
       ractive.set('current.dmn',ractive.parser.parseFromString(ractive.get('current.definitionXml'), "text/xml"));
     }
     ractive.transformer.clearParameters();
-    ractive.transformer.setParameter('http://www.omg.org/spec/BPMN/20100524/MODEL', 'drgElementId', ractive.get('elementId'));
+    ractive.transformer.setParameter('http://www.omg.org/spec/DMN/20151101/dmn.xsd', 'drgElementId', ractive.get('elementId'));
     var result = ractive.transformer.transformToDocument(ractive.get('current.dmn'));
     if (result == undefined) {
       ractive.showError("Unable to render image of DMN element "+ractive.get('elementId'));
     } else {
-      // debugging...
-      ractive.set('current.html',ractive.serializer.serializeToString(result.firstElementChild));
-      $('#drgElement').empty().append(result.querySelector('#'+ractive.get('elementId')+'Sect'));
+      ractive.set('current.htmlElement',ractive.serializer.serializeToString(
+              result.querySelector('#'+ractive.get('elementId')+'Sect')));
+      $('#drgElement').empty().append(ractive.get('current.htmlElement'));
     }
   },
   save: function() { 
