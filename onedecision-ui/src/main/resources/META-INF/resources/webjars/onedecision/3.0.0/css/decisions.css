@@ -2,7 +2,10 @@
   cursor: pointer;
 }
 .decision-table thead tr:last-child {
-	border-bottom: double 5px #ccc;
+  border-bottom: double 5px #ccc;
+}
+.decision-table input {
+  background-color: inherit;
 }
 .col-add {
 	width: 36px;
