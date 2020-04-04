@@ -28,7 +28,7 @@ public class AlternateBureauStrategyServiceTest implements ExamplesConstants {
     @Test
     public void testSerialization() throws Exception {
         DmnModel dm = example.getDmnModel();
-        decisionRule.writeDmn(dm.getDefinitions(), dm.getName());
+        decisionRule.writeDmn(dm.getDefinitions(), dm.getDefinitionId() + ".dmn");
         decisionRule.validate(dm.getDefinitions());
     }
 

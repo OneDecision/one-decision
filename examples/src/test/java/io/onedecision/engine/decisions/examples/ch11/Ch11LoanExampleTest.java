@@ -34,14 +34,14 @@ public class Ch11LoanExampleTest implements ExamplesConstants {
     @Test
     public void testDmnSerialization() throws Exception {
         DmnModel dm = ch11LoanExample.getDmnModel();
-        decisionRule.writeDmn(dm.getDefinitions(), dm.getName() + ".dmn");
+        decisionRule.writeDmn(dm.getDefinitions(), dm.getDefinitionId() + ".dmn");
         assertEquals(0, decisionRule.validate(dm.getDefinitions()).size());
     }
 
     @Test
     public void testJsonSerialization() throws Exception {
         DmnModel dm = ch11LoanExample.getDmnModel();
-        String fileName = dm.getName().replaceAll(" ", "_") + ".json";
+        String fileName = dm.getDefinitionId() + ".json";
         File file = decisionRule.writeJson(dm.getDefinitions(), fileName);
         assertTrue(file.exists());
     }
