@@ -1,62 +1,61 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:definitions id="EmailFollowUp"
-	xmlns:ns2="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
-	xmlns:ol="http://omny.link/decisions"
-	expressionLanguage="http://foo.com/application/javascript"
-	name="Email Follow Up"
-	namespace="http://onedecision.io/examples">
-	<ns2:description>A decision model to choose how to follow up a customer
-		lead</ns2:description>
-		
-	<ns2:itemDefinition id="contactDef" name="Contact Definition">
-		<ns2:description>A contact (person) to follow up</ns2:description>
-	</ns2:itemDefinition>
-	<ns2:itemDefinition id="emailDef" name="Email Definition">
-		<ns2:description>Define email to send as follow up</ns2:description>
-	</ns2:itemDefinition>
-	
-	<ns2:informationItem id="contact" name="contact">
-		<ns2:description>The customer contact record to pass to the decision</ns2:description>
-		<ns2:itemDefinition href="#contactDef"/>
-	</ns2:informationItem>
-	
-	<ns2:decision id="DetermineEmailToSend" name="Determine Email Follow Up">
-	
-    <ns2:variable typeRef="feel:string" name="email" id="email" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"/>
-	
-		<ns2:decisionTable hitPolicy="UNIQUE" id="DetermineEmailToSend_dt">
-			<ns2:description>DT to determine which email to send a contact</ns2:description>
-			<ns2:input>
-			  <ns2:inputExpression id="dt0_c0_ie">
+  xmlns:ns2="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+  xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+  expressionLanguage="http://foo.com/application/javascript"
+  name="Email Follow Up"
+  namespace="http://onedecision.io/examples">
+  <ns2:description>A decision model to choose how to follow up a customer
+    lead</ns2:description>
+
+  <ns2:itemDefinition id="contactDef" name="Contact Definition">
+    <ns2:description>A contact (person) to follow up</ns2:description>
+  </ns2:itemDefinition>
+  <ns2:itemDefinition id="emailDef" name="Email Definition">
+    <ns2:description>Define email to send as follow up</ns2:description>
+  </ns2:itemDefinition>
+
+  <ns2:informationItem id="contact" name="contact">
+    <ns2:description>The customer contact record to pass to the decision</ns2:description>
+    <ns2:itemDefinition href="#contactDef"/>
+  </ns2:informationItem>
+
+  <ns2:decision id="DetermineEmailToSend" name="Determine Email Follow Up">
+    <ns2:variable typeRef="feel:string" name="email" id="email"/>
+
+    <ns2:decisionTable hitPolicy="UNIQUE" id="DetermineEmailToSend_dt">
+      <ns2:description>DT to determine which email to send a contact</ns2:description>
+      <ns2:input>
+        <ns2:inputExpression id="dt0_c0_ie">
           <ns2:description>The time since the contact logged in</ns2:description>
           <ns2:text>contact.timeSinceLogin</ns2:text>
         </ns2:inputExpression>
-				<ns2:inputValues>
-					<ns2:text>&lt; P14D,&gt;= P14D</ns2:text>
-				</ns2:inputValues>
-			</ns2:input>
-			<ns2:input>
+        <ns2:inputValues>
+          <ns2:text>&lt; P14D,&gt;= P14D</ns2:text>
+        </ns2:inputValues>
+      </ns2:input>
+      <ns2:input>
         <ns2:inputExpression id="dt0_c1_ie">
           <ns2:description>The time since we last emailed the contact</ns2:description>
           <ns2:text>contact.timeSinceEmail</ns2:text>
         </ns2:inputExpression>
- 				<ns2:inputValues>
+         <ns2:inputValues>
           <ns2:text>&lt; P7D,&gt;= P7D</ns2:text>
         </ns2:inputValues>
-			</ns2:input>
-			<ns2:output name="email.template">
-				<ns2:outputDefinition href="#email.template"/>
-				<ns2:outputValues>
-					<ns2:text>"None","MissedYou"</ns2:text>
-				</ns2:outputValues>
-			</ns2:output>
-			<ns2:output name="email.subject">
+      </ns2:input>
+      <ns2:output name="email.template">
+        <ns2:outputDefinition href="#email.template"/>
+        <ns2:outputValues>
+          <ns2:text>"None","MissedYou"</ns2:text>
+        </ns2:outputValues>
+      </ns2:output>
+      <ns2:output name="email.subject">
         <ns2:outputDefinition href="#email.subject"/>
         <ns2:outputValues>
           <ns2:text>"None","We've missed you"</ns2:text>
         </ns2:outputValues>
       </ns2:output>
-			<ns2:rule>
+      <ns2:rule>
         <ns2:inputEntry>
           <ns2:text>&lt; P14D</ns2:text>
         </ns2:inputEntry>
@@ -94,7 +93,7 @@
         <ns2:outputEntry>
           <ns2:text>"We've missed you"</ns2:text>
         </ns2:outputEntry>
-			</ns2:rule>
-		</ns2:decisionTable>
-	</ns2:decision>
+      </ns2:rule>
+    </ns2:decisionTable>
+  </ns2:decision>
 </ns2:definitions>

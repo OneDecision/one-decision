@@ -21,7 +21,7 @@
   X remove JSON tests 
   X move domain classes out to own module
 
-  - revise Ch11 example to not require JSON model or domain
+  X revise Ch11 example to not require JSON model or domain
 
   - new BDD and DMN Fluent based tests (some kind of structure)
     - single end to end example: price based on age 

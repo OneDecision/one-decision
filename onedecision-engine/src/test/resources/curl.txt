@@ -1,15 +1,26 @@
-# GET a single model as JSON
-curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/onedecision/decision-models/1
-
-curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/profile
+# GET list of models for tenant
+curl http://localhost:8090/onedecision/decision-models/
 
 # PUT a DMN model
 curl \
-  -F "file=@order-discount.dmn" \
-  http://admin:onedecision@demo.onedecision.io/onedecision/decision-models/upload
+  -F "file=@examples/target/decisions/Loan Origination Decision Model.dmn" \
   http://admin:onedecision@localhost:8090/onedecision/decision-models/upload
-  
+
+# GET a single model by internal id
+curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/onedecision/decision-models/1
+
+# GET a single model by DMN definitions id
+curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/onedecision/decision-models/LoanOriginationModel/
+
+# GET a single decision by DMN definitions id & decision id
+curl -v -H "Accept: application/json" -u admin:onedecision http://localhost:8090/onedecision/decision-models/LoanOriginationModel/_76_d
+
 # Invoke a decision
 curl -X POST -v \
-  -d 'age=10' -d 'priority=true' \
-  -u admin:onedecision http://localhost:8090/onedecision/onedecision/A.1/calcPrice_d
+  -d 'Eligibility="ELIGIBLE"' -d 'bureauCallType="NONE"' \
+  -u admin:onedecision http://localhost:8090/onedecision/decisions/LoanOriginationModel/_76_d
+
+# Delete a decision
+curl -X DELETE -v \
+  -u admin:onedecision http://localhost:8090/onedecision/decision-models/2
+

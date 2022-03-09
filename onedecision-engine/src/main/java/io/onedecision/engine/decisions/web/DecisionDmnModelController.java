@@ -78,11 +78,10 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public @ResponseBody List<DmnModel> listForTenant(
             @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format("List decision models for tenant %1$s",
-                tenantId));
+        LOGGER.info("List decision models for tenant {}", tenantId);
 
         List<DmnModel> list = repo.findAllForTenant(tenantId);
-        LOGGER.info(String.format("Found %1$s decision models", list.size()));
+        LOGGER.info("Found {} decision models", list.size());
 
         return addLinks(list);
     }
@@ -91,8 +90,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     public String getModelForTenantHtml(
             @PathVariable("definitionOrInternalId") String id,
             @PathVariable("tenantId") String tenantId, Model model) {
-        LOGGER.info(String.format(
-                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
+        LOGGER.info("Seeking decision model {} for tenant {}", id, tenantId);
 
         DmnModel dmnModel = null;
         try {
@@ -120,9 +118,8 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
             @PathVariable("tenantId") String tenantId,
             @RequestParam(required = false) String edit,
             Model model) {
-        LOGGER.info(String.format(
-                "Seeking decision model %1$s.%2$s for tenant %3$s",
-                definitionId, drgElementId, tenantId));
+        LOGGER.info("Seeking decision model {}.{} for tenant {}",
+                definitionId, drgElementId, tenantId);
 
         DmnModel dmnModel = getModelForTenant(definitionId, tenantId);
         Decision decision = dmnModel.getDefinitions().getDecision(drgElementId);
@@ -147,13 +144,12 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     @RequestMapping(value = "/{definitionId}/{decisionId}", method = RequestMethod.GET, produces = { "application/json" })
-    public @ResponseBody DmnModel getDecisionServiceForTenant(
+    public @ResponseBody DmnModel getDecisionForTenant(
             @PathVariable("definitionId") String definitionId,
             @PathVariable("decisionId") String decisionId,
             @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Seeking decision model %1$s.%2$s for tenant %3$s",
-                definitionId, decisionId, tenantId));
+        LOGGER.info("Seeking decision model {}.{} for tenant {}",
+                definitionId, decisionId, tenantId);
 
         DmnModel dmnModel = getModelForTenant(definitionId, tenantId);
         Decision decision = dmnModel.getDefinitions().getDecision(decisionId);
@@ -173,12 +169,11 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
      * @param tenantId
      * @return
      */
-    @RequestMapping(value = "/{definitionOrInternalId}/", method = RequestMethod.GET, produces = { "application/json" })
+    @RequestMapping(value = "/{definitionOrInternalId}", method = RequestMethod.GET, produces = { "application/json" })
     public @ResponseBody DmnModel getModelForTenantRestApi(
             @PathVariable("definitionOrInternalId") String id,
             @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
+        LOGGER.info("Seeking decision model {} for tenant {}", id, tenantId);
 
         try {
             return getModelForTenant(Long.parseLong(id), tenantId);
@@ -188,18 +183,15 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     }
 
     @Override
-    public @ResponseBody DmnModel getModelForTenant(
-            @PathVariable("id") Long id,
-            @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Seeking decision model %1$s for tenant %2$s", id, tenantId));
+    protected DmnModel getModelForTenant(Long id, String tenantId) {
+        LOGGER.info("Seeking decision model %1$s for tenant %2$s", id, tenantId);
 
         DmnModel model = repo.findOneForTenant(id, tenantId);
         if (model == null) {
             throw new DecisionNotFoundException(tenantId, id.toString());
         }
         // indexModel(model);
-        LOGGER.debug(String.format("... result from db: %1$s", model));
+        LOGGER.debug("... result from db: {}", model);
 
         return addLinks(model);
     }
@@ -209,21 +201,18 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
      *      java.lang.String)
      */
     @Override
-    public @ResponseBody DmnModel getModelForTenant(
-            @PathVariable("definitionId") String definitionId,
-            @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Seeking decision model %1$s for tenant %2$s", definitionId,
-                tenantId));
+    public DmnModel getModelForTenant(String definitionId, String tenantId) {
+        LOGGER.info("Seeking decision model {} for tenant {}", definitionId,
+                tenantId);
 
-        DmnModel model = repo.findByDefinitionId(definitionId, tenantId);
+        DmnModel model = repo.findByDefinitionIdForTenant(definitionId, tenantId);
         if (model == null) {
             throw new DecisionNotFoundException(String.format(
                     "Decision model %1$s does not exist for tenant %2$s",
                     definitionId, tenantId));
         }
         // indexModel(model);
-        LOGGER.debug(String.format("... result from db: %1$s", model));
+        LOGGER.debug("... result from db: {}", model);
 
         return addLinks(model);
     }
@@ -237,16 +226,15 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     public @ResponseBody String getDmnForTenant(
             @PathVariable("definitionOrInternalId") String id,
             @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Seeking decision model (dmn) %1$s for tenant %2$s", id,
-                tenantId));
+        LOGGER.info("Seeking decision model (dmn) {} for tenant {}",
+                id, tenantId);
         DmnModel model;
         try {
             model = repo.findOne(Long.parseLong(id));
         } catch (NumberFormatException e) {
-            model = repo.findByDefinitionId(id, tenantId);
+            model = repo.findByDefinitionIdForTenant(id, tenantId);
         }
-        LOGGER.debug(String.format("... result from db: %1$s", model));
+        LOGGER.debug("... result from db: {}", model);
         return model.getDefinitionXml();
     }
 
@@ -259,12 +247,11 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     public @ResponseBody byte[] getImageForTenant(
             @PathVariable("id") String id,
             @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Seeking decision model image %1$s for tenant %2$s", id,
-                tenantId));
+        LOGGER.info("Seeking decision model image {} for tenant {}",
+                id, tenantId);
 
-        DmnModel model = repo.findByDefinitionId(id, tenantId);
-        LOGGER.debug(String.format("... result from db: %1$s", model));
+        DmnModel model = repo.findByDefinitionIdForTenant(id, tenantId);
+        LOGGER.debug("... result from db: {}", model);
 
         return model.getImage();
     }
@@ -285,7 +272,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
             @RequestParam(value = "deploymentMessage", required = false) String deploymentMessage,
             @RequestParam(value = "file", required = true) MultipartFile... files)
             throws IOException {
-        LOGGER.info(String.format("Uploading dmn for: %1$s", tenantId));
+        LOGGER.info("Uploading dmn for: {}", tenantId);
 
         if (files.length > 2) {
             throw new IllegalArgumentException(
@@ -298,8 +285,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
         String dmnFileName = null;
         byte[] image = null;
         for (MultipartFile resource : files) {
-            LOGGER.debug(String.format("Deploying file: %1$s",
-                    resource.getOriginalFilename()));
+            LOGGER.debug("Deploying file: {}", resource.getOriginalFilename());
             if (resource.getOriginalFilename().toLowerCase().endsWith(".dmn")
                     || resource.getOriginalFilename().toLowerCase()
                             .endsWith(".dmn.xml")) {
@@ -335,6 +321,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
      * @param model
      */
     protected void indexModel(DmnModel model) {
+        model.setDefinitionId(model.getDefinitions().getId());
         model.setName(model.getDefinitions().getName());
         model.setDescription(model.getDefinitions().getDescription());
         // for (Decision d : model.getDefinitions().getDecisions()) {
@@ -375,12 +362,11 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
      */
     @Override
     public DmnModel createModelForTenant(DmnModel model) {
-        LOGGER.info(String.format("Creating decision model for tenant %1$s",
-                model.getTenantId()));
+        LOGGER.info("Creating decision model for tenant {}", model.getTenantId());
         if (model.getStatus() == null) {
             model.setStatus(defaultStatus);
         }
-        // indexModel(model);
+        indexModel(model);
         // TODO all decisions (and BKMs and ??) need to be given id if not
         // present in order to be retrieved later
         // TODO Also need to add version (default 1 and increment if present)
@@ -399,9 +385,7 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
             @PathVariable("definitionId") String definitionId,
             @RequestBody DmnModel model,
             @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Updating decision model %2$s for tenant %1$s", tenantId,
-                definitionId));
+        LOGGER.info("Updating decision model {} for tenant {}", definitionId, tenantId);
 
         if (!definitionId.equals(model.getDefinitionId())) {
             throw new IllegalStateException(
@@ -434,10 +418,9 @@ public class DecisionDmnModelController extends DecisionModelFactory implements
     public @ResponseBody void deleteModelForTenant(
             @PathVariable("id") String id,
             @PathVariable("tenantId") String tenantId) {
-        LOGGER.info(String.format(
-                "Deleting decision model %1$s for tenant %2$s", id, tenantId));
+        LOGGER.info("Deleting decision model {} for tenant {}", id, tenantId);
 
-        DmnModel dmnModel = repo.findByDefinitionId(id, tenantId);
+        DmnModel dmnModel = repo.findByDefinitionIdForTenant(id, tenantId);
         if (dmnModel == null) {
             repo.delete(Long.valueOf(id));
         } else {

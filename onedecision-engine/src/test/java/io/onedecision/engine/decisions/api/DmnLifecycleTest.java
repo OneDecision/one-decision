@@ -14,6 +14,7 @@
 package io.onedecision.engine.decisions.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import io.onedecision.engine.TestApplication;
 import io.onedecision.engine.decisions.examples.ExamplesConstants;
@@ -63,17 +64,26 @@ public class DmnLifecycleTest implements ExamplesConstants {
 
         String dmnXml = DecisionRule.loadFromClassPath(ARR_DMN_RESOURCE);
         DmnModel model = new DmnModel(dmnXml, TENANT_ID);
+        assertNotNull(model.getDefinitionId());
+        assertNotNull(model.getDefinitions().getId());
 
         // Create
         DmnModel dmnModel = decisionEngine.getRepositoryService()
                 .createModelForTenant(model);
+        assertEquals(model.getDefinitions().getId(), dmnModel.getDefinitions().getId());
+        assertEquals(model.getDefinitions().getId(), dmnModel.getDefinitionId());
 
-        // Retrieve
+        // Retrieve all
         List<DmnModel> models = svc.listForTenant(TENANT_ID);
         assertEquals(1, models.size());
-        assertEquals(dmnModel, models.get(0));
-        assertEquals(dmnModel.getDefinitionXml(), models.get(0)
+        assertEquals(model, models.get(0));
+        assertEquals(model.getDefinitionXml(), models.get(0)
                 .getDefinitionXml());
+
+        // Retrieve by definitions id
+        dmnModel = svc.getModelForTenant(model.getDefinitionId(), TENANT_ID);
+        assertEquals(model.getDefinitionId(), dmnModel.getDefinitionId());
+        assertEquals(model.getDefinitionXml(), dmnModel.getDefinitionXml());
 
         // Retrieve DMN only
         String definitions = svc.getDmnForTenant(dmnModel.getDefinitionId(),

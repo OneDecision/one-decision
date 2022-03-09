@@ -36,14 +36,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Handle decision execution requests as well as discovery of what decisions
- * exist for a given tenant.
+ * Handle decision execution requests for a given tenant.
  * 
  * @author Tim Stephenson
  * 
  */
 @Controller
-@RequestMapping("/{tenantId}/onedecision")
+@RequestMapping("/{tenantId}/decisions")
 public class DecisionController extends DecisionService implements
         RuntimeService {
 
@@ -70,7 +69,7 @@ public class DecisionController extends DecisionService implements
                 "handling request to decision: %1$s.%2$s, with params: %3$s",
                 definitionId, decisionId, params));
 
-		DmnModel dmnModel = repo.findByDefinitionId(definitionId, tenantId);
+		DmnModel dmnModel = repo.findByDefinitionIdForTenant(definitionId, tenantId);
         if (dmnModel == null) {
             throw new DecisionNotFoundException(tenantId, definitionId,
                     decisionId);

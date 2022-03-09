@@ -32,7 +32,7 @@ public interface DecisionDmnModelRepository extends
             @Param("tenantId") String tenantId);
 
     @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND d.definitionId = :definitionId AND (d.status IS NULL OR d.status != 'deleted')")
-    DmnModel findByDefinitionId(@Param("definitionId") String definitionId,
+    DmnModel findByDefinitionIdForTenant(@Param("definitionId") String definitionId,
             @Param("tenantId") String tenantId);
 
     @Query("SELECT d FROM DmnModel d WHERE d.tenantId = :tenantId AND (d.status IS NULL OR d.status != 'deleted')")
